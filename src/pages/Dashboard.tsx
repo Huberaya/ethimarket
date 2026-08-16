@@ -5,6 +5,7 @@ import {
   TrendingUp, ArrowRight, Sparkles,
 } from 'lucide-react';
 import { useAuth } from '../lib/auth';
+import BuyerCockpit from '../components/dashboard/BuyerCockpit';
 import { supabase, type Product } from '../lib/supabase';
 
 export default function Dashboard() {
@@ -324,12 +325,16 @@ export default function Dashboard() {
 
 // ============= Accueil ACHETEUR =============
 function BuyerHome({ firstName, today }: { firstName: string; today: string }) {
+  const { user } = useAuth();
   return (
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-black text-gray-900">Bonjour, {firstName} 👋</h1>
         <p className="text-sm text-gray-500 capitalize mt-1">{today}</p>
       </div>
+
+      {/* Cockpit « Aujourd'hui » : compteurs + alertes proactives */}
+      {user && <div className="mb-8"><BuyerCockpit userId={user.id} /></div>}
 
       <div className="rounded-2xl border-2 border-emerald-200 bg-emerald-50 p-5 mb-8">
         <p className="text-xs font-black text-emerald-700 uppercase tracking-wide">Compte acheteur</p>

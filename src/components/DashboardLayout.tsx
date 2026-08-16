@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Package, PlusCircle, Store, ShoppingCart,
   MessageSquare, Settings, Leaf, Bell, LogOut, Menu, X,
   ChevronRight, UserCircle, ShieldCheck, TrendingUp, Factory,
-  PackageSearch, SlidersHorizontal,
+  PackageSearch, SlidersHorizontal, Bot, Vault,
 } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { supabase } from '../lib/supabase';
@@ -29,6 +29,8 @@ const BUYER_NAV = [
   { icon: Factory,         label: 'Mes fournisseurs',  path: '/dashboard/mes-achats?tab=suppliers' },
   { icon: PackageSearch,   label: 'Produits suivis',   path: '/dashboard/mes-achats?tab=products' },
   { icon: SlidersHorizontal, label: 'Mes règles',      path: '/dashboard/mes-achats?tab=rules' },
+  { icon: Bot,             label: 'Sourcing IA',       path: '/dashboard/sourcing' },
+  { icon: Vault,           label: 'Documents',         path: '/dashboard/documents' },
   { icon: ShoppingCart,    label: 'Commandes',         path: '/dashboard/commandes' },
   { icon: MessageSquare,   label: 'Messages',          path: '/dashboard/messages' },
   { icon: UserCircle,      label: 'Mon profil',        path: '/dashboard/mon-profil' },
