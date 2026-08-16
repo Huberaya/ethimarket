@@ -14,16 +14,16 @@ import { supabase, type Product, type Category, type Producer, type Article } fr
 /* ─── Constants ────────────────────────────────────────── */
 
 const STATS = [
-  { icon: Globe,      value: '45',      unit: 'pays',        label: 'représentés' },
-  { icon: Users,      value: '12 000+', unit: 'producteurs', label: 'certifiés' },
-  { icon: Package,    value: '50 000+', unit: 'produits',    label: 'référencés' },
-  { icon: TrendingUp, value: '4.9/5',   unit: '',            label: 'satisfaction' },
+  { icon: Globe,      value: '13',   unit: 'pays',        label: "d'origine des produits" },
+  { icon: Users,      value: '6',    unit: 'coopératives', label: 'productrices vérifiées' },
+  { icon: Package,    value: '13',   unit: 'produits',    label: 'tracés & documentés' },
+  { icon: TrendingUp, value: '8',    unit: 'allégations', label: 'vérifiées par organisme' },
 ];
 
 const TRUST_FEATURES = [
   { icon: Shield,     title: 'Certifications vérifiées',    desc: 'Chaque producteur est audité physiquement. Bio, Fairtrade, Ecocert — tout est contrôlé.', tag: 'Sécurité' },
   { icon: DollarSign, title: 'Prix directs producteurs',    desc: 'Éliminez les 3 à 5 intermédiaires habituels. Économisez jusqu\'à 40% sur vos achats.', tag: 'Économies' },
-  { icon: Globe,      title: '45 pays, livraison mondiale', desc: 'Réseau logistique certifié couvrant les 5 continents. Délais maîtrisés, assurance incluse.', tag: 'Global' },
+  { icon: Globe,      title: 'Sourcing direct 4 continents', desc: 'Producteurs en Afrique, Asie, Amérique latine et Europe. Coordonnées GPS et lots documentés.', tag: 'Global' },
   { icon: Handshake,  title: 'Commerce équitable garanti',  desc: 'Charte éthique contraignante. Rémunération juste des producteurs, conditions de travail dignes.', tag: 'Éthique' },
 ];
 
@@ -83,7 +83,7 @@ const IMPACT_METRICS = [
   { emoji: '♻️', value: '60%',        label: 'de déchets plastique évités', color: 'text-teal-600' },
   { emoji: '🌱', value: '850 t',      label: 'de CO2 évitées',              color: 'text-brand-600' },
   { emoji: '🐝', value: '+45%',       label: 'plus de pollinisateurs protégés', color: 'text-amber-600' },
-  { emoji: '👨‍🌾', value: '12 000+',   label: 'familles de producteurs soutenues', color: 'text-purple-600' },
+  { emoji: '👨‍🌾', value: '6', label: 'coopératives partenaires en direct', color: 'text-purple-600' },
 ];
 
 const CARBON_COMPARISON = [
@@ -95,7 +95,7 @@ const CARBON_COMPARISON = [
 const COMMITMENTS_2025 = [
   'Neutralité carbone sur toutes nos opérations',
   '100% emballages recyclables ou compostables',
-  '50 000 producteurs certifiés référencés',
+  'Élargir le réseau de coopératives productrices vérifiées',
   'Programme de reforestation en Afrique et Amérique du Sud',
 ];
 
@@ -143,7 +143,7 @@ export default function Home() {
     <div className="min-h-screen bg-white overflow-x-hidden">
       <SEOHead
         title="EthiMarket - Marketplace B2B Équitable & Traçable Afrique-Europe"
-        description="Achetez en direct auprès de producteurs certifiés dans 45 pays. Cacao, café, épices, fruits secs, huiles avec traçabilité blockchain et score éthique."
+        description="Achetez en direct auprès de coopératives vérifiées. Café, cacao, épices, huiles avec traçabilité documentée, certifications contrôlées et score éthique transparent."
         jsonLd={{
           '@context': 'https://schema.org',
           '@type': 'Organization',
@@ -172,14 +172,14 @@ export default function Home() {
 
         <div className="absolute top-28 right-6 lg:right-16 z-20 hidden md:flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2.5 rounded-full text-white text-sm font-medium shadow-lg">
           <span className="w-2 h-2 bg-brand-400 rounded-full animate-pulse"></span>
-          12 000+ producteurs actifs aujourd'hui
+          Des coopératives vérifiées, des preuves publiques
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 lg:py-40">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 bg-brand-500/20 backdrop-blur-sm text-brand-200 text-xs font-semibold px-4 py-2 rounded-full border border-brand-400/30 mb-6">
               <CheckCircle className="w-3.5 h-3.5 text-brand-300" />
-              Marketplace B2B certifiée · 45 pays · Commerce équitable
+              Marketplace B2B · Traçabilité prouvée · Commerce équitable
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-[1.08] tracking-tight mb-6 text-balance">
@@ -196,7 +196,7 @@ export default function Home() {
 
             <p className="text-lg sm:text-xl text-white/75 mb-10 leading-relaxed max-w-xl">
               Connectez-vous directement aux coopératives et producteurs certifiés.
-              Achetez en gros, <strong className="text-white font-semibold">sans intermédiaire</strong>, depuis 45 pays.
+              Achetez en gros, <strong className="text-white font-semibold">sans intermédiaire</strong>, en direct des coopératives.
             </p>
 
             <form onSubmit={handleSearch} className="flex gap-2 bg-white rounded-2xl p-2 shadow-2xl mb-5 max-w-2xl">
@@ -315,7 +315,7 @@ export default function Home() {
           </div>
           <div className="mt-10 text-center">
             <Link to="/catalogue" className="btn-primary px-8 py-3.5 text-base shadow-md hover:shadow-lg">
-              Explorer les 50 000+ produits <ArrowRight className="w-4 h-4" />
+              Explorer le catalogue <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -696,7 +696,7 @@ export default function Home() {
             </Link>
           </div>
           <p className="mt-6 text-sm text-gray-400">
-            Gratuit · Sans carte bancaire · Accès immédiat à 50 000+ produits
+            Gratuit · Sans carte bancaire · Accès immédiat au catalogue tracé
           </p>
         </div>
       </section>

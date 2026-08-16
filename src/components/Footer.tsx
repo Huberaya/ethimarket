@@ -47,7 +47,7 @@ export default function Footer() {
               <span className="font-bold text-xl text-white">EthiMarket</span>
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed mb-6 max-w-xs">
-              La marketplace mondiale dédiée aux produits biologiques, éthiques et issus du commerce équitable. Connectez-vous directement aux producteurs certifiés de 45 pays.
+              La marketplace mondiale dédiée aux produits biologiques, éthiques et issus du commerce équitable. Connectez-vous directement à des coopératives productrices vérifiées, preuves à l'appui.
             </p>
 
             {/* Contact */}

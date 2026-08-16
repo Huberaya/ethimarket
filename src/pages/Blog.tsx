@@ -112,7 +112,7 @@ export default function Blog() {
           {rest.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {rest.map(article => (
-                <a key={article.id} href="#"
+                <a key={article.id} href={`/blog#${article.id}`} onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                   className="group flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                   <div className="relative overflow-hidden" style={{ height: '200px' }}>
                     {article.image_url ? (

@@ -11,6 +11,7 @@ import Contact from './pages/Contact';
 import DevenirVendeur from './pages/DevenirVendeur';
 import NotreMission from './pages/NotreMission';
 import TrustCenter from './pages/TrustCenter';
+import { Tarifs, NotreEquipe, CertificationsPage, Presse, Partenaires, CentreAide } from './pages/InstitutionalPages';
 import BuyerWorkspace from './pages/dashboard/BuyerWorkspace';
 import SupplierSourcing from './pages/dashboard/SupplierSourcing';
 import DocumentVault from './pages/dashboard/DocumentVault';
@@ -75,12 +76,12 @@ export default function App() {
         <Route path="/conditions-utilisation" element={<Legal />} />
         <Route path="/confidentialite" element={<Legal />} />
         <Route path="/cookies" element={<Legal />} />
-        <Route path="/notre-equipe" element={<ComingSoon />} />
-        <Route path="/certifications" element={<ComingSoon />} />
-        <Route path="/presse" element={<ComingSoon />} />
-        <Route path="/partenaires" element={<ComingSoon />} />
-        <Route path="/centre-aide" element={<ComingSoon />} />
-        <Route path="/tarifs" element={<ComingSoon />} />
+        <Route path="/notre-equipe" element={<NotreEquipe />} />
+        <Route path="/certifications" element={<CertificationsPage />} />
+        <Route path="/presse" element={<Presse />} />
+        <Route path="/partenaires" element={<Partenaires />} />
+        <Route path="/centre-aide" element={<CentreAide />} />
+        <Route path="/tarifs" element={<Tarifs />} />
 
         {/* Dashboard routes (protected) */}
         <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>

@@ -426,7 +426,11 @@ export default function ProductDetail() {
 
             {/* Main CTA */}
             <div className="flex gap-3 mb-3">
-              <button className="btn-primary flex-1 py-3.5 text-base inline-flex items-center justify-center gap-2">
+              <button
+                onClick={handleContactSeller}
+                disabled={contacting}
+                className="btn-primary flex-1 py-3.5 text-base inline-flex items-center justify-center gap-2 disabled:opacity-60"
+              >
                 Commander maintenant
               </button>
               <button

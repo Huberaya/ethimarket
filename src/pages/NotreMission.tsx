@@ -9,9 +9,9 @@ import Footer from '../components/Footer';
 const TIMELINE = [
   { period: '2023',        title: 'L\'idée',          desc: "Face au constat des inégalités dans le commerce bio, un expert en environnement décide d'agir." },
   { period: 'Début 2024',  title: 'La conception',     desc: "6 mois de recherche, rencontres avec 200 producteurs et 100 acheteurs pour comprendre les besoins." },
-  { period: 'Mi-2024',     title: 'Le lancement',       desc: "Ouverture d'EthiMarket avec les 50 premiers producteurs pilotes." },
-  { period: 'Fin 2024',    title: 'La croissance',      desc: "12 000+ producteurs dans 45 pays. Les premières révolutions dans les coopératives." },
-  { period: '2025',        title: 'L\'expansion',       desc: "Nouveaux marchés (Asie, Amérique du Nord), outils IA avancés, programme reforestation." },
+  { period: 'Mi-2024',     title: 'Le lancement',       desc: "Conception de la plateforme avec des coopératives pilotes au Maroc, en Éthiopie et au Ghana." },
+  { period: 'Fin 2025',    title: 'La construction',    desc: "Développement du Trust Center, du moteur de recherche responsable et du système de vérification des certifications." },
+  { period: '2026',        title: 'Le lancement',       desc: "Ouverture publique : 12 coopératives vérifiées, preuves de certification publiées, score responsable explicable." },
 ];
 
 const VALUES = [
@@ -25,7 +25,7 @@ const VALUES = [
 const COMMITMENTS = [
   { value: '15 000',    label: 'arbres préservés' },
   { value: '850 t',     label: 'CO2 évitées' },
-  { value: '12 000+',   label: 'familles soutenues' },
+  { value: '6', label: 'coopératives pilotes sur 4 continents' },
   { value: '2,3 M',     label: 'litres d\'eau économisés' },
   { value: '45',        label: 'pays impactés' },
   { value: '100%',      label: 'certifications vérifiées' },

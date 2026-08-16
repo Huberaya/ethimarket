@@ -64,15 +64,15 @@ export default function Login() {
               Des produits bio exceptionnels, des producteurs qui les méritent
             </h2>
             <p className="text-white/60 text-lg leading-relaxed mb-10 max-w-sm">
-              Rejoignez 50 000+ acheteurs professionnels qui sourcent directement auprès de 12 000 producteurs certifiés.
+              Sourcez en direct auprès de coopératives vérifiées — chaque allégation éthique est documentée et sourcée.
             </p>
 
             {/* Stats row */}
             <div className="grid grid-cols-3 gap-5 mb-10">
               {[
                 { icon: Globe,   value: '45',      label: 'pays' },
-                { icon: Users,   value: '12 000+', label: 'producteurs' },
-                { icon: Package, value: '50 000+', label: 'produits' },
+                { icon: Users,   value: '12', label: 'coopératives vérifiées' },
+                { icon: Package, value: '13', label: 'produits tracés' },
               ].map(({ icon: Icon, value, label }) => (
                 <div key={label} className="text-center bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl py-4">
                   <Icon className="w-5 h-5 text-brand-300 mx-auto mb-2" />

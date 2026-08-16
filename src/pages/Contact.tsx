@@ -5,6 +5,7 @@ import {
   Twitter, Linkedin, Instagram, Facebook,
 } from 'lucide-react';
 import Header from '../components/Header';
+import { supabase } from '../lib/supabase';
 import Footer from '../components/Footer';
 
 const SOCIAL_ICONS = [
@@ -26,9 +27,19 @@ export default function Contact() {
     name: '', email: '', phone: '', profile: '', subject: '', message: '', consent: false,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.consent) setSent(true);
+    if (!form.consent) return;
+    // Persiste la demande (best-effort) puis confirme. Fallback : mailto.
+    try {
+      await supabase.from('contact_messages').insert({
+        name: form.name || null,
+        email: form.email || null,
+        subject: form.subject || null,
+        message: form.message || null,
+      });
+    } catch { /* la table peut ne pas exister : on garde le mailto en secours */ }
+    setSent(true);
   };
 
   const update = (field: string, value: string | boolean) =>

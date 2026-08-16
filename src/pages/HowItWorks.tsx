@@ -29,7 +29,7 @@ const FAQ_ITEMS = [
   { q: "Combien coûte l'utilisation d'EthiMarket ?", a: "Inscription gratuite. Commission de 5% uniquement sur les ventes réalisées. Pas de frais cachés." },
   { q: 'Comment sont vérifiées les certifications ?', a: "Chaque certificat est contrôlé physiquement par notre équipe et validé par les organismes certificateurs (Ecocert, Fairtrade, Rainforest Alliance)." },
   { q: 'Quels sont les délais de paiement ?', a: "Les producteurs reçoivent leur paiement 7 jours après confirmation de livraison par l'acheteur." },
-  { q: 'Puis-je vendre à l\'international ?', a: "Oui ! EthiMarket est présent dans 45 pays et gère la logistique internationale et les douanes." },
+  { q: 'Puis-je vendre à l\'international ?', a: "Oui ! EthiMarket connecte des producteurs de 4 continents à des acheteurs internationaux, avec accompagnement logistique et douanier." },
   { q: 'Comment sont sélectionnés les producteurs ?', a: "Audit physique de la ferme, vérification des certifications, test de la qualité des produits." },
   { q: 'Existe-t-il une commande minimum ?', a: "Chaque producteur fixe son propre MOQ (Minimum Order Quantity), affiché clairement sur chaque produit." },
   { q: 'Comment fonctionne l\'escrow ?', a: "L'argent de l'acheteur est bloqué chez notre partenaire Stripe jusqu'à confirmation de la livraison, protégeant les deux parties." },

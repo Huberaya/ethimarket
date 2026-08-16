@@ -160,7 +160,7 @@ export default function Register() {
           <div className="mt-auto mb-12">
             <h3 className="text-3xl font-black text-white mb-4">Rejoignez la communauté</h3>
             <p className="text-white/60 leading-relaxed">
-              Plus de 12 000 producteurs certifiés vous attendent sur la marketplace du commerce équitable.
+              Des coopératives vérifiées, des preuves publiques : la marketplace du commerce équitable qui documente ses promesses.
             </p>
             <div className="flex items-center gap-2 mt-6">
               {[...Array(5)].map((_, i) => (
@@ -168,7 +168,7 @@ export default function Register() {
                   {String.fromCharCode(65 + i)}
                 </div>
               ))}
-              <span className="text-white/60 text-sm ml-2">+12 000 membres</span>
+              <span className="text-white/60 text-sm ml-2">Réseau en croissance</span>
             </div>
           </div>
         </div>

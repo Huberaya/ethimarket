@@ -17,7 +17,7 @@ const STATS = [
 
 const BENEFITS = [
   { emoji: '💰', icon: DollarSign,  title: 'Marges décuplées',        desc: "Vendez directement, sans les 3-5 intermédiaires habituels. Gardez la valeur de votre travail." },
-  { emoji: '🌍', icon: Globe,      title: 'Marchés internationaux',   desc: "Accédez aux acheteurs de 45 pays. Notre équipe gère la logistique et les douanes." },
+  { emoji: '🌍', icon: Globe,      title: 'Marchés internationaux',   desc: "Accédez à des acheteurs professionnels internationaux. Notre équipe vous accompagne sur la logistique et les douanes." },
   { emoji: '🤖', icon: Bot,        title: 'Outils IA gratuits',       desc: "L'IA rédige vos descriptions, améliore vos photos, traduit en 12 langues automatiquement." },
   { emoji: '📸', icon: Camera,     title: 'Photos professionnelles',  desc: "Améliorez vos photos avec notre outil IA gratuit. Fond neutre, lumière parfaite en 1 clic." },
   { emoji: '📊', icon: BarChart3,  title: 'Statistiques détaillées',  desc: "Suivez vos ventes, vos vues, votre trafic. Optimisez votre boutique avec les données." },
@@ -85,7 +85,7 @@ export default function DevenirVendeur() {
         <div className="absolute inset-0 bg-gradient-to-r from-brand-950/90 to-brand-900/60" />
         <div className="relative max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-4xl sm:text-5xl font-black text-white mb-4">Vendez vos produits bio dans le monde entier</h1>
-          <p className="text-xl text-white/80 mb-8">Rejoignez 12 000+ producteurs qui ont doublé leurs revenus avec EthiMarket</p>
+          <p className="text-xl text-white/80 mb-8">Rejoignez les coopératives pionnières qui vendent en direct, sans intermédiaire</p>
           <Link to="/inscription" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-brand-600 font-bold rounded-xl hover:bg-brand-50 transition-colors shadow-lg text-sm">
             Créer ma boutique gratuitement <ArrowRight className="w-4 h-4" />
           </Link>

@@ -15,6 +15,8 @@ import {
 export interface StructuredFilters {
   query?: string;
   category_id?: string;
+  /** Slugs de catégories (liens /catalogue?category=slug) */
+  categories?: string[];
   product_types?: string[];
   materials?: string[];
   
@@ -234,6 +236,14 @@ export function passesStrictFilters(
   product: Product,
   filters: StructuredFilters
 ): boolean {
+  // 0pre. CATÉGORIE (slug) — filtre dur des liens /catalogue?category=slug
+  if (filters.categories && filters.categories.length > 0) {
+    const catSlug = normalizeText(product.categories?.slug || '');
+    const catName = normalizeText(product.categories?.name || '');
+    const wanted = filters.categories.map(c => normalizeText(c));
+    if (!wanted.some(w => catSlug === w || catSlug.includes(w) || catName.includes(w.replace(/-/g, ' ')))) return false;
+  }
+
   // 0. TYPE DE PRODUIT — filtre dur : "café bio" ne renvoie jamais du quinoa bio
   if (filters.product_types && filters.product_types.length > 0) {
     if (!filters.product_types.some(t => productMatchesType(product, t))) return false;
@@ -743,21 +753,31 @@ export async function executeIntelligentSearch(
     const { data, error } = await supabase.rpc('search_products_v2', rpcParams);
 
     if (!error && Array.isArray(data) && data.length > 0) {
-      enrichedItems = data.map(item => {
-        const prod = item as Product;
-        const { searchScore, rawScore, matchReasons, calculatedDistanceKm } = scoreProductClientSide(
-          prod,
-          mergedFilters,
-          userLocation
-        );
-        return {
-          product: prod,
-          searchScore: prod.similarity_score ? Math.round(prod.similarity_score * 100) : searchScore,
-          rawScore: prod.relevance_rank || rawScore,
-          matchReasons,
-          calculatedDistanceKm
-        };
+      // La RPC ne connaît pas toutes les facettes côté client (ex: slug de
+      // catégorie). On réapplique le filtrage strict sur ses résultats —
+      // négligeable en coût (≤ 50 lignes), garanti en cohérence.
+      const rpcRows = (data as Product[]).map(item => {
+        // La RPC ne renvoie pas la relation categories : on la réhydrate
+        // depuis le catalogue fallback quand disponible.
+        const local = fallbackList.find(f => f.id === item.id);
+        return local ? { ...item, categories: local.categories, producers: item.producers ?? local.producers } : item;
       });
+      enrichedItems = rpcRows
+        .filter(prod => passesStrictFilters(prod, mergedFilters))
+        .map(prod => {
+          const { searchScore, rawScore, matchReasons, calculatedDistanceKm } = scoreProductClientSide(
+            prod,
+            mergedFilters,
+            userLocation
+          );
+          return {
+            product: prod,
+            searchScore: prod.similarity_score ? Math.round(prod.similarity_score * 100) : searchScore,
+            rawScore: prod.relevance_rank || rawScore,
+            matchReasons,
+            calculatedDistanceKm
+          };
+        });
       engineUsed = 'postgres_rpc';
     }
   } catch (err) {
