@@ -9,6 +9,7 @@ import { supabase, type Product } from '../lib/supabase';
 
 export default function Dashboard() {
   const { user, profile, producer } = useAuth();
+  const isBuyer = profile?.role !== 'producer' && !producer;
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -29,6 +30,10 @@ export default function Dashboard() {
   const productCount = products.length;
   const totalStock = products.reduce((sum, p) => sum + (p.stock_value || 0), 0);
   const isNewProducer = productCount === 0;
+
+  if (isBuyer) {
+    return <BuyerHome firstName={firstName} today={today} />;
+  }
 
   return (
     <div>
@@ -311,6 +316,54 @@ export default function Dashboard() {
             </Link>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+
+// ============= Accueil ACHETEUR =============
+function BuyerHome({ firstName, today }: { firstName: string; today: string }) {
+  return (
+    <div>
+      <div className="mb-8">
+        <h1 className="text-2xl font-black text-gray-900">Bonjour, {firstName} 👋</h1>
+        <p className="text-sm text-gray-500 capitalize mt-1">{today}</p>
+      </div>
+
+      <div className="rounded-2xl border-2 border-emerald-200 bg-emerald-50 p-5 mb-8">
+        <p className="text-xs font-black text-emerald-700 uppercase tracking-wide">Compte acheteur</p>
+        <h2 className="text-lg font-black text-gray-900 mt-1">Bienvenue dans votre espace achats responsables</h2>
+        <p className="text-sm text-gray-600 mt-1">
+          Suivez vos fournisseurs, analysez vos produits, mesurez vos économies et votre impact —
+          la plateforme apprend de vos décisions pour affiner ses recommandations.
+        </p>
+        <div className="mt-4 flex gap-3 flex-wrap">
+          <Link to="/dashboard/mes-achats" className="btn-primary px-5 py-2.5 text-sm font-bold rounded-xl">
+            Ouvrir « Mes achats » →
+          </Link>
+          <Link to="/catalogue" className="px-5 py-2.5 text-sm font-bold rounded-xl bg-white border-2 border-gray-200 text-gray-700 hover:border-gray-300">
+            Rechercher des produits
+          </Link>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Link to="/dashboard/mes-achats?tab=suppliers" className="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-md transition-shadow">
+          <p className="text-2xl">🏭</p>
+          <h3 className="font-bold text-gray-900 text-sm mt-2">Mes fournisseurs</h3>
+          <p className="text-xs text-gray-500 mt-1">Actifs, en évaluation, à risque, suspendus — pilotez votre panel fournisseurs.</p>
+        </Link>
+        <Link to="/dashboard/mes-achats?tab=products" className="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-md transition-shadow">
+          <p className="text-2xl">📦</p>
+          <h3 className="font-bold text-gray-900 text-sm mt-2">Produits suivis</h3>
+          <p className="text-xs text-gray-500 mt-1">Approuvés, en analyse, rejetés — avec alternatives automatiques.</p>
+        </Link>
+        <Link to="/dashboard/mes-achats?tab=rules" className="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-md transition-shadow">
+          <p className="text-2xl">⚖️</p>
+          <h3 className="font-bold text-gray-900 text-sm mt-2">Mes règles</h3>
+          <p className="text-xs text-gray-500 mt-1">Prix 30% · Environnement 25% · Social 20%… définissez vos pondérations.</p>
+        </Link>
       </div>
     </div>
   );

@@ -3,21 +3,36 @@ import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard, Package, PlusCircle, Store, ShoppingCart,
   MessageSquare, Settings, Leaf, Bell, LogOut, Menu, X,
-  ChevronRight, UserCircle, ShieldCheck,
+  ChevronRight, UserCircle, ShieldCheck, TrendingUp, Factory,
+  PackageSearch, SlidersHorizontal,
 } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { supabase } from '../lib/supabase';
 
-const NAV = [
+// Menu VENDEUR (producteur)
+const PRODUCER_NAV = [
   { icon: LayoutDashboard, label: 'Vue d\'ensemble', path: '/dashboard' },
-  { icon: ShieldCheck,    label: 'Vérification',     path: '/dashboard/verification', producerOnly: true },
+  { icon: ShieldCheck,    label: 'Vérification',     path: '/dashboard/verification' },
   { icon: Package,         label: 'Mes produits',    path: '/dashboard/mes-produits' },
-  { icon: PlusCircle,      label: 'Ajouter un produit', path: '/dashboard/ajouter-produit', producerOnly: true },
+  { icon: PlusCircle,      label: 'Ajouter un produit', path: '/dashboard/ajouter-produit' },
   { icon: Store,           label: 'Ma boutique',     path: '/dashboard/ma-boutique' },
   { icon: UserCircle,      label: 'Mon profil',       path: '/dashboard/mon-profil' },
   { icon: ShoppingCart,    label: 'Commandes',        path: '/dashboard/commandes' },
   { icon: MessageSquare,   label: 'Messages',         path: '/dashboard/messages' },
   { icon: Settings,        label: 'Paramètres',       path: '/dashboard/parametres' },
+] as const;
+
+// Menu ACHETEUR — espace dédié
+const BUYER_NAV = [
+  { icon: LayoutDashboard, label: 'Vue d\'ensemble',  path: '/dashboard' },
+  { icon: TrendingUp,      label: 'Mes achats',        path: '/dashboard/mes-achats' },
+  { icon: Factory,         label: 'Mes fournisseurs',  path: '/dashboard/mes-achats?tab=suppliers' },
+  { icon: PackageSearch,   label: 'Produits suivis',   path: '/dashboard/mes-achats?tab=products' },
+  { icon: SlidersHorizontal, label: 'Mes règles',      path: '/dashboard/mes-achats?tab=rules' },
+  { icon: ShoppingCart,    label: 'Commandes',         path: '/dashboard/commandes' },
+  { icon: MessageSquare,   label: 'Messages',          path: '/dashboard/messages' },
+  { icon: UserCircle,      label: 'Mon profil',        path: '/dashboard/mon-profil' },
+  { icon: Settings,        label: 'Paramètres',        path: '/dashboard/parametres' },
 ] as const;
 
 function VerificationBadge({ producerId }: { producerId: string }) {
@@ -154,7 +169,7 @@ export default function DashboardLayout() {
 
         <nav className="flex-1 px-3 py-3 overflow-y-auto">
           <ul className="space-y-0.5">
-            {NAV.filter(item => !('producerOnly' in item) || (item as { producerOnly?: boolean }).producerOnly === !!producer).map(({ icon: Icon, label, path }) => (
+            {(profile?.role === 'producer' || producer ? PRODUCER_NAV : BUYER_NAV).map(({ icon: Icon, label, path }) => (
               <li key={path}>
                 <Link
                   to={path}

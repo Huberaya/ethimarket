@@ -11,6 +11,7 @@ import Contact from './pages/Contact';
 import DevenirVendeur from './pages/DevenirVendeur';
 import NotreMission from './pages/NotreMission';
 import TrustCenter from './pages/TrustCenter';
+import BuyerWorkspace from './pages/dashboard/BuyerWorkspace';
 import Producers from './pages/Producers';
 import ComingSoon from './pages/ComingSoon';
 import Legal from './pages/Legal';
@@ -82,6 +83,7 @@ export default function App() {
         {/* Dashboard routes (protected) */}
         <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
           <Route index element={<Dashboard />} />
+          <Route path="mes-achats" element={<BuyerWorkspace />} />
           <Route path="mes-produits" element={<MyProducts />} />
           <Route path="ajouter-produit" element={<AddProduct />} />
           <Route path="modifier-produit/:id" element={<EditProduct />} />
