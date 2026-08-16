@@ -10,14 +10,15 @@ import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import SEOHead from '../components/SEOHead';
 import { supabase, type Product, type Category, type Producer, type Article } from '../lib/supabase';
+import { useI18n } from '../lib/i18n';
 
 /* ─── Constants ────────────────────────────────────────── */
 
 const STATS = [
-  { icon: Globe,      value: '13',   unit: 'pays',        label: "d'origine des produits" },
-  { icon: Users,      value: '6',    unit: 'coopératives', label: 'productrices vérifiées' },
-  { icon: Package,    value: '13',   unit: 'produits',    label: 'tracés & documentés' },
-  { icon: TrendingUp, value: '8',    unit: 'allégations', label: 'vérifiées par organisme' },
+  { icon: Globe,      value: '13', unitKey: 'home.statCountries', labelKey: 'home.statCountriesLabel' },
+  { icon: Users,      value: '6',  unitKey: 'home.statCoops',     labelKey: 'home.statCoopsLabel' },
+  { icon: Package,    value: '13', unitKey: 'home.statProducts',  labelKey: 'home.statProductsLabel' },
+  { icon: TrendingUp, value: '8',  unitKey: 'home.statClaims',    labelKey: 'home.statClaimsLabel' },
 ];
 
 const TRUST_FEATURES = [
@@ -119,6 +120,7 @@ export default function Home() {
   const [search, setSearch]                       = useState('');
   const [heroLoaded, setHeroLoaded]               = useState(false);
   const [videoOpen, setVideoOpen]                 = useState(false);
+  const { t } = useI18n();
   const navigate = useNavigate();
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -172,48 +174,47 @@ export default function Home() {
 
         <div className="absolute top-28 right-6 lg:right-16 z-20 hidden md:flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2.5 rounded-full text-white text-sm font-medium shadow-lg">
           <span className="w-2 h-2 bg-brand-400 rounded-full animate-pulse"></span>
-          Des coopératives vérifiées, des preuves publiques
+          {t('home.heroPill')}
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 lg:py-40">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 bg-brand-500/20 backdrop-blur-sm text-brand-200 text-xs font-semibold px-4 py-2 rounded-full border border-brand-400/30 mb-6">
               <CheckCircle className="w-3.5 h-3.5 text-brand-300" />
-              Marketplace B2B · Traçabilité prouvée · Commerce équitable
+              {t('home.heroBadge')}
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-[1.08] tracking-tight mb-6 text-balance">
-              La marketplace{' '}
+              {t('home.heroTitle1')}{' '}
               <span className="relative inline-block">
-                <span className="text-brand-400">mondiale</span>
+                <span className="text-brand-400">{t('home.heroTitleHighlight1')}</span>
                 <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 280 8" fill="none" preserveAspectRatio="none">
                   <path d="M2 6 C70 2 210 2 278 6" stroke="#22c55e" strokeWidth="3" strokeLinecap="round" />
                 </svg>
               </span>{' '}
-              des produits{' '}
-              <span className="text-brand-400">bio & équitables</span>
+              {t('home.heroTitle2')}{' '}
+              <span className="text-brand-400">{t('home.heroTitleHighlight2')}</span>
             </h1>
 
             <p className="text-lg sm:text-xl text-white/75 mb-10 leading-relaxed max-w-xl">
-              Connectez-vous directement aux coopératives et producteurs certifiés.
-              Achetez en gros, <strong className="text-white font-semibold">sans intermédiaire</strong>, en direct des coopératives.
+              {t('home.heroSubtitle')}
             </p>
 
             <form onSubmit={handleSearch} className="flex gap-2 bg-white rounded-2xl p-2 shadow-2xl mb-5 max-w-2xl">
               <div className="flex-1 flex items-center gap-3 px-3">
                 <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
                 <input ref={searchRef} type="text" value={search} onChange={e => setSearch(e.target.value)}
-                  placeholder="Rechercher un produit bio : huile, café, épices..."
+                  placeholder={t('home.searchPlaceholder')}
                   className="flex-1 text-gray-800 placeholder-gray-400 bg-transparent outline-none text-base py-1" />
               </div>
               <button type="submit"
                 className="bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 shadow-sm text-sm whitespace-nowrap">
-                Rechercher <ArrowRight className="w-4 h-4" />
+                {t('common.search')} <ArrowRight className="w-4 h-4" />
               </button>
             </form>
 
             <div className="flex flex-wrap items-center gap-2 text-sm">
-              <span className="text-white/50 font-medium">Tendances :</span>
+              <span className="text-white/50 font-medium">{t('home.trends')}</span>
               {POPULAR.map(tag => (
                 <button key={tag} onClick={() => navigate(`/catalogue?q=${encodeURIComponent(tag)}`)}
                   className="text-white/70 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full text-xs font-medium transition-all border border-white/10 hover:border-white/30">
@@ -225,7 +226,7 @@ export default function Home() {
         </div>
 
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2">
-          <span className="text-white/40 text-xs">Défiler</span>
+          <span className="text-white/40 text-xs">{t('home.scroll')}</span>
           <div className="w-5 h-8 border-2 border-white/20 rounded-full flex items-start justify-center p-1">
             <div className="w-1 h-2 bg-white/50 rounded-full animate-bounce" />
           </div>
@@ -236,16 +237,16 @@ export default function Home() {
       <section className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-gray-100">
-            {STATS.map(({ icon: Icon, value, unit, label }) => (
-              <div key={label} className="flex items-center gap-4 px-8 py-8 group">
+            {STATS.map(({ icon: Icon, value, unitKey, labelKey }) => (
+              <div key={labelKey} className="flex items-center gap-4 px-8 py-8 group">
                 <div className="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center group-hover:bg-brand-100 transition-colors flex-shrink-0">
                   <Icon className="w-5 h-5 text-brand-600" />
                 </div>
                 <div>
                   <div className="text-2xl font-black text-gray-900">
-                    {value} <span className="text-brand-500 text-lg font-bold">{unit}</span>
+                    {value} <span className="text-brand-500 text-lg font-bold">{t(unitKey)}</span>
                   </div>
-                  <div className="text-sm text-gray-500 capitalize">{label}</div>
+                  <div className="text-sm text-gray-500 capitalize">{t(labelKey)}</div>
                 </div>
               </div>
             ))}
@@ -258,12 +259,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">Parcourir</p>
-              <h2 className="text-4xl font-black text-gray-900">Toutes les catégories</h2>
-              <p className="text-gray-500 mt-2 text-base">8 familles de produits bio et équitables</p>
+              <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">{t('home.browse')}</p>
+              <h2 className="text-4xl font-black text-gray-900">{t('home.allCategories')}</h2>
+              <p className="text-gray-500 mt-2 text-base">{t('home.categoriesSubtitle')}</p>
             </div>
             <Link to="/catalogue" className="hidden sm:flex items-center gap-1.5 text-brand-600 font-semibold text-sm hover:gap-2.5 transition-all">
-              Voir tout le catalogue <ArrowRight className="w-4 h-4" />
+              {t('home.seeCatalogue')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -281,7 +282,7 @@ export default function Home() {
                     <div className="absolute bottom-0 left-0 right-0 p-4">
                       <div className="text-2xl mb-1">{cat.emoji}</div>
                       <h3 className="font-bold text-white text-sm leading-tight">{cat.name}</h3>
-                      <p className="text-white/60 text-xs mt-0.5">{cat.product_count.toLocaleString('fr-FR')} produits</p>
+                      <p className="text-white/60 text-xs mt-0.5">{cat.product_count.toLocaleString('fr-FR')} {t('common.products')}</p>
                     </div>
                     <div className="absolute top-3 right-3 w-7 h-7 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                       <ChevronRight className="w-4 h-4 text-white" />
@@ -299,12 +300,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">Sélection EthiMarket</p>
-              <h2 className="text-4xl font-black text-gray-900">Produits vedettes</h2>
-              <p className="text-gray-500 mt-2">Les meilleurs produits certifiés du moment</p>
+              <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">{t('home.selection')}</p>
+              <h2 className="text-4xl font-black text-gray-900">{t('home.featuredProducts')}</h2>
+              <p className="text-gray-500 mt-2">{t('home.featuredSubtitle')}</p>
             </div>
             <Link to="/catalogue" className="hidden sm:flex items-center gap-1.5 text-brand-600 font-semibold text-sm hover:gap-2.5 transition-all">
-              Tout le catalogue <ArrowRight className="w-4 h-4" />
+              {t('home.allCatalogue')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -315,7 +316,7 @@ export default function Home() {
           </div>
           <div className="mt-10 text-center">
             <Link to="/catalogue" className="btn-primary px-8 py-3.5 text-base shadow-md hover:shadow-lg">
-              Explorer le catalogue <ArrowRight className="w-4 h-4" />
+              {t('home.exploreCatalogue')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -325,9 +326,9 @@ export default function Home() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">En vidéo</p>
-            <h2 className="text-4xl font-black text-gray-900 mb-3">Découvrez EthiMarket en 2 minutes</h2>
-            <p className="text-gray-500 text-lg">Comment nous révolutionnons le commerce bio et équitable mondial</p>
+            <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">{t('home.inVideo')}</p>
+            <h2 className="text-4xl font-black text-gray-900 mb-3">{t('home.videoTitle')}</h2>
+            <p className="text-gray-500 text-lg">{t('home.videoSubtitle')}</p>
           </div>
 
           <button onClick={() => setVideoOpen(true)}
@@ -371,10 +372,10 @@ export default function Home() {
       <section id="comment-ca-marche" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-3">Notre mission</p>
-            <h2 className="text-4xl font-black text-gray-900 mb-4">Notre démarche</h2>
+            <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-3">{t('home.ourMission')}</p>
+            <h2 className="text-4xl font-black text-gray-900 mb-4">{t('home.ourApproach')}</h2>
             <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-              Pourquoi EthiMarket existe et comment nous transformons le commerce mondial
+              {t('home.approachSubtitle')}
             </p>
           </div>
 
@@ -433,7 +434,7 @@ export default function Home() {
                 Ensemble, construisons le monde de demain :<br className="hidden sm:block" /> plus juste, plus vert, plus humain.
               </h3>
               <Link to="/inscription" className="inline-flex items-center gap-2 mt-6 px-8 py-3.5 bg-white text-brand-600 font-bold rounded-xl hover:bg-brand-50 transition-colors shadow-lg text-sm">
-                Rejoindre le mouvement <ArrowRight className="w-4 h-4" />
+                {t('home.joinMovement')} <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
@@ -444,9 +445,9 @@ export default function Home() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">Confiance & transparence</p>
-            <h2 className="text-4xl font-black text-gray-900 mb-3">Producteurs vérifiés</h2>
-            <p className="text-gray-500 text-lg">Audités sur place, certifications contrôlées, engagement éthique signé.</p>
+            <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">{t('home.trustTitle')}</p>
+            <h2 className="text-4xl font-black text-gray-900 mb-3">{t('home.verifiedProducers')}</h2>
+            <p className="text-gray-500 text-lg">{t('home.verifiedSubtitle')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             {featuredProducers.length > 0
@@ -473,7 +474,7 @@ export default function Home() {
                         ))}
                       </div>
                       <span className="text-xs font-semibold text-gray-800">{producer.rating}</span>
-                      <span className="text-xs text-gray-500">({producer.review_count} avis)</span>
+                      <span className="text-xs text-gray-500">({producer.review_count} {t('common.reviews')})</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5 mb-5">
                       {producer.certifications.slice(0, 3).map(c => (
@@ -481,9 +482,9 @@ export default function Home() {
                       ))}
                     </div>
                     <div className="flex items-center justify-between text-xs text-gray-500 border-t border-gray-100 pt-4">
-                      <span className="font-medium">{producer.product_count} produits</span>
+                      <span className="font-medium">{producer.product_count} {t('common.products')}</span>
                       <span className="flex items-center gap-1 text-brand-600 font-semibold group-hover:gap-1.5 transition-all">
-                        Voir la boutique <ArrowRight className="w-3 h-3" />
+                        {t('home.seeShop')} <ArrowRight className="w-3 h-3" />
                       </span>
                     </div>
                   </Link>
@@ -493,7 +494,7 @@ export default function Home() {
           </div>
           <div className="text-center">
             <Link to="/catalogue" className="btn-outline px-8 py-3.5 text-base">
-              Découvrir tous les producteurs <ArrowRight className="w-4 h-4" />
+              {t('home.discoverProducers')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -503,9 +504,9 @@ export default function Home() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">Impact mesuré</p>
-            <h2 className="text-4xl font-black text-gray-900 mb-3">Notre impact environnemental</h2>
-            <p className="text-gray-500 text-lg">Des chiffres réels, vérifiés, actualisés chaque mois</p>
+            <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">{t('home.impactTitle')}</p>
+            <h2 className="text-4xl font-black text-gray-900 mb-3">{t('home.impactHeading')}</h2>
+            <p className="text-gray-500 text-lg">{t('home.impactSubtitle')}</p>
           </div>
 
           {/* 6 stats grid */}
@@ -521,7 +522,7 @@ export default function Home() {
 
           {/* Graphique empreinte carbone */}
           <div className="bg-gray-50 rounded-3xl border border-gray-100 p-8 mb-16">
-            <h3 className="font-black text-gray-900 text-xl mb-8 text-center">Empreinte carbone comparée</h3>
+            <h3 className="font-black text-gray-900 text-xl mb-8 text-center">{t('home.carbonTitle')}</h3>
             <div className="space-y-6 max-w-2xl mx-auto">
               {CARBON_COMPARISON.map(({ label, co2, pct, color }) => (
                 <div key={label}>
@@ -538,7 +539,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <p className="text-center text-xs text-gray-500 mt-6">Moyenne par tonne de produit livré</p>
+            <p className="text-center text-xs text-gray-500 mt-6">{t('home.carbonNote')}</p>
           </div>
 
           {/* Engagements 2025 */}
@@ -547,7 +548,7 @@ export default function Home() {
             <div className="relative">
               <div className="flex items-center justify-center gap-2 mb-8">
                 <Target className="w-6 h-6 text-white" />
-                <h3 className="text-2xl font-black text-white">Nos engagements 2025</h3>
+                <h3 className="text-2xl font-black text-white">{t('home.commitments')}</h3>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-4 max-w-3xl mx-auto">
                 {COMMITMENTS_2025.map(commitment => (
@@ -568,10 +569,10 @@ export default function Home() {
       <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">Nos engagements</p>
-            <h2 className="text-4xl font-black text-gray-900 mb-3">Pourquoi EthiMarket ?</h2>
+            <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">{t('home.whyTitle')}</p>
+            <h2 className="text-4xl font-black text-gray-900 mb-3">{t('home.whyHeading')}</h2>
             <p className="text-gray-500 text-lg max-w-xl mx-auto">
-              Une plateforme conçue pour les professionnels exigeants qui veulent sourcer mieux.
+              {t('home.whySubtitle')}
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -614,12 +615,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12">
             <div>
-              <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">Actualités</p>
-              <h2 className="text-4xl font-black text-gray-900">Le magazine EthiMarket</h2>
-              <p className="text-gray-500 mt-2 text-base">Actualités du bio, conseils d'experts, histoires de producteurs</p>
+              <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">{t('home.news')}</p>
+              <h2 className="text-4xl font-black text-gray-900">{t('home.magazine')}</h2>
+              <p className="text-gray-500 mt-2 text-base">{t('home.magazineSubtitle')}</p>
             </div>
             <a href="#" className="hidden sm:flex items-center gap-1.5 text-brand-600 font-semibold text-sm hover:gap-2.5 transition-all">
-              Tous les articles <ArrowRight className="w-4 h-4" />
+              {t('home.allArticles')} <ArrowRight className="w-4 h-4" />
             </a>
           </div>
 
@@ -656,7 +657,7 @@ export default function Home() {
                     <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 mb-4">{article.excerpt}</p>
                     <div className="mt-auto pt-3 border-t border-gray-100">
                       <span className="flex items-center gap-1 text-xs text-brand-600 font-bold group-hover:gap-2 transition-all">
-                        Lire l'article <ArrowRight className="w-3.5 h-3.5" />
+                        {t('home.readArticle')} <ArrowRight className="w-3.5 h-3.5" />
                       </span>
                     </div>
                   </div>
@@ -671,7 +672,7 @@ export default function Home() {
 
           <div className="mt-10 text-center">
             <a href="#" className="btn-primary px-8 py-3.5 text-base shadow-md hover:shadow-lg">
-              Découvrir tous les articles <ArrowRight className="w-4 h-4" />
+              {t('home.discoverArticles')} <ArrowRight className="w-4 h-4" />
             </a>
           </div>
         </div>
@@ -680,23 +681,23 @@ export default function Home() {
       {/* ═══ 12. CTA FINAL ═══ */}
       <section className="py-24 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-4">Rejoignez-nous</p>
+          <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-4">{t('home.joinUs')}</p>
           <h2 className="text-4xl sm:text-5xl font-black text-gray-900 mb-5 text-balance">
-            Prêt à transformer votre approvisionnement ?
+            {t('home.ctaTitle')}
           </h2>
           <p className="text-xl text-gray-500 mb-10 max-w-lg mx-auto">
-            Que vous soyez producteur ou acheteur professionnel, créez votre compte en 2 minutes.
+            {t('home.ctaSubtitle')}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to="/inscription" className="btn-primary px-8 py-4 text-base shadow-lg hover:shadow-brand-500/25">
-              Créer mon compte gratuit <ArrowRight className="w-4 h-4" />
+              {t('home.ctaCreate')} <ArrowRight className="w-4 h-4" />
             </Link>
             <Link to="/catalogue" className="btn-outline px-8 py-4 text-base">
-              Explorer le catalogue
+              {t('home.ctaExplore')}
             </Link>
           </div>
           <p className="mt-6 text-sm text-gray-400">
-            Gratuit · Sans carte bancaire · Accès immédiat au catalogue tracé
+            {t('home.ctaNote')}
           </p>
         </div>
       </section>

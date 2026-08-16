@@ -68,10 +68,18 @@
   border-radius: 4px;
 }
 
-/* Lien d'évitement : invisible jusqu'au focus clavier */
+/* Lien d'évitement : invisible jusqu'au focus clavier.
+   Technique "clip" (et non left:-9999px) : neutre RTL/LTR — un offset négatif
+   à gauche étend la zone défilable en dir="rtl" et casse le rendu. */
 .skip-link {
   position: absolute;
-  left: -9999px;
+  inset-inline-start: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
   z-index: 100;
   background: #065f46;
   color: #fff;
@@ -81,8 +89,10 @@
   font-size: 14px;
 }
 .skip-link:focus {
-  left: 0;
-  top: 0;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip-path: none;
 }
 
 /* Respect de prefers-reduced-motion */
@@ -93,4 +103,22 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ══════════════ Support RTL (arabe) ══════════════ */
+/* Le layout Tailwind (flex/grid) s'inverse naturellement avec dir="rtl".
+   On corrige uniquement les cas où une direction visuelle est structurelle. */
+[dir="rtl"] .hero-underline-svg {
+  transform: scaleX(-1);
+}
+/* Les nombres et codes restent LTR en contexte RTL */
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="tel"],
+[dir="rtl"] input[type="url"] {
+  direction: ltr;
+  text-align: end;
+}
+/* Chevrons "voir plus" : ne pas inverser les icônes déjà gérées par flex */
+[dir="rtl"] .ltr-only {
+  direction: ltr;
 }

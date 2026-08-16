@@ -13,6 +13,7 @@ import {
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SEOHead from '../components/SEOHead';
+import { useI18n } from '../lib/i18n';
 import { ProductCardSkeleton } from '../components/Skeleton';
 import { supabase, type Product } from '../lib/supabase';
 import { IntelligentSearchBar } from '../components/search/IntelligentSearchBar';
@@ -40,6 +41,7 @@ const SORT_OPTIONS = [
 ];
 
 export default function Catalogue() {
+  const { t } = useI18n();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Raw data from DB
@@ -203,13 +205,13 @@ export default function Catalogue() {
           <div className="relative z-10 max-w-3xl space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold border border-emerald-400/30 backdrop-blur-sm">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Moteur de recherche multicritères & langage naturel (Zéro API externe)</span>
+              <span>{t('catalogue.badge')}</span>
             </div>
             <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
-              Trouvez exactement le produit éthique qu'il vous faut
+              {t('catalogue.title')}
             </h1>
             <p className="text-sm md:text-base text-neutral-300">
-              Tapez votre recherche en langage naturel, spécifiez vos exigences (bio, origine, salaire décent, CO2) ou demandez des alternatives comparatives.
+              {t('catalogue.subtitle')}
             </p>
 
             {/* Prominent Search Bar */}

@@ -1,29 +1,40 @@
 import { Link } from 'react-router-dom';
 import { Leaf, Twitter, Linkedin, Instagram, Facebook, Mail, Phone, MapPin } from 'lucide-react';
+import { useI18n } from '../lib/i18n';
+import LanguageSwitcher from './LanguageSwitcher';
 
-const FOOTER_LINKS = {
-  Marketplace: [
-    { label: 'Catalogue produits', href: '/catalogue' },
-    { label: 'Producteurs certifiés', href: '/producteurs' },
-    { label: 'Devenir vendeur', href: '/devenir-vendeur' },
-    { label: 'Tarifs & abonnements', href: '/tarifs' },
-    { label: 'Blog & actualités', href: '/blog' },
-  ],
-  'À propos': [
-    { label: 'Notre mission', href: '/notre-mission' },
-    { label: 'Notre équipe', href: '/notre-equipe' },
-    { label: 'Certifications', href: '/certifications' },
-    { label: 'Presse', href: '/presse' },
-    { label: 'Partenaires', href: '/partenaires' },
-  ],
-  Support: [
-    { label: 'Centre d\'aide', href: '/centre-aide' },
-    { label: 'Nous contacter', href: '/contact' },
-    { label: "Conditions d'utilisation", href: '/conditions-utilisation' },
-    { label: 'Confidentialité', href: '/confidentialite' },
-    { label: 'Cookies', href: '/cookies' },
-  ],
-};
+const FOOTER_SECTIONS = [
+  {
+    titleKey: 'footer.marketplace',
+    links: [
+      { key: 'footer.linkCatalogue', href: '/catalogue' },
+      { key: 'footer.linkProducers', href: '/producteurs' },
+      { key: 'footer.linkBecomeSeller', href: '/devenir-vendeur' },
+      { key: 'footer.linkPricing', href: '/tarifs' },
+      { key: 'footer.linkBlog', href: '/blog' },
+    ],
+  },
+  {
+    titleKey: 'footer.about',
+    links: [
+      { key: 'footer.linkMission', href: '/notre-mission' },
+      { key: 'footer.linkTeam', href: '/notre-equipe' },
+      { key: 'footer.linkCertifications', href: '/certifications' },
+      { key: 'footer.linkPress', href: '/presse' },
+      { key: 'footer.linkPartners', href: '/partenaires' },
+    ],
+  },
+  {
+    titleKey: 'footer.support',
+    links: [
+      { key: 'footer.linkHelp', href: '/centre-aide' },
+      { key: 'footer.linkContact', href: '/contact' },
+      { key: 'footer.linkTerms', href: '/conditions-utilisation' },
+      { key: 'footer.linkPrivacy', href: '/confidentialite' },
+      { key: 'footer.linkCookies', href: '/cookies' },
+    ],
+  },
+];
 
 const SOCIALS = [
   { Icon: Twitter,   label: 'Twitter' },
@@ -33,6 +44,7 @@ const SOCIALS = [
 ];
 
 export default function Footer() {
+  const { t } = useI18n();
   return (
     <footer className="bg-brand-950 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,7 +59,7 @@ export default function Footer() {
               <span className="font-bold text-xl text-white">EthiMarket</span>
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed mb-6 max-w-xs">
-              La marketplace mondiale dédiée aux produits biologiques, éthiques et issus du commerce équitable. Connectez-vous directement à des coopératives productrices vérifiées, preuves à l'appui.
+              {t('footer.tagline')}
             </p>
 
             {/* Contact */}
@@ -80,17 +92,17 @@ export default function Footer() {
           </div>
 
           {/* Links */}
-          {Object.entries(FOOTER_LINKS).map(([section, links]) => (
-            <div key={section}>
-              <h4 className="text-white font-semibold text-sm mb-4 tracking-wide">{section}</h4>
+          {FOOTER_SECTIONS.map(({ titleKey, links }) => (
+            <div key={titleKey}>
+              <h4 className="text-white font-semibold text-sm mb-4 tracking-wide">{t(titleKey)}</h4>
               <ul className="space-y-2.5">
-                {links.map(({ label, href }) => (
-                  <li key={label}>
+                {links.map(({ key, href }) => (
+                  <li key={key}>
                     <Link
                       to={href}
                       className="text-sm text-gray-400 hover:text-brand-300 transition-colors hover:translate-x-0.5 inline-block"
                     >
-                      {label}
+                      {t(key)}
                     </Link>
                   </li>
                 ))}
@@ -101,11 +113,12 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6">
-          <p className="text-sm text-gray-500">© 2024 EthiMarket SAS. Tous droits réservés.</p>
+          <p className="text-sm text-gray-500">{t('footer.rights')}</p>
           <div className="flex items-center gap-3">
+            <LanguageSwitcher variant="footer" />
             <span className="flex items-center gap-1.5 text-xs text-gray-500">
               <span className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-pulse"></span>
-              Tous systèmes opérationnels
+              {t('footer.allSystems')}
             </span>
             <span className="text-gray-700">·</span>
             <span className="text-xs text-gray-500">v2.4.1</span>

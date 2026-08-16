@@ -5,6 +5,7 @@ import SEOHead from '../components/SEOHead';
 import { supabase } from '../lib/supabase';
 import { COUNTRIES } from '../lib/countries';
 import { sanitizeProducerPayload } from '../lib/dbHelpers';
+import { useI18n } from '../lib/i18n';
 
 type Role = 'producer' | 'buyer' | 'distributor';
 
@@ -12,24 +13,24 @@ const ROLES = [
   {
     id: 'producer' as Role,
     emoji: '🌾',
-    title: 'Producteur / Coopérative',
-    desc: 'Je veux vendre mes produits bio et équitables',
+    titleKey: 'register.roleProducer',
+    descKey: 'register.roleProducerDesc',
     color: 'border-brand-400 bg-brand-50',
     dot: 'bg-brand-500',
   },
   {
     id: 'buyer' as Role,
     emoji: '🏪',
-    title: 'Acheteur professionnel',
-    desc: 'Magasin bio, restaurant gastronomique, grossiste...',
+    titleKey: 'register.roleBuyer',
+    descKey: 'register.roleBuyerDesc',
     color: 'border-blue-400 bg-blue-50',
     dot: 'bg-blue-500',
   },
   {
     id: 'distributor' as Role,
     emoji: '🏭',
-    title: 'Importateur / Distributeur',
-    desc: 'Je distribue des produits responsables à grande échelle',
+    titleKey: 'register.roleDistributor',
+    descKey: 'register.roleDistributorDesc',
     color: 'border-violet-400 bg-violet-50',
     dot: 'bg-violet-500',
   },
@@ -37,12 +38,12 @@ const ROLES = [
 
 const COUNTRIES_LIST = COUNTRIES.map(c => c.name);
 
-function pwStrength(pw: string): { label: string; color: string; pct: string } {
-  if (!pw)         return { label: '',        color: 'bg-gray-200', pct: '0%' };
-  if (pw.length < 6) return { label: 'Faible', color: 'bg-red-400',   pct: '25%' };
-  if (pw.length < 10) return { label: 'Moyen',  color: 'bg-amber-400', pct: '55%' };
-  if (!/[A-Z]/.test(pw) || !/[0-9]/.test(pw)) return { label: 'Bon', color: 'bg-blue-400', pct: '75%' };
-  return { label: 'Fort', color: 'bg-brand-500', pct: '100%' };
+function pwStrength(pw: string): { labelKey: string; color: string; pct: string } {
+  if (!pw)         return { labelKey: '',        color: 'bg-gray-200', pct: '0%' };
+  if (pw.length < 6) return { labelKey: 'register.pwWeak', color: 'bg-red-400',   pct: '25%' };
+  if (pw.length < 10) return { labelKey: 'register.pwMedium',  color: 'bg-amber-400', pct: '55%' };
+  if (!/[A-Z]/.test(pw) || !/[0-9]/.test(pw)) return { labelKey: 'register.pwGood', color: 'bg-blue-400', pct: '75%' };
+  return { labelKey: 'register.pwStrong', color: 'bg-brand-500', pct: '100%' };
 }
 
 export default function Register() {
@@ -59,6 +60,7 @@ export default function Register() {
   const [agreed,    setAgreed]    = useState(false);
   const [loading,   setLoading]   = useState(false);
   const [error,     setError]     = useState('');
+  const { t } = useI18n();
   const navigate = useNavigate();
 
   const strength = pwStrength(password);
@@ -68,8 +70,8 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPw) { setError('Les mots de passe ne correspondent pas.'); return; }
-    if (!agreed) { setError('Veuillez accepter les CGU pour continuer.'); return; }
+    if (password !== confirmPw) { setError(t('register.errPwMismatch')); return; }
+    if (!agreed) { setError(t('register.errAgree')); return; }
     setError(''); setLoading(true);
 
     const fullName = `${firstName} ${lastName}`;
@@ -80,7 +82,7 @@ export default function Register() {
 
     if (err) {
       setLoading(false);
-      setError(err.message.includes('already') ? 'Un compte existe déjà avec cet email.' : err.message);
+      setError(err.message.includes('already') ? t('register.errExists') : err.message);
       return;
     }
 
@@ -158,9 +160,9 @@ export default function Register() {
             <span className="text-white font-bold text-xl">EthiMarket</span>
           </Link>
           <div className="mt-auto mb-12">
-            <h3 className="text-3xl font-black text-white mb-4">Rejoignez la communauté</h3>
+            <h3 className="text-3xl font-black text-white mb-4">{t('register.joinTitle')}</h3>
             <p className="text-white/60 leading-relaxed">
-              Des coopératives vérifiées, des preuves publiques : la marketplace du commerce équitable qui documente ses promesses.
+              {t('register.joinSubtitle')}
             </p>
             <div className="flex items-center gap-2 mt-6">
               {[...Array(5)].map((_, i) => (
@@ -168,7 +170,7 @@ export default function Register() {
                   {String.fromCharCode(65 + i)}
                 </div>
               ))}
-              <span className="text-white/60 text-sm ml-2">Réseau en croissance</span>
+              <span className="text-white/60 text-sm ml-2">{t('register.network')}</span>
             </div>
           </div>
         </div>
@@ -187,8 +189,8 @@ export default function Register() {
 
           <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
             <div className="mb-8">
-              <h1 className="text-2xl font-black text-gray-900">Créer mon compte</h1>
-              <p className="text-gray-500 text-sm mt-1">Accès gratuit à 50 000+ produits bio certifiés</p>
+              <h1 className="text-2xl font-black text-gray-900">{t('register.title')}</h1>
+              <p className="text-gray-500 text-sm mt-1">{t('register.subtitle')}</p>
             </div>
 
             {/* Progress */}
@@ -197,14 +199,14 @@ export default function Register() {
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${step >= 1 ? 'bg-brand-500 text-white' : 'bg-gray-200 text-gray-500'}`}>
                   {step > 1 ? <Check className="w-4 h-4" /> : '1'}
                 </div>
-                <span className={`text-sm font-semibold ${step >= 1 ? 'text-brand-600' : 'text-gray-400'}`}>Votre rôle</span>
+                <span className={`text-sm font-semibold ${step >= 1 ? 'text-brand-600' : 'text-gray-400'}`}>{t('register.step1')}</span>
               </div>
               <div className={`flex-1 h-0.5 mx-1 rounded-full transition-all ${step > 1 ? 'bg-brand-500' : 'bg-gray-200'}`} />
               <div className="flex items-center gap-2">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${step >= 2 ? 'bg-brand-500 text-white' : 'bg-gray-200 text-gray-500'}`}>
                   2
                 </div>
-                <span className={`text-sm font-semibold ${step >= 2 ? 'text-brand-600' : 'text-gray-400'}`}>Vos informations</span>
+                <span className={`text-sm font-semibold ${step >= 2 ? 'text-brand-600' : 'text-gray-400'}`}>{t('register.step2')}</span>
               </div>
             </div>
 
@@ -218,15 +220,15 @@ export default function Register() {
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                   </svg>
-                  Continuer avec Google
+                  {t('login.google')}
                 </button>
 
                 <div className="relative mb-5">
                   <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
-                  <div className="relative flex justify-center"><span className="bg-white px-4 text-xs text-gray-500 font-medium">ou</span></div>
+                  <div className="relative flex justify-center"><span className="bg-white px-4 text-xs text-gray-500 font-medium">{t('register.or')}</span></div>
                 </div>
 
-                <p className="text-sm font-bold text-gray-700 mb-3">Vous êtes... <span className="text-gray-400 font-normal">(choisissez votre rôle)</span></p>
+                <p className="text-sm font-bold text-gray-700 mb-3">{t('register.youAre')} <span className="text-gray-400 font-normal">{t('register.chooseRole')}</span></p>
                 <div className="space-y-3">
                   {ROLES.map(r => (
                     <button
@@ -238,8 +240,8 @@ export default function Register() {
                     >
                       <span className="text-3xl">{r.emoji}</span>
                       <div className="flex-1">
-                        <p className="font-bold text-gray-900 text-sm">{r.title}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">{r.desc}</p>
+                        <p className="font-bold text-gray-900 text-sm">{t(r.titleKey)}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{t(r.descKey)}</p>
                       </div>
                       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
                         role === r.id ? `${r.dot} border-transparent` : 'border-gray-300'
@@ -255,7 +257,7 @@ export default function Register() {
                   onClick={() => setStep(2)}
                   className="btn-primary w-full py-3.5 mt-6 text-base disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  Continuer <ArrowRight className="w-4 h-4" />
+                  {t('common.continue')} <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             )}
@@ -271,25 +273,25 @@ export default function Register() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label htmlFor="reg-firstname" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Prénom *</label>
+                    <label htmlFor="reg-firstname" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.firstName')} *</label>
                     <input required id="reg-firstname" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="Jean" className={fieldClass} />
                   </div>
                   <div>
-                    <label htmlFor="reg-lastname" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Nom *</label>
+                    <label htmlFor="reg-lastname" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.lastName')} *</label>
                     <input required id="reg-lastname" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Dupont" className={fieldClass} />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="reg-email" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Email professionnel *</label>
+                  <label htmlFor="reg-email" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.emailPro')} *</label>
                   <input type="email" required id="reg-email" value={email} onChange={e => setEmail(e.target.value)} placeholder="vous@entreprise.com" className={fieldClass} />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Mot de passe *</label>
+                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.password')} *</label>
                   <div className="relative">
                     <input type={showPw ? 'text' : 'password'} required value={password} onChange={e => setPassword(e.target.value)}
-                      placeholder="Min. 8 caractères" className={`${fieldClass} pr-12`} />
+                      placeholder={t('register.passwordMin')} className={`${fieldClass} pr-12`} />
                     <button type="button" onClick={() => setShowPw(s => !s)}
                       className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                       {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -300,25 +302,25 @@ export default function Register() {
                       <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                         <div className={`h-full rounded-full transition-all duration-300 ${strength.color}`} style={{ width: strength.pct }} />
                       </div>
-                      <p className={`text-xs mt-1 font-semibold ${strength.color.replace('bg-', 'text-')}`}>{strength.label}</p>
+                      <p className={`text-xs mt-1 font-semibold ${strength.color.replace('bg-', 'text-')}`}>{strength.labelKey ? t(strength.labelKey) : ''}</p>
                     </div>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Confirmer le mot de passe *</label>
+                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.confirmPassword')} *</label>
                   <input type="password" required value={confirmPw} onChange={e => setConfirmPw(e.target.value)}
-                    placeholder="Répétez votre mot de passe" className={`${fieldClass} ${confirmPw && confirmPw !== password ? 'border-red-400' : ''}`} />
-                  {confirmPw && confirmPw !== password && <p className="text-xs text-red-500 mt-1">Les mots de passe ne correspondent pas</p>}
+                    placeholder={t('register.repeatPassword')} className={`${fieldClass} ${confirmPw && confirmPw !== password ? 'border-red-400' : ''}`} />
+                  {confirmPw && confirmPw !== password && <p className="text-xs text-red-500 mt-1">{t('register.pwMismatch')}</p>}
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label htmlFor="reg-phone" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Téléphone</label>
+                    <label htmlFor="reg-phone" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.phone')}</label>
                     <input type="tel" id="reg-phone" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+33 6 ..." className={fieldClass} />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Pays *</label>
+                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.country')} *</label>
                     <select value={country} onChange={e => setCountry(e.target.value)}
                       className={`${fieldClass} appearance-none cursor-pointer`}>
                       {COUNTRIES_LIST.map(c => <option key={c}>{c}</option>)}
@@ -330,30 +332,30 @@ export default function Register() {
                   <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)}
                     className="w-4 h-4 mt-0.5 rounded accent-brand-500 flex-shrink-0" />
                   <span className="text-sm text-gray-600 leading-relaxed">
-                    J'accepte les{' '}
-                    <a href="#" className="text-brand-600 font-semibold hover:underline">Conditions d'utilisation</a>
-                    {' '}et la{' '}
-                    <a href="#" className="text-brand-600 font-semibold hover:underline">Politique de confidentialité</a>
-                    {' '}d'EthiMarket.
+                    {t('register.agree1')}{' '}
+                    <a href="#" className="text-brand-600 font-semibold hover:underline">{t('register.agreeTerms')}</a>
+                    {' '}{t('register.agree2')}{' '}
+                    <a href="#" className="text-brand-600 font-semibold hover:underline">{t('register.agreePrivacy')}</a>
+                    {' '}{t('register.agree3')}
                   </span>
                 </label>
 
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={() => setStep(1)}
                     className="flex items-center gap-1.5 px-5 py-3 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all text-sm">
-                    <ArrowLeft className="w-4 h-4" /> Retour
+                    <ArrowLeft className="w-4 h-4" /> {t('common.back')}
                   </button>
                   <button type="submit" disabled={loading}
                     className="btn-primary flex-1 py-3.5 text-base disabled:opacity-60 disabled:cursor-not-allowed">
-                    {loading ? 'Création...' : <><span>Créer mon compte</span> <ArrowRight className="w-4 h-4" /></>}
+                    {loading ? t('register.submitting') : <><span>{t('register.submit')}</span> <ArrowRight className="w-4 h-4" /></>}
                   </button>
                 </div>
               </form>
             )}
 
             <p className="text-center text-sm text-gray-400 mt-6">
-              Déjà membre ?{' '}
-              <Link to="/connexion" className="text-brand-600 font-bold hover:underline">Se connecter</Link>
+              {t('register.member')}{' '}
+              <Link to="/connexion" className="text-brand-600 font-bold hover:underline">{t('register.login')}</Link>
             </p>
           </div>
         </div>

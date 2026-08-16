@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Leaf, ShieldCheck, User } from 'lucide-react';
 import { useAuth } from '../lib/auth';
+import { useI18n } from '../lib/i18n';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const NAV_LINKS = [
-  { label: 'Catalogue', href: '/catalogue' },
-  { label: 'Producteurs', href: '/producteurs' },
-  { label: 'Comment ça marche', href: '/comment-ca-marche' },
-  { label: 'Blog', href: '/blog' },
+  { key: 'nav.catalogue', href: '/catalogue' },
+  { key: 'nav.producers', href: '/producteurs' },
+  { key: 'nav.howItWorks', href: '/comment-ca-marche' },
+  { key: 'nav.blog', href: '/blog' },
 ];
 
 export default function Header() {
@@ -15,6 +17,7 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const { user, profile } = useAuth();
+  const { t } = useI18n();
   const isHome = location.pathname === '/';
 
   const isAdmin = profile?.is_admin === true || profile?.role === 'admin' || user?.email === 'bayahubert@yahoo.com';
@@ -55,11 +58,11 @@ export default function Header() {
 
           {/* Nav desktop */}
           <nav className="hidden lg:flex items-center gap-1">
-            {NAV_LINKS.map(({ label, href }) => {
+            {NAV_LINKS.map(({ key, href }) => {
               const isActive = location.pathname === href || (href !== '/' && location.pathname.startsWith(href));
               return (
                 <Link
-                  key={label}
+                  key={key}
                   to={href}
                   className={`px-3.5 py-2 text-sm font-medium rounded-lg transition-all ${
                     transparent
@@ -71,7 +74,7 @@ export default function Header() {
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                   }`}
                 >
-                  {label}
+                  {t(key)}
                 </Link>
               );
             })}
@@ -79,6 +82,7 @@ export default function Header() {
 
           {/* Actions desktop */}
           <div className="hidden lg:flex items-center gap-2">
+            <LanguageSwitcher variant={transparent ? 'transparent' : 'default'} />
             {user ? (
               <>
                 {isAdmin && (
@@ -87,7 +91,7 @@ export default function Header() {
                     className="flex items-center gap-1.5 px-3.5 py-2 text-sm font-bold text-amber-700 bg-amber-50 border border-amber-200 rounded-xl hover:bg-amber-100 transition-colors"
                   >
                     <ShieldCheck className="w-4 h-4 text-amber-600" />
-                    Admin
+                    {t('nav.admin')}
                   </Link>
                 )}
                 <Link
@@ -95,7 +99,7 @@ export default function Header() {
                   className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white bg-brand-500 rounded-xl hover:bg-brand-600 transition-colors shadow-sm"
                 >
                   <User className="w-4 h-4" />
-                  Mon Espace
+                  {t('nav.myspace')}
                 </Link>
               </>
             ) : (
@@ -108,39 +112,42 @@ export default function Header() {
                       : 'border-brand-500 text-brand-600 hover:bg-brand-50'
                   }`}
                 >
-                  Se connecter
+                  {t('nav.login')}
                 </Link>
                 <Link
                   to="/inscription"
                   className="px-4 py-2 text-sm font-semibold text-white bg-brand-500 rounded-xl hover:bg-brand-600 transition-colors shadow-sm"
                 >
-                  S'inscrire
+                  {t('nav.register')}
                 </Link>
               </>
             )}
           </div>
 
           {/* Mobile toggle */}
-          <button
-            className={`lg:hidden p-2 rounded-lg transition-colors ${
-              transparent ? 'text-white hover:bg-white/10' : 'text-gray-700 hover:bg-gray-100'
-            }`}
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Menu"
-          >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          <div className="lg:hidden flex items-center gap-1">
+            <LanguageSwitcher variant={transparent ? 'transparent' : 'default'} />
+            <button
+              className={`p-2 rounded-lg transition-colors ${
+                transparent ? 'text-white hover:bg-white/10' : 'text-gray-700 hover:bg-gray-100'
+              }`}
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label={t('nav.menu')}
+            >
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Mobile menu */}
       <div className={`lg:hidden overflow-hidden transition-all duration-300 ${mobileOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
         <div className="bg-white border-t border-gray-100 px-4 py-4 space-y-1.5 shadow-lg">
-          {NAV_LINKS.map(({ label, href }) => {
+          {NAV_LINKS.map(({ key, href }) => {
             const isActive = location.pathname === href || (href !== '/' && location.pathname.startsWith(href));
             return (
               <Link
-                key={label}
+                key={key}
                 to={href}
                 className={`flex items-center gap-2 px-3 py-3 text-sm rounded-xl transition-colors min-h-[44px] ${
                   isActive
@@ -148,7 +155,7 @@ export default function Header() {
                     : 'font-medium text-gray-700 hover:text-brand-600 hover:bg-brand-50/50'
                 }`}
               >
-                {label}
+                {t(key)}
               </Link>
             );
           })}
@@ -157,20 +164,20 @@ export default function Header() {
               <>
                 {isAdmin && (
                   <Link to="/admin" className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold text-amber-800 bg-amber-50 border border-amber-200 rounded-xl">
-                    <ShieldCheck className="w-4 h-4 text-amber-600" /> Administration
+                    <ShieldCheck className="w-4 h-4 text-amber-600" /> {t('nav.administration')}
                   </Link>
                 )}
                 <Link to="/dashboard" className="w-full text-center px-4 py-2.5 text-sm font-semibold text-white bg-brand-500 rounded-xl hover:bg-brand-600 transition-colors">
-                  Mon Espace
+                  {t('nav.myspace')}
                 </Link>
               </>
             ) : (
               <div className="flex gap-2">
                 <Link to="/connexion" className="flex-1 text-center px-4 py-2.5 text-sm font-semibold text-brand-600 border-2 border-brand-500 rounded-xl hover:bg-brand-50 transition-colors">
-                  Se connecter
+                  {t('nav.login')}
                 </Link>
                 <Link to="/inscription" className="flex-1 text-center px-4 py-2.5 text-sm font-semibold text-white bg-brand-500 rounded-xl hover:bg-brand-600 transition-colors">
-                  S'inscrire
+                  {t('nav.register')}
                 </Link>
               </div>
             )}

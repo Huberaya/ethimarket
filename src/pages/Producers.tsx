@@ -6,13 +6,17 @@ import Footer from '../components/Footer';
 import { LeafletMap } from '../components/LeafletMap';
 import { supabase, type Producer } from '../lib/supabase';
 import { COUNTRIES } from '../lib/countries';
+import { useI18n } from '../lib/i18n';
+
+const ALL_COUNTRIES = '__ALL__';
 
 export default function Producers() {
+  const { t } = useI18n();
   const [producers, setProducers] = useState<Producer[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<'grid' | 'map'>('grid');
-  const [countryFilter, setCountryFilter] = useState('Tous les pays');
+  const [countryFilter, setCountryFilter] = useState(ALL_COUNTRIES);
 
   useEffect(() => {
     supabase.from('producers').select('*').order('rating', { ascending: false })
@@ -33,7 +37,7 @@ export default function Producers() {
   }, []);
 
   const filtered = useMemo(() => producers.filter(p => {
-    if (countryFilter !== 'Tous les pays' && p.country !== countryFilter) return false;
+    if (countryFilter !== ALL_COUNTRIES && p.country !== countryFilter) return false;
     return p.name.toLowerCase().includes(search.toLowerCase()) ||
            p.country.toLowerCase().includes(search.toLowerCase());
   }), [producers, search, countryFilter]);
@@ -55,7 +59,7 @@ export default function Producers() {
 
   const countriesWithProducers = useMemo(() => {
     const set = new Set(producers.map(p => p.country));
-    return ['Tous les pays', ...COUNTRIES.filter(c => set.has(c.name)).map(c => c.name)];
+    return [ALL_COUNTRIES, ...COUNTRIES.filter(c => set.has(c.name)).map(c => c.name)];
   }, [producers]);
 
   return (
@@ -65,9 +69,9 @@ export default function Producers() {
       {/* HERO */}
       <section className="pt-32 pb-12 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-3">Communauté</p>
-          <h1 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4">Producteurs certifiés</h1>
-          <p className="text-lg text-gray-500">Découvrez les coopératives et producteurs vérifiés d'EthiMarket</p>
+          <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-3">{t('producers.community')}</p>
+          <h1 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4">{t('producers.title')}</h1>
+          <p className="text-lg text-gray-500">{t('producers.subtitle')}</p>
         </div>
       </section>
 
@@ -80,7 +84,7 @@ export default function Producers() {
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Rechercher un producteur ou un pays..."
+              placeholder={t('producers.searchPlaceholder')}
               className="flex-1 bg-transparent outline-none text-sm text-gray-800 placeholder-gray-400"
             />
           </div>
@@ -89,16 +93,18 @@ export default function Producers() {
             onChange={e => setCountryFilter(e.target.value)}
             className="py-3 px-4 text-sm border border-gray-200 rounded-xl bg-white outline-none cursor-pointer"
           >
-            {countriesWithProducers.map(c => <option key={c}>{c}</option>)}
+            {countriesWithProducers.map(c => (
+              <option key={c} value={c}>{c === ALL_COUNTRIES ? t('producers.allCountries') : c}</option>
+            ))}
           </select>
           <div className="flex items-center bg-gray-100 rounded-xl p-1">
             <button onClick={() => setView('grid')}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all ${view === 'grid' ? 'bg-white shadow-sm text-brand-600' : 'text-gray-400'}`}>
-              <LayoutGrid className="w-4 h-4" /> Grille
+              <LayoutGrid className="w-4 h-4" /> {t('producers.gridView')}
             </button>
             <button onClick={() => setView('map')}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all ${view === 'map' ? 'bg-white shadow-sm text-brand-600' : 'text-gray-400'}`}>
-              <MapIcon className="w-4 h-4" /> Carte
+              <MapIcon className="w-4 h-4" /> {t('producers.mapView')}
             </button>
           </div>
         </div>
@@ -114,22 +120,22 @@ export default function Producers() {
           ) : view === 'map' ? (
             <div>
               <div className="mb-4 flex items-center justify-between">
-                <p className="text-sm text-gray-500">{mapMarkers.length} producteur{mapMarkers.length > 1 ? 's' : ''} géolocalisé{mapMarkers.length > 1 ? 's' : ''}</p>
-                <p className="text-xs text-gray-500">Cliquez sur un marqueur pour voir le producteur</p>
+                <p className="text-sm text-gray-500">{mapMarkers.length} {t('producers.geolocated')}</p>
+                <p className="text-xs text-gray-500">{t('producers.clickMarker')}</p>
               </div>
               {mapMarkers.length > 0 ? (
                 <LeafletMap markers={mapMarkers} height="600px" zoom={2} />
               ) : (
                 <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
                   <MapIcon className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-                  <h3 className="font-bold text-gray-900 mb-2">Aucun producteur géolocalisé</h3>
-                  <p className="text-gray-500 text-sm max-w-sm mx-auto">Les producteurs qui ont renseigné leurs coordonnées GPS apparaîtront sur cette carte.</p>
+                  <h3 className="font-bold text-gray-900 mb-2">{t('producers.noGeo')}</h3>
+                  <p className="text-gray-500 text-sm max-w-sm mx-auto">{t('producers.noGeoDesc')}</p>
                 </div>
               )}
             </div>
           ) : filtered.length > 0 ? (
             <>
-              <p className="text-sm text-gray-500 mb-6">{filtered.length} producteur{filtered.length > 1 ? 's' : ''} trouvé{filtered.length > 1 ? 's' : ''}</p>
+              <p className="text-sm text-gray-500 mb-6">{filtered.length} {t('producers.found')}</p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map(producer => (
                   <Link key={producer.id} to={`/boutique/${producer.slug}`} className="card p-6 group">
@@ -154,7 +160,7 @@ export default function Producers() {
                         ))}
                       </div>
                       <span className="text-xs font-semibold text-gray-800">{producer.rating}</span>
-                      <span className="text-xs text-gray-500">({producer.review_count} avis)</span>
+                      <span className="text-xs text-gray-500">({producer.review_count} {t('common.reviews')})</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5 mb-5">
                       {producer.certifications.slice(0, 3).map(c => (
@@ -162,9 +168,9 @@ export default function Producers() {
                       ))}
                     </div>
                     <div className="flex items-center justify-between text-xs text-gray-500 border-t border-gray-100 pt-4">
-                      <span className="font-medium">{producer.product_count} produits</span>
+                      <span className="font-medium">{producer.product_count} {t('common.products')}</span>
                       <span className="flex items-center gap-1 text-brand-600 font-semibold group-hover:gap-1.5 transition-all">
-                        Voir la boutique <ArrowRight className="w-3 h-3" />
+                        {t('producers.seeShop')} <ArrowRight className="w-3 h-3" />
                       </span>
                     </div>
                   </Link>
@@ -173,8 +179,8 @@ export default function Producers() {
             </>
           ) : (
             <div className="text-center py-20">
-              <p className="text-gray-400 text-lg">Aucun producteur trouvé pour "{search}"</p>
-              <button onClick={() => { setSearch(''); setCountryFilter('Tous les pays'); }} className="mt-4 text-brand-600 font-semibold text-sm hover:underline">Réinitialiser la recherche</button>
+              <p className="text-gray-400 text-lg">{t('producers.notFound', { query: search })}</p>
+              <button onClick={() => { setSearch(''); setCountryFilter(ALL_COUNTRIES); }} className="mt-4 text-brand-600 font-semibold text-sm hover:underline">{t('producers.reset')}</button>
             </div>
           )}
         </div>

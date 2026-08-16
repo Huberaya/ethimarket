@@ -8,6 +8,7 @@ import {
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SEOHead from '../components/SEOHead';
+import { useI18n } from '../lib/i18n';
 
 const BUYER_STEPS = [
   { icon: UserPlus,    title: 'Inscription gratuite',       desc: "Créez votre compte acheteur en 2 minutes. Accès immédiat au catalogue complet." },
@@ -61,6 +62,7 @@ function FaqAccordion() {
 }
 
 export default function HowItWorks() {
+  const { t } = useI18n();
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <SEOHead
@@ -73,8 +75,8 @@ export default function HowItWorks() {
       <section className="relative pt-32 pb-20 overflow-hidden bg-gradient-to-br from-brand-700 via-brand-600 to-teal-500">
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }} />
         <div className="relative max-w-4xl mx-auto px-4 text-center">
-          <h1 className="text-4xl sm:text-5xl font-black text-white mb-4">Comment fonctionne EthiMarket</h1>
-          <p className="text-xl text-white/80">3 étapes simples pour transformer votre commerce</p>
+          <h1 className="text-4xl sm:text-5xl font-black text-white mb-4">{t('how.title')}</h1>
+          <p className="text-xl text-white/80">{t('how.subtitle')}</p>
         </div>
       </section>
 
@@ -82,8 +84,8 @@ export default function HowItWorks() {
       <section className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-black text-gray-900 mb-3">🛒 Pour les acheteurs professionnels</h2>
-            <p className="text-gray-500 text-lg">De la recherche à la livraison en 5 étapes</p>
+            <h2 className="text-3xl font-black text-gray-900 mb-3">{t('how.buyersTitle')}</h2>
+            <p className="text-gray-500 text-lg">{t('how.buyersSubtitle')}</p>
           </div>
           <div className="space-y-4">
             {BUYER_STEPS.map((step, i) => (
@@ -93,7 +95,7 @@ export default function HowItWorks() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-1">
-                    <span className="text-xs font-black text-brand-500">ÉTAPE {i + 1}</span>
+                    <span className="text-xs font-black text-brand-500">{t('how.step')} {i + 1}</span>
                     <h3 className="font-bold text-gray-900">{step.title}</h3>
                   </div>
                   <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
@@ -108,8 +110,8 @@ export default function HowItWorks() {
       <section className="py-24 bg-brand-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="text-3xl font-black text-gray-900 mb-3">🌾 Pour les producteurs et coopératives</h2>
-            <p className="text-gray-500 text-lg">De la création de boutique à la vente en 5 étapes</p>
+            <h2 className="text-3xl font-black text-gray-900 mb-3">{t('how.producersTitle')}</h2>
+            <p className="text-gray-500 text-lg">{t('how.producersSubtitle')}</p>
           </div>
           <div className="space-y-4">
             {PRODUCER_STEPS.map((step, i) => (
@@ -119,7 +121,7 @@ export default function HowItWorks() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-1">
-                    <span className="text-xs font-black text-brand-500">ÉTAPE {i + 1}</span>
+                    <span className="text-xs font-black text-brand-500">{t('how.step')} {i + 1}</span>
                     <h3 className="font-bold text-gray-900">{step.title}</h3>
                   </div>
                   <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
@@ -134,8 +136,8 @@ export default function HowItWorks() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">FAQ</p>
-            <h2 className="text-3xl font-black text-gray-900">Questions fréquentes</h2>
+            <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">{t('how.faq')}</p>
+            <h2 className="text-3xl font-black text-gray-900">{t('how.faqTitle')}</h2>
           </div>
           <FaqAccordion />
         </div>
@@ -144,13 +146,13 @@ export default function HowItWorks() {
       {/* CTA */}
       <section className="py-20 bg-gradient-to-r from-brand-600 to-teal-500">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-black text-white mb-8">Prêt à révolutionner votre commerce ?</h2>
+          <h2 className="text-3xl font-black text-white mb-8">{t('how.ctaTitle')}</h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to="/inscription" className="px-8 py-3.5 bg-white text-brand-600 font-bold rounded-xl hover:bg-brand-50 transition-colors shadow-lg text-sm inline-flex items-center gap-2">
-              Créer un compte gratuit <ArrowRight className="w-4 h-4" />
+              {t('how.ctaCreate')} <ArrowRight className="w-4 h-4" />
             </Link>
             <Link to="/catalogue" className="px-8 py-3.5 bg-white/10 backdrop-blur-sm text-white font-bold rounded-xl border border-white/30 hover:bg-white/20 transition-colors text-sm inline-flex items-center gap-2">
-              Voir le catalogue <ArrowRight className="w-4 h-4" />
+              {t('how.ctaCatalogue')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>

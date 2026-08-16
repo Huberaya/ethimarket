@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Leaf, ArrowRight, Globe, Users, Package } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import { supabase } from '../lib/supabase';
+import { useI18n } from '../lib/i18n';
 
 const HERO_TESTIMONIALS = [
   { quote: "EthiMarket a transformé notre approvisionnement.", name: "M. Dubois", role: "Directeur achats, Naturalia" },
@@ -16,6 +17,7 @@ export default function Login() {
   const [remember, setRemember] = useState(false);
   const [loading,  setLoading]  = useState(false);
   const [error,    setError]    = useState('');
+  const { t } = useI18n();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,7 +26,7 @@ export default function Login() {
     setLoading(true);
     const { error: err } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-    if (err) setError('Email ou mot de passe incorrect. Vérifiez vos identifiants.');
+    if (err) setError(t('login.error'));
     else navigate('/dashboard');
   };
 
@@ -58,21 +60,21 @@ export default function Login() {
           {/* Center content */}
           <div className="mb-auto mt-16">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white/70 text-xs font-semibold px-3 py-1.5 rounded-full border border-white/20 mb-6">
-              Commerce équitable · Certifié · Mondial
+              {t('login.badge')}
             </div>
             <h2 className="text-4xl font-black text-white leading-tight mb-5">
-              Des produits bio exceptionnels, des producteurs qui les méritent
+              {t('login.heroTitle')}
             </h2>
             <p className="text-white/60 text-lg leading-relaxed mb-10 max-w-sm">
-              Sourcez en direct auprès de coopératives vérifiées — chaque allégation éthique est documentée et sourcée.
+              {t('login.heroSubtitle')}
             </p>
 
             {/* Stats row */}
             <div className="grid grid-cols-3 gap-5 mb-10">
               {[
-                { icon: Globe,   value: '45',      label: 'pays' },
-                { icon: Users,   value: '12', label: 'coopératives vérifiées' },
-                { icon: Package, value: '13', label: 'produits tracés' },
+                { icon: Globe,   value: '45', label: t('login.statCountries') },
+                { icon: Users,   value: '12', label: t('login.statCoops') },
+                { icon: Package, value: '13', label: t('login.statProducts') },
               ].map(({ icon: Icon, value, label }) => (
                 <div key={label} className="text-center bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl py-4">
                   <Icon className="w-5 h-5 text-brand-300 mx-auto mb-2" />
@@ -113,8 +115,8 @@ export default function Login() {
           </Link>
 
           <div className="mb-8">
-            <h1 className="text-3xl font-black text-gray-900">Bon retour 👋</h1>
-            <p className="text-gray-500 mt-1.5">Connectez-vous à votre espace professionnel</p>
+            <h1 className="text-3xl font-black text-gray-900">{t('login.welcome')}</h1>
+            <p className="text-gray-500 mt-1.5">{t('login.subtitle')}</p>
           </div>
 
           {/* Google */}
@@ -125,12 +127,12 @@ export default function Login() {
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            Continuer avec Google
+            {t('login.google')}
           </button>
 
           <div className="relative mb-5">
             <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
-            <div className="relative flex justify-center"><span className="bg-white px-4 text-xs text-gray-500 font-medium">ou avec votre email</span></div>
+            <div className="relative flex justify-center"><span className="bg-white px-4 text-xs text-gray-500 font-medium">{t('login.orEmail')}</span></div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -142,7 +144,7 @@ export default function Login() {
             )}
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Adresse email</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t('login.email')}</label>
               <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
                 placeholder="vous@entreprise.com"
                 className="w-full px-4 py-3 text-sm border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-brand-500 outline-none transition-colors bg-gray-50 focus:bg-white" />
@@ -150,8 +152,8 @@ export default function Login() {
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-sm font-semibold text-gray-700">Mot de passe</label>
-                <a href="#" className="text-xs text-brand-600 hover:text-brand-700 font-semibold hover:underline">Mot de passe oublié ?</a>
+                <label className="text-sm font-semibold text-gray-700">{t('login.password')}</label>
+                <a href="#" className="text-xs text-brand-600 hover:text-brand-700 font-semibold hover:underline">{t('login.forgot')}</a>
               </div>
               <div className="relative">
                 <input type={showPw ? 'text' : 'password'} required value={password} onChange={e => setPassword(e.target.value)}
@@ -167,7 +169,7 @@ export default function Login() {
             <label className="flex items-center gap-2.5 cursor-pointer select-none">
               <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)}
                 className="w-4 h-4 rounded accent-brand-500" />
-              <span className="text-sm text-gray-600">Se souvenir de moi pendant 30 jours</span>
+              <span className="text-sm text-gray-600">{t('login.remember')}</span>
             </label>
 
             <button type="submit" disabled={loading}
@@ -178,18 +180,18 @@ export default function Login() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                   </svg>
-                  Connexion...
+                  {t('login.submitting')}
                 </>
               ) : (
-                <>Se connecter <ArrowRight className="w-4 h-4" /></>
+                <>{t('login.submit')} <ArrowRight className="w-4 h-4" /></>
               )}
             </button>
           </form>
 
           <p className="text-center text-sm text-gray-500 mt-7">
-            Pas encore de compte ?{' '}
+            {t('login.noAccount')}{' '}
             <Link to="/inscription" className="text-brand-600 font-bold hover:text-brand-700 hover:underline">
-              Créer un compte gratuit
+              {t('login.createAccount')}
             </Link>
           </p>
         </div>
