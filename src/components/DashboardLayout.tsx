@@ -17,7 +17,7 @@ const PRODUCER_NAV = [
   { icon: PlusCircle,      label: 'Ajouter un produit', path: '/dashboard/ajouter-produit' },
   { icon: Store,           label: 'Ma boutique',     path: '/dashboard/ma-boutique' },
   { icon: UserCircle,      label: 'Mon profil',       path: '/dashboard/mon-profil' },
-  { icon: ShoppingCart,    label: 'Commandes',        path: '/dashboard/commandes' },
+  { icon: ShoppingCart,    label: 'Devis & commandes', path: '/dashboard/commandes' },
   { icon: MessageSquare,   label: 'Messages',         path: '/dashboard/messages' },
   { icon: Settings,        label: 'Paramètres',       path: '/dashboard/parametres' },
 ] as const;
@@ -31,7 +31,7 @@ const BUYER_NAV = [
   { icon: SlidersHorizontal, label: 'Mes règles',      path: '/dashboard/mes-achats?tab=rules' },
   { icon: Bot,             label: 'Sourcing IA',       path: '/dashboard/sourcing' },
   { icon: Vault,           label: 'Documents',         path: '/dashboard/documents' },
-  { icon: ShoppingCart,    label: 'Commandes',         path: '/dashboard/commandes' },
+  { icon: ShoppingCart,    label: 'Devis & commandes', path: '/dashboard/commandes' },
   { icon: MessageSquare,   label: 'Messages',          path: '/dashboard/messages' },
   { icon: UserCircle,      label: 'Mon profil',        path: '/dashboard/mon-profil' },
   { icon: Settings,        label: 'Paramètres',        path: '/dashboard/parametres' },

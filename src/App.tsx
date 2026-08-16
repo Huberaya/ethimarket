@@ -16,7 +16,6 @@ import BuyerWorkspace from './pages/dashboard/BuyerWorkspace';
 import SupplierSourcing from './pages/dashboard/SupplierSourcing';
 import DocumentVault from './pages/dashboard/DocumentVault';
 import Producers from './pages/Producers';
-import ComingSoon from './pages/ComingSoon';
 import Legal from './pages/Legal';
 import NotFound from './pages/NotFound';
 import BackToTop from './components/BackToTop';
@@ -29,7 +28,8 @@ import MyProducts from './pages/dashboard/MyProducts';
 import MyShop from './pages/dashboard/MyShop';
 import MonProfil from './pages/dashboard/MonProfil';
 import Messages from './pages/dashboard/Messages';
-import { Orders, SettingsPage } from './pages/dashboard/PlaceholderPages';
+import { SettingsPage } from './pages/dashboard/PlaceholderPages';
+import QuotesPage from './pages/dashboard/QuotesPage';
 import Verification from './pages/dashboard/Verification';
 import AdminLayout from './components/AdminLayout';
 import AdminRoute from './components/AdminRoute';
@@ -94,7 +94,7 @@ export default function App() {
           <Route path="modifier-produit/:id" element={<EditProduct />} />
           <Route path="ma-boutique" element={<MyShop />} />
           <Route path="mon-profil" element={<MonProfil />} />
-          <Route path="commandes" element={<Orders />} />
+          <Route path="commandes" element={<QuotesPage />} />
           <Route path="messages" element={<Messages />} />
           <Route path="parametres" element={<SettingsPage />} />
           <Route path="verification" element={<Verification />} />

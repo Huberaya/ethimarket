@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { ShoppingCart, MessageSquare, Download, Heart, Share2, X } from 'lucide-react';
 import type { Product } from '../lib/supabase';
 
-export default function StickyActions({ product, quantity, unitPrice, isQuote }: {
-  product: Product; quantity: number; unitPrice?: number | null; isQuote?: boolean;
+export default function StickyActions({ product, quantity, unitPrice, isQuote, onOrder }: {
+  product: Product; quantity: number; unitPrice?: number | null; isQuote?: boolean; onOrder?: () => void;
 }) {
   const [favorited, setFavorited] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
@@ -21,7 +21,7 @@ export default function StickyActions({ product, quantity, unitPrice, isQuote }:
             <p className="text-lg font-black text-gray-900 truncate">{total === null ? 'Sur devis' : `${total === null ? 'Sur devis' : `${total.toLocaleString('fr-FR')} €`}`} <span className="text-sm font-medium text-gray-400">{total === null ? '' : '+ livraison'}</span></p>
           </div>
           <div className="flex gap-2">
-            <button className="btn-primary px-5 py-2.5 text-sm inline-flex items-center gap-2">
+            <button onClick={onOrder} className="btn-primary px-5 py-2.5 text-sm inline-flex items-center gap-2">
               <ShoppingCart className="w-4 h-4" /> Commander
             </button>
             <button className="btn-outline px-3.5 py-2.5 text-sm inline-flex items-center gap-2">
@@ -49,7 +49,7 @@ export default function StickyActions({ product, quantity, unitPrice, isQuote }:
           <button className="w-11 h-11 rounded-xl border-2 border-gray-200 text-gray-500 flex items-center justify-center flex-shrink-0">
             <MessageSquare className="w-5 h-5" />
           </button>
-          <button className="btn-primary flex-1 py-3 text-sm inline-flex items-center justify-center gap-2">
+          <button onClick={onOrder} className="btn-primary flex-1 py-3 text-sm inline-flex items-center justify-center gap-2">
             <ShoppingCart className="w-4 h-4" /> Commander — {total === null ? 'Sur devis' : `${total.toLocaleString('fr-FR')} €`}
           </button>
         </div>

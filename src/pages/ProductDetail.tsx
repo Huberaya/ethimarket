@@ -24,6 +24,7 @@ import StickyActions from '../components/product/StickyActions';
 import { buildPricingSchedule, priceForQuantity, resolveLogistics } from '../lib/pricingEngine';
 import TrustCenterSection from '../components/trust/TrustCenterSection';
 import ResponsibilityScoreSection from '../components/product/ResponsibilityScoreSection';
+import QuoteRequestModal from '../components/product/QuoteRequestModal';
 import {
   calculateEthiMarketScore,
   checkEUConformity,
@@ -69,6 +70,7 @@ export default function ProductDetail() {
   const [favorited, setFavorited] = useState(false);
   const [qrUrl, setQrUrl] = useState('');
   const [contacting, setContacting] = useState(false);
+  const [quoteModalOpen, setQuoteModalOpen] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -146,6 +148,15 @@ export default function ProductDetail() {
 
   // 10. Profile completion
   const profileCompletion = calculateProfileCompletion(producer);
+
+
+  const handleOrderClick = () => {
+    if (!user) {
+      navigate(`/connexion?redirect=${encodeURIComponent(location.pathname)}`);
+      return;
+    }
+    setQuoteModalOpen(true);
+  };
 
   const handleContactSeller = async () => {
     if (!user) {
@@ -444,9 +455,8 @@ export default function ProductDetail() {
             {/* Main CTA */}
             <div className="flex gap-3 mb-3">
               <button
-                onClick={handleContactSeller}
-                disabled={contacting}
-                className="btn-primary flex-1 py-3.5 text-base inline-flex items-center justify-center gap-2 disabled:opacity-60"
+                onClick={handleOrderClick}
+                className="btn-primary flex-1 py-3.5 text-base inline-flex items-center justify-center gap-2"
               >
                 Commander maintenant
               </button>
@@ -502,7 +512,20 @@ export default function ProductDetail() {
       <Footer />
 
       {/* Sticky actions */}
-      <StickyActions product={product} quantity={qty} unitPrice={qtyPricing.unitPrice} isQuote={qtyPricing.isQuote} />
+      <StickyActions product={product} quantity={qty} unitPrice={qtyPricing.unitPrice} isQuote={qtyPricing.isQuote} onOrder={handleOrderClick} />
+
+      {/* Modale de demande de devis */}
+      {user && (
+        <QuoteRequestModal
+          isOpen={quoteModalOpen}
+          onClose={() => setQuoteModalOpen(false)}
+          product={product}
+          producer={producer}
+          buyerId={user.id}
+          initialQuantity={qty}
+          unitPriceAtRequest={qtyPricing.unitPrice}
+        />
+      )}
 
       {/* Zoom modal */}
       {zoom && gallery && (
