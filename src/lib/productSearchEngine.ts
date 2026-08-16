@@ -3,6 +3,7 @@
 // Client-side fallback (< 50 ms over 5,000 items) + Supabase RPC integration
 
 import { supabase, Product } from './supabase';
+import { PRODUCT_TYPES_DICT } from './nlpSearchDictionaries';
 import {
   parseNaturalLanguageQuery,
   ParsedSearchQuery,
@@ -159,8 +160,22 @@ export function parsedQueryToFilters(
   parsed: ParsedSearchQuery,
   userLocation?: { lat: number; lng: number }
 ): StructuredFilters {
+  // Le type de produit détecté ("café", "t-shirt"…) est un FILTRE DUR :
+  // "je cherche du café bio" ne doit JAMAIS renvoyer d'huile de coco bio.
+  const GENERIC_NOISE = new Set([
+    'produit', 'produits', 'article', 'articles', 'product', 'products',
+    'euro', 'euros', 'eur', 'dollar', 'dollars', 'usd', 'gbp',
+    'cherche', 'recherche', 'veux', 'voudrais', 'besoin', 'acheter', 'trouver',
+    'want', 'need', 'looking', 'buy', 'busco', 'quiero'
+  ]);
+  const usefulKeywords = parsed.residualKeywords.filter(
+    k => k.length > 2 && !GENERIC_NOISE.has(k.toLowerCase())
+  );
   const filters: StructuredFilters = {
-    query: parsed.residualKeywords.length > 0 ? parsed.residualKeywords.join(' ') : (parsed.productTypeCanonical || ''),
+    product_types: parsed.productTypeCanonical ? [parsed.productTypeCanonical] : undefined,
+    query: parsed.productTypeCanonical
+      ? [parsed.productTypeCanonical, ...usefulKeywords].join(' ').trim()
+      : (usefulKeywords.length > 0 ? usefulKeywords.join(' ') : ''),
     certifications: parsed.certifications.length > 0 ? parsed.certifications : undefined,
     countries: parsed.countries.length > 0 ? parsed.countries : undefined,
     manufacturingCountries: parsed.manufacturingCountry ? [parsed.manufacturingCountry] : undefined,
@@ -195,10 +210,46 @@ export function parsedQueryToFilters(
 /**
  * Evaluates whether a product strictly satisfies all hard filter criteria
  */
+/**
+ * Vérifie qu'un produit correspond au TYPE demandé ("café", "t-shirt"…)
+ * via le dictionnaire de synonymes : nom, product_type, tags ou mots-clés.
+ */
+export function productMatchesType(product: Product, canonicalType: string): boolean {
+  const dictEntry = PRODUCT_TYPES_DICT.find(
+    d => normalizeText(d.canonical) === normalizeText(canonicalType) || d.id === canonicalType
+  );
+  const synonyms = dictEntry ? dictEntry.synonyms.map(normalizeText) : [normalizeText(canonicalType)];
+  const haystacks = [
+    normalizeText(product.name || ''),
+    normalizeText(product.product_type || ''),
+    ...(product.category_tags || []).map(t => normalizeText(t)),
+    ...(product.keywords || []).map(k => normalizeText(k)),
+  ];
+  return synonyms.some(syn =>
+    haystacks.some(h => h === syn || h.includes(syn) || new RegExp(`(^|[^a-z0-9])${syn.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^a-z0-9]|$)`).test(h))
+  );
+}
+
 export function passesStrictFilters(
   product: Product,
   filters: StructuredFilters
 ): boolean {
+  // 0. TYPE DE PRODUIT — filtre dur : "café bio" ne renvoie jamais du quinoa bio
+  if (filters.product_types && filters.product_types.length > 0) {
+    if (!filters.product_types.some(t => productMatchesType(product, t))) return false;
+  }
+
+  // 0bis. MATIÈRES — si demandées explicitement ("coton"), le produit doit matcher
+  if (filters.materials && filters.materials.length > 0) {
+    const inText = normalizeText(`${product.name || ''} ${product.description || ''} ${product.short_description || ''}`);
+    const prodMaterials = ((product.attributes as Record<string, unknown> | null | undefined)?.materials as string[] | undefined || []).map(m => normalizeText(m));
+    const allMatch = filters.materials.every(m => {
+      const nm = normalizeText(m);
+      return inText.includes(nm) || prodMaterials.some(pm => pm.includes(nm));
+    });
+    if (!allMatch) return false;
+  }
+
   // 1. Price bounds
   if (filters.minPrice !== undefined && product.price < filters.minPrice) return false;
   if (filters.maxPrice !== undefined && product.price > filters.maxPrice) return false;

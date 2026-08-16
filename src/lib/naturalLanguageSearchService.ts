@@ -1,4 +1,5 @@
 import { parseQueryZeroApi as parseQueryV2Local } from './search/zeroApiParser';
+import { parseQuerySmart, detectLlmConfig } from './search/llmParser';
 // src/lib/naturalLanguageSearchService.ts
 // Multi-layered Natural Language Search Parser for EthiMarket
 // Layer 1: In-house Zero-API pure TypeScript parser (< 5 ms, 100% offline, multilingual FR/EN/ES)
@@ -104,7 +105,7 @@ export interface ParsedSearchQuery {
   extractedKeywords: string[];
   residualKeywords: string[];
   confidence: number;
-  layerUsed?: 'layer1_zero_api' | 'layer2_local_fused';
+  layerUsed?: 'layer1_zero_api' | 'layer2_local_fused' | 'layer3_free_llm_fused';
 }
 
 /**
@@ -579,13 +580,27 @@ export async function parseNaturalLanguageQueryWithFallback(
     return layer1Result;
   }
 
+  // Couche 3 (optionnelle, IA GRATUITE) : Groq / Gemini free tier / Ollama local.
+  // Active uniquement si une cle gratuite est configuree (VITE_GROQ_API_KEY,
+  // VITE_GEMINI_API_KEY ou VITE_OLLAMA_URL). Timeout 2,5 s puis degradation
+  // transparente : sans cle ou en cas d'echec, les couches 1+2 locales suffisent.
+  let llmParsed: import('./search/types').ParsedQueryV2 | null = null;
+  try {
+    if (detectLlmConfig().provider !== 'none') {
+      llmParsed = await parseQuerySmart(rawQuery);
+    }
+  } catch { /* degradation silencieuse */ }
+
   // Couche 2 : moteur semantique LOCAL (src/lib/search/zeroApiParser) — 100% gratuit,
   // zero reseau, zero LLM. Il complete les facettes que la couche 1 ne couvre pas
   // (fournisseur, delai, emballage, score de confiance, priorites de classement,
   // pays matieres premieres) et fusionne. Les valeurs numeriques de la couche 1
   // gardent strictement la priorite (determinisme).
   try {
-    const v2 = parseQueryV2Local(rawQuery);
+    const v2Base = parseQueryV2Local(rawQuery);
+    // Si l'IA gratuite a repondu, ses resultats sont deja fusionnes avec le
+    // parse local par parseQuerySmart (le local garde priorite numerique).
+    const v2 = llmParsed ?? v2Base;
 
     const packagingFromV2: PackagingType[] = [];
     if (v2.flags.plasticFreePackaging) packagingFromV2.push('plastic_free');
@@ -635,7 +650,7 @@ export async function parseNaturalLanguageQueryWithFallback(
       productType: layer1Result.productType || v2.productType,
       productTypeCanonical: layer1Result.productTypeCanonical || v2.productType,
       confidence: Math.max(layer1Result.confidence, v2.confidence),
-      layerUsed: 'layer2_local_fused'
+      layerUsed: llmParsed ? 'layer3_free_llm_fused' : 'layer2_local_fused'
     };
 
     return fused;
