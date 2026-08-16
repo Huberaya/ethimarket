@@ -9,10 +9,16 @@
  */
 
 import {
-  PRODUCTION_FACTORS,
-  WATER_FACTORS,
-  TRANSPORT_EMISSION_FACTORS,
-  PACKAGING_EMISSION_FACTORS,
+  PRODUCTION_FACTORS_SOURCED,
+  TRANSPORT_FACTORS_SOURCED,
+  TRANSPORT_ALIASES,
+  PACKAGING_FACTORS_SOURCED,
+  PACKAGING_ALIASES,
+  PACKAGING_MASS_RATIO,
+  WATER_FACTORS_SOURCED,
+  IMPACT_METHODOLOGY,
+} from './impactFactors';
+import {
   BIODIVERSITY_SPECIES_DENSITY,
   BIODIVERSITY_PRESERVATION_FACTORS,
   BIODIVERSITY_TREE_DENSITY,
@@ -137,74 +143,121 @@ export function calculateCarbonFootprint(
   destCountry: string = 'France',
   transportMode: string = 'maritime'
 ) {
+  // ==========================================================
+  // Méthodologie : GHG Protocol Product Standard (cradle-to-customer)
+  // Étapes comptabilisées : production agricole → transport
+  // international → emballage. Facteurs : ADEME Base Carbone® /
+  // Agribalyse 3.1, Poore & Nemecek 2018. Voir impactFactors.ts.
+  // ==========================================================
   const qty = Math.max(0.1, Number(quantity) || 1);
   const isBio = checkIfBio(producer, product);
   const category = mapProductToCategory(product?.category_id || product?.category_name || product?.name);
-  const factors = PRODUCTION_FACTORS[category] || PRODUCTION_FACTORS['spices'];
-  const productionFactor = isBio ? factors.bio : factors.conv;
-  const productionCO2 = qty * productionFactor;
+  const entry = PRODUCTION_FACTORS_SOURCED[category] || PRODUCTION_FACTORS_SOURCED['spices'];
 
+  // --- 1. PRODUCTION ---
+  // Si le producteur a fourni une empreinte spécifique (ACV produit),
+  // elle PRIME sur la moyenne sectorielle (hiérarchie GHG Protocol :
+  // données primaires > données secondaires).
+  const producerDeclaredCo2 = Number(product?.carbon_footprint_kg) || 0;
+  const usesPrimaryData = producerDeclaredCo2 > 0;
+  const conventionalPerKg = entry.conv.value;
+  const organicPerKg = conventionalPerKg * (1 - entry.organicReductionPct / 100);
+  const productionPerKg = usesPrimaryData
+    ? producerDeclaredCo2
+    : (isBio ? organicPerKg : conventionalPerKg);
+  const productionCO2 = qty * productionPerKg;
+
+  // --- 2. TRANSPORT (ADEME Base Carbone®, kg CO2e / t.km) ---
   const originCountry = String(product?.origin_country || product?.country || producer?.country || 'Éthiopie');
   const distance = getDistanceBetweenCountries(originCountry, destCountry);
+  const modeKey = TRANSPORT_ALIASES[transportMode.toLowerCase()] || 'sea';
+  const tFactor = TRANSPORT_FACTORS_SOURCED[modeKey];
+  const transportCO2 = (qty / 1000) * distance * tFactor.value;
 
-  const tFactor = TRANSPORT_EMISSION_FACTORS[transportMode.toLowerCase()] || 0.016;
-  const transportCO2 = (qty / 1000) * distance * tFactor;
-
+  // --- 3. EMBALLAGE (ADEME Base Carbone®, masse = 5% du produit) ---
   const packTypes = producer?.packaging_types || (product?.packaging_type ? [product.packaging_type] : ['Autre']);
-  const packType = Array.isArray(packTypes) ? String(packTypes[0] || 'Autre') : String(packTypes);
-  const packFactor = PACKAGING_EMISSION_FACTORS[packType] || PACKAGING_EMISSION_FACTORS['Autre'];
-  const packagingCO2 = (qty * 0.05) * packFactor;
+  const packRaw = String((Array.isArray(packTypes) ? packTypes[0] : packTypes) || 'Autre').toLowerCase();
+  const packKey = PACKAGING_ALIASES[packRaw] || 'other';
+  const pFactor = PACKAGING_FACTORS_SOURCED[packKey];
+  const packagingCO2 = qty * PACKAGING_MASS_RATIO * pFactor.value;
 
   const totalBio = productionCO2 + transportCO2 + packagingCO2;
-  const totalConventional = qty * factors.conv + transportCO2 * 1.3 + packagingCO2 * 2;
+
+  // --- Référence "conventionnel équivalent" (même transport, même
+  // emballage, production conventionnelle) — écart bio/conv honnête
+  // (Clark & Tilman 2017 : ±10% par kg), PAS un ×3-4 marketing.
+  const totalConventional = qty * conventionalPerKg + transportCO2 + packagingCO2;
   const saved = Math.max(0, totalConventional - totalBio);
 
   return {
-    production: { value: round(productionCO2), source: 'ADEME Base Carbone' },
-    transport: { value: round(transportCO2), source: 'ADEME Transport' },
-    packaging: { value: round(packagingCO2), source: 'ADEME Emballage' },
+    production: {
+      value: round(productionCO2),
+      source: usesPrimaryData
+        ? 'Donnée primaire fournie par le producteur (ACV produit)'
+        : `${entry.conv.source} (±${entry.conv.uncertaintyPct}%)`,
+    },
+    transport: { value: round(transportCO2), source: `${tFactor.source} (±${tFactor.uncertaintyPct}%)` },
+    packaging: { value: round(packagingCO2), source: `${pFactor.source} (±${pFactor.uncertaintyPct}%)` },
     total: { value: round(totalBio), unit: 'kg CO2e' },
     conventional: { value: round(totalConventional), unit: 'kg CO2e' },
     saved: { value: round(saved), unit: 'kg CO2e' },
     savedPercentage: totalConventional > 0 ? round((saved / totalConventional) * 100) : 0,
 
-    // Aliases
+    // Aliases (compatibilité UI existante)
     totalCO2e: round(totalBio),
     savedCO2e: round(saved),
-    conventionalCO2e: round(totalConventional),
-    productionCO2e: round(productionCO2),
-    transportCO2e: round(transportCO2),
-    packagingCO2e: round(packagingCO2),
-
+    co2Total: round(totalBio),
+    co2Saved: round(saved),
     inputs: {
-      category: category,
-      isBio: isBio,
-      method: String(product?.cultivation_method || product?.farming_method || 'Non renseigné'),
-      distance: distance + ' km',
-      transport: transportMode,
-      packaging: packType,
+      category,
+      isBio,
+      usesPrimaryData,
+      quantityKg: qty,
+      distanceKm: distance,
+      transportMode: modeKey,
+      productionFactorPerKg: round(productionPerKg),
+      dataSource: usesPrimaryData ? '📄 Donnée producteur (ACV)' : '📊 Moyenne sectorielle sourcée',
     },
-    methodology: 'GHG Protocol Scope 1-3 + ADEME Base Carbone 2024',
-    disclaimer: 'Calcul basé sur les facteurs d\'émission ADEME et les données déclarées par le producteur.'
+    methodology: IMPACT_METHODOLOGY.carbon.standard,
+    methodologyScope: IMPACT_METHODOLOGY.carbon.scope,
+    factorSources: IMPACT_METHODOLOGY.carbon.factorSources,
+    disclaimer: IMPACT_METHODOLOGY.carbon.disclaimer,
   };
 }
-
-/* ============================================================================
-   2. WATER FOOTPRINT
-   ============================================================================ */
 
 export function calculateWaterFootprint(
   product: DataRecord,
   producer: DataRecord,
   quantity: number
 ) {
+  // ==========================================================
+  // Méthodologie : Water Footprint Assessment (Hoekstra et al. 2011).
+  // Empreinte totale = verte (pluie) + bleue (irrigation) + grise
+  // (dilution des polluants). Facteurs : Mekonnen & Hoekstra 2011.
+  // Le bio réduit surtout l'eau GRISE (pas d'intrants de synthèse) —
+  // l'eau verte, majoritaire, dépend du climat.
+  // ==========================================================
   const qty = Math.max(0.1, Number(quantity) || 1);
   const isBio = checkIfBio(producer, product);
   const category = mapProductToCategory(product?.category_id || product?.category_name || product?.name);
-  const factors = WATER_FACTORS[category] || WATER_FACTORS['spices'];
+  const entry = WATER_FACTORS_SOURCED[category] || WATER_FACTORS_SOURCED['spices'];
 
-  const bioWater = qty * (isBio ? factors.bio : factors.conv);
-  const convWater = qty * factors.conv;
+  // Donnée primaire producteur si disponible (L/kg)
+  const producerDeclaredWater = Number(product?.water_footprint_liters) || 0;
+  const usesPrimaryData = producerDeclaredWater > 0;
+
+  const totalPerKgConv = entry.total.value;
+  const greenPerKg = totalPerKgConv * entry.greenPct / 100;
+  const bluePerKg = totalPerKgConv * entry.bluePct / 100;
+  const greyPerKgConv = totalPerKgConv * entry.greyPct / 100;
+  const greyPerKgBio = greyPerKgConv * (1 - entry.organicGreyReductionPct / 100);
+
+  const perKg = usesPrimaryData
+    ? producerDeclaredWater
+    : (isBio ? greenPerKg + bluePerKg + greyPerKgBio : totalPerKgConv);
+
+  const bioWater = qty * perKg;
+  const convWater = qty * totalPerKgConv;
   const saved = Math.max(0, convWater - bioWater);
 
   return {
@@ -213,18 +266,31 @@ export function calculateWaterFootprint(
     saved: round(saved),
     savedPercentage: convWater > 0 ? round((saved / convWater) * 100) : 0,
 
-    // Aliases
+    // Décomposition WFN (pour affichage pédagogique)
+    breakdown: {
+      greenL: round(qty * greenPerKg),
+      blueL: round(qty * bluePerKg),
+      greyL: round(qty * (isBio ? greyPerKgBio : greyPerKgConv)),
+    },
+
+    // Aliases (compatibilité UI existante)
     bioWaterL: round(bioWater),
     conventionalWaterL: round(convWater),
     savedWaterL: round(saved),
 
     inputs: {
-      category: category,
-      isBio: isBio,
+      category,
+      isBio,
+      usesPrimaryData,
       quantityKg: qty,
+      factorPerKg: round(perKg),
+      factorSource: usesPrimaryData ? 'Donnée producteur' : `${entry.total.source} (±${entry.total.uncertaintyPct}%)`,
+      dataSource: usesPrimaryData ? '📄 Donnée producteur' : '📊 Water Footprint Network',
     },
-    methodology: 'Water Footprint Network (Hoekstra et al., 2011)',
-    disclaimer: 'Estimation basée sur les moyennes sectorielles par type de culture.'
+    methodology: IMPACT_METHODOLOGY.water.standard,
+    methodologyScope: IMPACT_METHODOLOGY.water.scope,
+    factorSources: IMPACT_METHODOLOGY.water.factorSources,
+    disclaimer: IMPACT_METHODOLOGY.water.disclaimer,
   };
 }
 

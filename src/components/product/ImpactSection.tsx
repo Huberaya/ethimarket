@@ -60,18 +60,34 @@ export default function ImpactSection({
           color="emerald"
         >
           <ImpactRow
-            label="CO2 économisé"
-            value={`${carbon.savedCO2e.toLocaleString('fr-FR')} kg CO2e`}
-            sourceBadge={producerSourceBadge}
-            subtext="Calcul Scope 1-3 vs production conventionnelle"
+            label="Empreinte carbone de la commande"
+            value={`${carbon.totalCO2e.toLocaleString('fr-FR')} kg CO2e`}
+            sourceBadge={carbon.inputs?.dataSource ?? producerSourceBadge}
+            subtext={`Production ${carbon.production.value.toLocaleString('fr-FR')} + transport ${carbon.transport.value.toLocaleString('fr-FR')} + emballage ${carbon.packaging.value.toLocaleString('fr-FR')} kg — ${carbon.methodologyScope ?? 'cradle-to-customer'}`}
             methodology={carbon.methodology}
             icon={Sprout}
           />
           <ImpactRow
-            label="Eau économisée"
+            label="CO2 évité vs conventionnel"
+            value={`${carbon.savedCO2e.toLocaleString('fr-FR')} kg CO2e (−${carbon.savedPercentage}%)`}
+            sourceBadge="📊 Clark & Tilman 2017"
+            subtext="Écart bio/conventionnel par kg issu des méta-analyses scientifiques — même transport, même emballage"
+            methodology={carbon.methodology}
+            icon={Sprout}
+          />
+          <ImpactRow
+            label="Empreinte eau (verte + bleue + grise)"
+            value={`${water.bioWaterL.toLocaleString('fr-FR')} Litres`}
+            sourceBadge={water.inputs?.dataSource ?? '📊 Water Footprint Network'}
+            subtext={water.breakdown ? `Verte (pluie) ${water.breakdown.greenL.toLocaleString('fr-FR')} L · bleue (irrigation) ${water.breakdown.blueL.toLocaleString('fr-FR')} L · grise (dilution) ${water.breakdown.greyL.toLocaleString('fr-FR')} L` : 'Mekonnen & Hoekstra 2011'}
+            methodology={water.methodology}
+            icon={Droplets}
+          />
+          <ImpactRow
+            label="Eau grise évitée (bio)"
             value={`${water.savedWaterL.toLocaleString('fr-FR')} Litres`}
-            sourceBadge="📈 Estimation sectorielle"
-            subtext="Volume préservé grâce au mode de culture"
+            sourceBadge="📊 WFN — Hoekstra 2011"
+            subtext="Le bio réduit l'eau grise (dilution des intrants de synthèse) — l'eau de pluie dépend du climat, pas du label"
             methodology={water.methodology}
             icon={Droplets}
           />
