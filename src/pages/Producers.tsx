@@ -18,9 +18,15 @@ export default function Producers() {
     supabase.from('producers').select('*').order('rating', { ascending: false })
       .then(({ data }) => {
         if (data) {
-          // Filter producers verified/approved by Bureau Veritas or fallback
-          const approved = data.filter(p => !p.verification_status || p.verification_status === 'approved');
-          setProducers(approved);
+          // Visibles publiquement : approuvés Bureau Veritas, OU vérifiés (flag historique),
+          // OU sans statut. Seuls les profils explicitement rejetés/en cours restent masqués
+          // s'ils ne sont pas déjà vérifiés.
+          const visible = data.filter(p =>
+            p.verified === true ||
+            !p.verification_status ||
+            p.verification_status === 'approved'
+          );
+          setProducers(visible);
         }
         setLoading(false);
       });

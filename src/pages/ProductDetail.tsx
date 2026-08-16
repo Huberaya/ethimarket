@@ -71,12 +71,20 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (!id) return;
-    Promise.all([
-      supabase.from('products').select('*, producers(*), categories(*)').eq('id', id).maybeSingle(),
-      supabase.from('reviews').select('*').eq('product_id', id).order('created_at', { ascending: false }),
-    ]).then(([{ data: prod }, { data: rev }]) => {
-      if (prod) { setProduct(prod as Product & { producers?: Producer }); setQty((prod as Product).moq_value); }
-      if (rev) setReviews(rev as Review[]);
+    // Le paramètre peut être un UUID (/produit/:id) OU un slug (/produits/:slug)
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    const productQuery = isUuid
+      ? supabase.from('products').select('*, producers(*), categories(*)').eq('id', id).maybeSingle()
+      : supabase.from('products').select('*, producers(*), categories(*)').eq('slug', id).maybeSingle();
+
+    productQuery.then(({ data: prod }) => {
+      if (prod) {
+        setProduct(prod as Product & { producers?: Producer });
+        setQty((prod as Product).moq_value);
+        supabase.from('reviews').select('*').eq('product_id', (prod as Product).id)
+          .order('created_at', { ascending: false })
+          .then(({ data: rev }) => { if (rev) setReviews(rev as Review[]); });
+      }
       setLoading(false);
     });
   }, [id]);
