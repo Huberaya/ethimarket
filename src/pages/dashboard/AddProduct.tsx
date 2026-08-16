@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Upload, Check, ArrowLeft, Loader2, Sprout, PackagePlus, Sparkles, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
+import ProductClaimsEditor, { DraftClaim, saveDraftClaims } from '../../components/trust/ProductClaimsEditor';
 import { supabase, type Category } from '../../lib/supabase';
 import { COUNTRIES, getCountryFlag } from '../../lib/countries';
 import { cleanPayload, toFloatOrNull, toIntOrNull, toStringOrNull, toDateOrNull } from '../../lib/dbHelpers';
@@ -41,6 +42,7 @@ export default function AddProduct() {
   const [error, setError] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [draftClaims, setDraftClaims] = useState<DraftClaim[]>([]);
 
   const [form, setForm] = useState({
     name: '',
@@ -367,7 +369,7 @@ export default function AddProduct() {
       };
 
       const payloadToInsert: Record<string, unknown> = cleanPayload(rawProductData);
-      let insertResult = await supabase.from('products').insert(payloadToInsert);
+      let insertResult = await supabase.from('products').insert(payloadToInsert).select('id').maybeSingle();
 
       let maxAttempts = 20;
       while (insertResult.error && maxAttempts > 0) {
@@ -380,7 +382,7 @@ export default function AddProduct() {
         if (match && match[1] && match[1] in payloadToInsert) {
           const missingColumn = match[1];
           delete payloadToInsert[missingColumn];
-          insertResult = await supabase.from('products').insert(payloadToInsert);
+          insertResult = await supabase.from('products').insert(payloadToInsert).select('id').maybeSingle();
           maxAttempts--;
         } else {
           break;
@@ -389,6 +391,15 @@ export default function AddProduct() {
 
       if (insertResult.error) {
         throw new Error('Erreur lors de la sauvegarde du produit: ' + insertResult.error.message);
+      }
+
+      // Enregistrer les allégations Trust Center (statuts calculés par le moteur)
+      const newProductId = (insertResult.data as { id?: string } | null)?.id;
+      if (newProductId && draftClaims.length > 0) {
+        const claimsErr = await saveDraftClaims(newProductId, draftClaims);
+        if (claimsErr) {
+          console.warn('[TrustCenter] Erreur enregistrement des allégations:', claimsErr);
+        }
       }
 
       navigate('/dashboard/mes-produits?success=1');
@@ -820,6 +831,9 @@ export default function AddProduct() {
             </div>
           </div>
 
+
+          {/* Allégations Trust Center avec preuves */}
+          <ProductClaimsEditor claims={draftClaims} onChange={setDraftClaims} />
 
           {/* Impact & Ethique — les 17 facettes du moteur intelligent */}
           <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-5">

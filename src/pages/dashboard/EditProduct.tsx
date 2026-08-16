@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Upload, Check, ArrowLeft, Loader2, Save } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { supabase, type Category, type Product } from '../../lib/supabase';
+import ProductClaimsEditor, { DraftClaim, saveDraftClaims } from '../../components/trust/ProductClaimsEditor';
 
 const COUNTRIES = [
   'France', 'Belgique', 'Suisse', 'Canada', 'Maroc', 'Éthiopie', 'Iran', 'Madagascar',
@@ -32,6 +33,8 @@ export default function EditProduct() {
   const [error, setError] = useState('');
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [existingClaims, setExistingClaims] = useState<{ id: string; claim_label: string; verification_status: string }[]>([]);
+  const [newClaims, setNewClaims] = useState<DraftClaim[]>([]);
 
   const [form, setForm] = useState({
     name: '', short_description: '', description: '',
@@ -89,6 +92,13 @@ export default function EditProduct() {
             packaging_types: ((p as Record<string, unknown>).packaging_types as string[]) ?? [],
           });
           setImagePreview(p.image_url ?? null);
+          supabase.from('product_claims')
+            .select('id, claim_label, verification_status')
+            .eq('product_id', p.id)
+            .order('created_at')
+            .then(({ data: claimRows }) => {
+              if (claimRows) setExistingClaims(claimRows);
+            });
         }
         setLoading(false);
       });
@@ -169,8 +179,19 @@ export default function EditProduct() {
       packaging_types: form.packaging_types,
     }).eq('id', product.id).eq('user_id', user.id);
 
-    if (updateErr) setError(updateErr.message);
-    else navigate('/dashboard/mes-produits?success=2');
+    if (updateErr) {
+      setError(updateErr.message);
+      setSaving(false);
+      return;
+    }
+
+    // Enregistrer les nouvelles allégations Trust Center
+    if (newClaims.length > 0) {
+      const claimsErr = await saveDraftClaims(product.id, newClaims);
+      if (claimsErr) console.warn('[TrustCenter] Erreur enregistrement des allégations:', claimsErr);
+    }
+
+    navigate('/dashboard/mes-produits?success=2');
     setSaving(false);
   };
 
@@ -305,6 +326,40 @@ export default function EditProduct() {
           </div>
         </div>
 
+
+        {/* Allégations Trust Center déjà déclarées */}
+        {existingClaims.length > 0 && (
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-3">
+            <h3 className="font-bold text-gray-900 text-sm">🛡️ Allégations déjà déclarées</h3>
+            <p className="text-xs text-gray-500">
+              Statut calculé par EthiMarket à partir des preuves. Pour joindre un certificat à une
+              allégation existante, contactez l'équipe ou déposez le document dans votre espace vérification.
+            </p>
+            <ul className="space-y-1.5">
+              {existingClaims.map(c => (
+                <li key={c.id} className="flex items-center justify-between gap-3 bg-gray-50 rounded-lg px-3 py-2 text-sm">
+                  <span className="font-medium text-gray-800">{c.claim_label}</span>
+                  <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
+                    c.verification_status === 'verified' ? 'bg-emerald-100 text-emerald-800'
+                    : c.verification_status === 'pending_verification' ? 'bg-blue-100 text-blue-800'
+                    : c.verification_status === 'expired' ? 'bg-orange-100 text-orange-800'
+                    : c.verification_status === 'contradicted' ? 'bg-red-100 text-red-800'
+                    : 'bg-amber-100 text-amber-800'
+                  }`}>
+                    {c.verification_status === 'verified' ? '✅ Certifié'
+                      : c.verification_status === 'pending_verification' ? '🕓 Vérification en cours'
+                      : c.verification_status === 'expired' ? '⌛ Expirée'
+                      : c.verification_status === 'contradicted' ? '❌ Non confirmée'
+                      : '⚠️ Déclaration fournisseur'}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Nouvelles allégations */}
+        <ProductClaimsEditor claims={newClaims} onChange={setNewClaims} />
 
         {/* Impact & Éthique — facettes du moteur intelligent */}
         <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
