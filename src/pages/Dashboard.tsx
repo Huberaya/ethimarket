@@ -224,7 +224,7 @@ export default function Dashboard() {
             </div>
             <p className="text-2xl font-black text-gray-900 mb-2">{value}</p>
             <div className="flex items-center gap-1">
-              <span className="text-xs font-semibold text-gray-400">{change}</span>
+              <span className="text-xs font-semibold text-gray-500">{change}</span>
             </div>
           </div>
         ))}

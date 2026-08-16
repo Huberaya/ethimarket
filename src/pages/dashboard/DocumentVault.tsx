@@ -86,7 +86,7 @@ export default function DocumentVault() {
           <>
             <Upload className="w-8 h-8 text-brand-400 mx-auto mb-2" />
             <p className="text-sm font-bold text-gray-700">Déposer des documents</p>
-            <p className="text-xs text-gray-400 mt-1">Certificats · Audits · Factures · Fiches techniques · Rapports ESG · Questionnaires · Analyses · Réglementaire</p>
+            <p className="text-xs text-gray-500 mt-1">Certificats · Audits · Factures · Fiches techniques · Rapports ESG · Questionnaires · Analyses · Réglementaire</p>
           </>
         )}
       </label>
@@ -124,7 +124,7 @@ export default function DocumentVault() {
                         <CheckCircle2 className="w-3 h-3" /> Complet
                       </span>
                     )}
-                    <span className="text-xs font-black text-gray-400">{doc.analysis.completenessPct}%</span>
+                    <span className="text-xs font-black text-gray-500">{doc.analysis.completenessPct}%</span>
                     <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                   </div>
                 </button>

@@ -551,7 +551,7 @@ export default function TemplateEditorModal({
           >
             {/* Section 1 — Métadonnées */}
             <div className="space-y-4">
-              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
                 1. Métadonnées & Paramètres
               </h3>
 
@@ -652,10 +652,10 @@ export default function TemplateEditorModal({
             {/* Section 2 — Contenu */}
             <div className="space-y-4 pt-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
                   2. Contenu & Rédaction
                 </h3>
-                <span className="text-[11px] text-gray-400 font-mono">
+                <span className="text-[11px] text-gray-500 font-mono">
                   {characterCount} caractère{characterCount > 1 ? 's' : ''}
                 </span>
               </div>
@@ -667,7 +667,7 @@ export default function TemplateEditorModal({
                     <label htmlFor="template-subject" className="text-xs font-bold text-gray-700">
                       Objet du courriel
                     </label>
-                    <span className="text-[10px] text-gray-400 font-mono">{subject.length}/200 max conseillé</span>
+                    <span className="text-[10px] text-gray-500 font-mono">{subject.length}/200 max conseillé</span>
                   </div>
                   <input
                     id="template-subject"
@@ -788,7 +788,7 @@ export default function TemplateEditorModal({
             <div className="space-y-4">
               {VARIABLE_GROUPS.map((group) => (
                 <div key={group.title} className="space-y-2">
-                  <h4 className="text-[11px] font-extrabold text-gray-400 uppercase tracking-wide">
+                  <h4 className="text-[11px] font-extrabold text-gray-500 uppercase tracking-wide">
                     {group.title}
                   </h4>
                   <div className="space-y-1.5">
@@ -806,12 +806,12 @@ export default function TemplateEditorModal({
                               {item.key}
                             </span>
                           </div>
-                          <span className="text-[10px] text-gray-400 group-hover:text-brand-600 font-bold">
+                          <span className="text-[10px] text-gray-500 group-hover:text-brand-600 font-bold">
                             + Insérer
                           </span>
                         </div>
                         <p className="text-[10px] font-semibold text-gray-700 mt-0.5">{item.name}</p>
-                        <p className="text-[9px] text-gray-400 italic truncate mt-0.5">Ex: {item.example}</p>
+                        <p className="text-[9px] text-gray-500 italic truncate mt-0.5">Ex: {item.example}</p>
                       </button>
                     ))}
                   </div>

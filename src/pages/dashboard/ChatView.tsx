@@ -377,7 +377,7 @@ export function ChatView({
                   {msg.content && <p className="whitespace-pre-wrap break-words">{msg.content}</p>}
 
                   {/* Footer time & read check */}
-                  <div className={`flex items-center justify-end gap-1 text-[10px] mt-1 ${isMe ? 'text-brand-100' : 'text-gray-400'}`}>
+                  <div className={`flex items-center justify-end gap-1 text-[10px] mt-1 ${isMe ? 'text-brand-100' : 'text-gray-500'}`}>
                     <span>{timeStr}</span>
                     {isMe && (
                       msg.read_at ? (

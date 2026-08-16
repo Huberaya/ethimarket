@@ -271,7 +271,7 @@ export default function UniversalContactModal({
               Organisme Certificateur Recommandé
             </span>
             {isMatchingLoading ? (
-              <span className="text-xs text-gray-400 font-medium animate-pulse">Recherche du meilleur organisme...</span>
+              <span className="text-xs text-gray-500 font-medium animate-pulse">Recherche du meilleur organisme...</span>
             ) : matchingResult ? (
               <MatchingQualityBadge
                 quality={matchingResult.matchQuality}

@@ -101,7 +101,7 @@ export default function AdminDisputes() {
               </div>
               <p className="text-sm font-bold text-gray-900">{d.producers?.name ?? '—'} — {d.orders?.products?.name ?? 'Produit'}</p>
               <p className="text-xs text-gray-500 mt-1 line-clamp-2">{d.description}</p>
-              <p className="text-xs text-gray-400 mt-2">{new Date(d.created_at).toLocaleDateString('fr-FR')} • {d.orders?.total_amount.toLocaleString('fr-FR')} €</p>
+              <p className="text-xs text-gray-500 mt-2">{new Date(d.created_at).toLocaleDateString('fr-FR')} • {d.orders?.total_amount.toLocaleString('fr-FR')} €</p>
             </div>
           );
         })}

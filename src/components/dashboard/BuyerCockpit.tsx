@@ -128,7 +128,7 @@ export default function BuyerCockpit({ userId }: { userId: string }) {
           {alerts.length > 0 && (
             <button
               onClick={async () => { await markAllAlertsRead(userId); setAlerts([]); }}
-              className="inline-flex items-center gap-1 text-xs font-bold text-gray-400 hover:text-gray-700 cursor-pointer"
+              className="inline-flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-gray-700 cursor-pointer"
             >
               <CheckCheck className="w-3.5 h-3.5" /> Tout marquer lu
             </button>
@@ -157,7 +157,7 @@ export default function BuyerCockpit({ userId }: { userId: string }) {
                     {a.id && (
                       <button
                         onClick={async () => { await markAlertRead(a.id!); setAlerts(prev => prev.filter(x => x.id !== a.id)); }}
-                        className="text-[10px] text-gray-400 hover:text-gray-600 font-bold cursor-pointer"
+                        className="text-[10px] text-gray-500 hover:text-gray-600 font-bold cursor-pointer"
                       >
                         ✓ Lu
                       </button>

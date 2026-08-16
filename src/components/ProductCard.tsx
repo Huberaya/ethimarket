@@ -88,7 +88,7 @@ export default function ProductCard({ product }: Props) {
             ))}
           </div>
           <span className="text-xs font-medium text-gray-700">{product.rating}</span>
-          <span className="text-xs text-gray-400">({product.review_count})</span>
+          <span className="text-xs text-gray-500">({product.review_count})</span>
         </div>
 
         {/* Certs */}
@@ -105,7 +105,7 @@ export default function ProductCard({ product }: Props) {
           <div className="flex items-end justify-between mb-3">
             <div>
               <span className="text-xl font-bold text-gray-900">{product.price.toFixed(2)} €</span>
-              <span className="text-xs text-gray-400 ml-0.5">/{product.price_unit}</span>
+              <span className="text-xs text-gray-500 ml-0.5">/{product.price_unit}</span>
             </div>
             <span className="text-xs text-gray-500 bg-gray-50 border border-gray-100 px-2.5 py-1 rounded-lg">
               MOQ {product.moq_value} {product.moq_unit}

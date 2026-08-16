@@ -491,7 +491,7 @@ export default function ProducerCertificationDetail() {
             </div>
 
             {requests.length === 0 ? (
-              <p className="text-xs text-gray-400 py-4 text-center">
+              <p className="text-xs text-gray-500 py-4 text-center">
                 Aucune demande de vérification n'a encore été enregistrée pour ce certificat.
               </p>
             ) : (
@@ -518,7 +518,7 @@ export default function ProducerCertificationDetail() {
                           {req.status.toUpperCase()}
                         </span>
                       </div>
-                      <span className="text-[11px] text-gray-400 flex items-center gap-1">
+                      <span className="text-[11px] text-gray-500 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {formatDateTime(req.sent_at)}
                       </span>
@@ -614,7 +614,7 @@ export default function ProducerCertificationDetail() {
             </div>
 
             {logs.length === 0 ? (
-              <p className="text-xs text-gray-400 py-3 text-center">Aucun événement journalisé</p>
+              <p className="text-xs text-gray-500 py-3 text-center">Aucun événement journalisé</p>
             ) : (
               <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
                 {logs.map(log => (
@@ -629,12 +629,12 @@ export default function ProducerCertificationDetail() {
                         <strong>{log.new_status || 'Modifié'}</strong>
                       </p>
                       {log.admin_profile && (
-                        <p className="text-[10px] text-gray-400">
+                        <p className="text-[10px] text-gray-500">
                           Par {log.admin_profile.first_name} {log.admin_profile.last_name} ({log.admin_profile.email})
                         </p>
                       )}
                     </div>
-                    <span className="text-[10px] text-gray-400 whitespace-nowrap">
+                    <span className="text-[10px] text-gray-500 whitespace-nowrap">
                       {formatDateTime(log.created_at)}
                     </span>
                   </div>

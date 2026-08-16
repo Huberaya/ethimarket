@@ -87,7 +87,7 @@ export default function ScoreBadge({ score, badge, details, size = 'md', showDet
             </div>
 
             <div className="mt-6 pt-4 border-t border-gray-100 text-center">
-              <p className="text-[11px] text-gray-400">
+              <p className="text-[11px] text-gray-500">
                 Audité et mis à jour automatiquement via la blockchain EthiMarket
               </p>
             </div>

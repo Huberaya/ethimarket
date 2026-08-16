@@ -145,7 +145,7 @@ function QuoteCard({ quote: q, isProducer, onRespond, onAction }: {
                 {q.quoted_unit_price?.toFixed(2)} {q.currency}/{q.unit}
               </p>
               {totalQuoted !== null && <p className="text-xs text-gray-500">Total : <strong>{totalQuoted.toLocaleString('fr-FR')} {q.currency}</strong></p>}
-              {q.quoted_delivery_days && <p className="text-[11px] text-gray-400">Délai : {q.quoted_delivery_days} jours</p>}
+              {q.quoted_delivery_days && <p className="text-[11px] text-gray-500">Délai : {q.quoted_delivery_days} jours</p>}
               {q.quoted_valid_until && q.status === 'responded' && (
                 <p className="text-[11px] font-semibold text-amber-700">Offre valide jusqu'au {new Date(q.quoted_valid_until).toLocaleDateString('fr-FR')}</p>
               )}
@@ -153,7 +153,7 @@ function QuoteCard({ quote: q, isProducer, onRespond, onAction }: {
           ) : q.unit_price_at_request != null ? (
             <>
               <p className="text-sm font-bold text-gray-500 tabular-nums">{q.unit_price_at_request.toFixed(2)} {q.currency}/{q.unit}</p>
-              <p className="text-[11px] text-gray-400">prix indicatif à la demande</p>
+              <p className="text-[11px] text-gray-500">prix indicatif à la demande</p>
             </>
           ) : (
             <p className="text-sm font-bold text-gray-400">Sur devis</p>
@@ -198,7 +198,7 @@ function QuoteCard({ quote: q, isProducer, onRespond, onAction }: {
         )}
         {!isProducer && ['sent', 'responded'].includes(q.status) && (
           <button onClick={() => act(() => cancelQuote(q.id))} disabled={busy}
-            className="px-4 py-2 text-xs font-bold rounded-xl text-gray-400 hover:text-gray-600">
+            className="px-4 py-2 text-xs font-bold rounded-xl text-gray-500 hover:text-gray-600">
             <Ban className="w-3.5 h-3.5 inline mr-1" /> Annuler
           </button>
         )}
@@ -286,7 +286,7 @@ function RespondModal({ quote, onClose, onDone }: { quote: QuoteRequest; onClose
             </button>
             <button onClick={onClose} className="px-5 py-3 text-sm font-bold rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700">Annuler</button>
           </div>
-          <p className="text-[11px] text-gray-400 flex items-center gap-1"><Clock className="w-3 h-3" /> Passée la date de validité, l'offre expirera automatiquement.</p>
+          <p className="text-[11px] text-gray-500 flex items-center gap-1"><Clock className="w-3 h-3" /> Passée la date de validité, l'offre expirera automatiquement.</p>
         </div>
       </div>
     </div>

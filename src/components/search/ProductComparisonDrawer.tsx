@@ -50,7 +50,7 @@ export const ProductComparisonDrawer: React.FC<ProductComparisonDrawerProps> = (
                 type="button"
                 onClick={() => onRemoveProduct(p.id)}
                 className="text-neutral-400 hover:text-rose-400 p-0.5"
-                title="Retirer"
+                title="Retirer" aria-label={`Retirer ${p.name} du comparateur`}
               >
                 <X className="w-3.5 h-3.5" />
               </button>

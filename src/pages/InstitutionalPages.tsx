@@ -110,7 +110,7 @@ export function Tarifs() {
           </div>
         ))}
       </div>
-      <p className="text-center text-xs text-gray-400 mt-8">
+      <p className="text-center text-xs text-gray-500 mt-8">
         Aucun frais caché. Le détail des commissions producteur est communiqué lors de la validation du dossier vendeur.
       </p>
     </PageShell>
@@ -218,7 +218,7 @@ export function CertificationsPage() {
           </div>
         ))}
       </div>
-      <p className="text-xs text-gray-400 text-center mt-8">
+      <p className="text-xs text-gray-500 text-center mt-8">
         Plus de 25 organismes certificateurs sont référencés dans notre annuaire interne avec leurs canaux de vérification officiels.
       </p>
     </PageShell>

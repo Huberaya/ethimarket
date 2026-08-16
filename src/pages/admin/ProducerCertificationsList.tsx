@@ -454,7 +454,7 @@ export default function ProducerCertificationsList() {
               placeholder="Rechercher producteur, certificat, pays, organisme..."
               value={searchInput}
               onChange={e => setSearchInput(e.target.value)}
-              className="w-full pl-9.5 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-brand-500 transition-colors"
+              className="w-full pl-9.5 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder:text-gray-500 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-brand-500 transition-colors"
             />
           </div>
 

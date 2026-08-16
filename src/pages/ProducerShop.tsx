@@ -378,7 +378,7 @@ export default function ProducerShop() {
                     ['Produits', `${producer.product_count}`],
                   ].map(([k, v]) => (
                     <div key={k} className="bg-gray-50 rounded-2xl p-4 text-center border border-gray-100">
-                      <dt className="text-xs text-gray-400 font-bold uppercase tracking-wide mb-1.5">{k}</dt>
+                      <dt className="text-xs text-gray-500 font-bold uppercase tracking-wide mb-1.5">{k}</dt>
                       <dd className="font-black text-gray-900 text-sm">{v}</dd>
                     </div>
                   ))}

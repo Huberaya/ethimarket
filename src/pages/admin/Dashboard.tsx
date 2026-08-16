@@ -218,7 +218,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   <span className="text-xs font-bold text-gray-900 flex-shrink-0">{p.orders} cmd</span>
-                  <span className="text-xs text-gray-400 flex-shrink-0">{p.revenue.toLocaleString('fr-FR')} €</span>
+                  <span className="text-xs text-gray-500 flex-shrink-0">{p.revenue.toLocaleString('fr-FR')} €</span>
                 </div>
               ))}
             </div>
@@ -239,7 +239,7 @@ export default function AdminDashboard() {
             <Link key={q.to} to={q.to} className="bg-white rounded-2xl border border-gray-100 p-4 hover:border-gray-200 hover:shadow-sm transition-all group">
               <Icon className={`w-5 h-5 ${q.color} mb-2`} />
               <p className="text-sm font-bold text-gray-900">{q.label}</p>
-              <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1 group-hover:text-gray-600 transition-colors">
+              <p className="text-xs text-gray-500 mt-0.5 flex items-center gap-1 group-hover:text-gray-600 transition-colors">
                 Accéder <ArrowRight className="w-3 h-3" />
               </p>
             </Link>

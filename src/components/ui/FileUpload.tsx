@@ -396,7 +396,7 @@ export function FileUpload({
                 ou <span className="text-emerald-600 font-bold underline">cliquez pour sélectionner</span>
               </p>
               {description && <p className="text-xs text-gray-500 font-medium">{description}</p>}
-              <p className="text-[11px] text-gray-400">
+              <p className="text-[11px] text-gray-500">
                 Formats : {accept} · Max {maxSizeMB} MB
               </p>
             </div>

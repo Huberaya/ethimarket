@@ -249,7 +249,7 @@ export default function ProductDetail() {
       {/* Breadcrumb */}
       <div className="pt-16 bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <nav className="flex items-center gap-2 text-xs text-gray-400 overflow-hidden">
+          <nav className="flex items-center gap-2 text-xs text-gray-500 overflow-hidden">
             <Link to="/" className="hover:text-brand-600 transition-colors whitespace-nowrap">Accueil</Link>
             <ChevronRight className="w-3 h-3 flex-shrink-0" />
             <Link to="/catalogue" className="hover:text-brand-600 transition-colors whitespace-nowrap">Catalogue</Link>
@@ -402,7 +402,7 @@ export default function ProductDetail() {
                               -{tier.discount}%
                             </span>
                           ) : (
-                            <span className="text-gray-400 text-xs">Prix standard</span>
+                            <span className="text-gray-500 text-xs">Prix standard</span>
                           )
                         ) : (
                           <span className="text-brand-600 font-bold text-xs">Sur devis</span>
@@ -479,7 +479,7 @@ export default function ProductDetail() {
                 <img src={qrUrl} alt="QR Code" className="w-14 h-14 rounded-lg border border-gray-100" />
                 <div>
                   <p className="text-xs font-bold text-gray-900 flex items-center gap-1.5"><QrCode className="w-3.5 h-3.5 text-brand-500" /> QR Code de traçabilité</p>
-                  <p className="text-[10px] text-gray-400">Scannez pour vérifier l'authenticité</p>
+                  <p className="text-[10px] text-gray-500">Scannez pour vérifier l'authenticité</p>
                 </div>
               </div>
             )}

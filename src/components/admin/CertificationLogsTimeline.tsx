@@ -222,7 +222,7 @@ export default function CertificationLogsTimeline({
                   <span className="text-sm font-bold text-gray-900 leading-snug">
                     {actionText}
                   </span>
-                  <time className="text-xs text-gray-400 font-medium whitespace-nowrap">
+                  <time className="text-xs text-gray-500 font-medium whitespace-nowrap">
                     {formatDate(log.created_at)}
                   </time>
                 </div>
@@ -258,7 +258,7 @@ export default function CertificationLogsTimeline({
                 )}
 
                 {/* Auteur */}
-                <div className="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between text-[11px] text-gray-400">
+                <div className="mt-2 pt-2 border-t border-gray-50 flex items-center justify-between text-[11px] text-gray-500">
                   <span className="flex items-center gap-1">
                     <UserCheck className="w-3 h-3 text-gray-400" />
                     <span>Par : <strong className="text-gray-600 font-semibold">{adminName}</strong></span>

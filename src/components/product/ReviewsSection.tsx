@@ -34,14 +34,14 @@ export default function ReviewsSection({ product, reviews }: { product: Product;
               className="w-4 h-4 rounded accent-brand-500"
             />
             <BadgeCheck className="w-4 h-4 text-brand-500" />
-            Vérifiés seulement <span className="text-xs text-gray-400">(recommandé)</span>
+            Vérifiés seulement <span className="text-xs text-gray-500">(recommandé)</span>
           </label>
 
           {filtered.length === 0 ? (
             <div className="text-center py-8">
               <MessageSquare className="w-8 h-8 text-gray-200 mx-auto mb-2" />
               <p className="font-semibold text-gray-700 text-sm">Aucun avis pour l'instant</p>
-              <p className="text-gray-400 text-xs">Soyez le premier à évaluer ce produit.</p>
+              <p className="text-gray-500 text-xs">Soyez le premier à évaluer ce produit.</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -59,7 +59,7 @@ export default function ReviewsSection({ product, reviews }: { product: Product;
                             <BadgeCheck className="w-3 h-3" /> Achat vérifié
                           </span>
                         </div>
-                        {r.author_company && <p className="text-xs text-gray-400">{r.author_company}</p>}
+                        {r.author_company && <p className="text-xs text-gray-500">{r.author_company}</p>}
                       </div>
                     </div>
                     <div className="flex">
@@ -69,7 +69,7 @@ export default function ReviewsSection({ product, reviews }: { product: Product;
                     </div>
                   </div>
                   <p className="text-gray-700 text-sm leading-relaxed">{r.content}</p>
-                  <p className="text-xs text-gray-400 mt-2">{new Date(r.created_at).toLocaleDateString('fr-FR')}</p>
+                  <p className="text-xs text-gray-500 mt-2">{new Date(r.created_at).toLocaleDateString('fr-FR')}</p>
                 </div>
               ))}
             </div>

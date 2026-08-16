@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Package, PlusCircle, Store, ShoppingCart,
   MessageSquare, Settings, Leaf, Bell, LogOut, Menu, X,
   ChevronRight, UserCircle, ShieldCheck, TrendingUp, Factory,
-  PackageSearch, SlidersHorizontal, Bot, Vault,
+  PackageSearch, SlidersHorizontal, Bot, Vault, Building2,
 } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { supabase } from '../lib/supabase';
@@ -31,6 +31,7 @@ const BUYER_NAV = [
   { icon: SlidersHorizontal, label: 'Mes règles',      path: '/dashboard/mes-achats?tab=rules' },
   { icon: Bot,             label: 'Sourcing IA',       path: '/dashboard/sourcing' },
   { icon: Vault,           label: 'Documents',         path: '/dashboard/documents' },
+  { icon: Building2,       label: 'Mon organisation',  path: '/dashboard/organisation' },
   { icon: ShoppingCart,    label: 'Devis & commandes', path: '/dashboard/commandes' },
   { icon: MessageSquare,   label: 'Messages',          path: '/dashboard/messages' },
   { icon: UserCircle,      label: 'Mon profil',        path: '/dashboard/mon-profil' },
@@ -214,7 +215,7 @@ export default function DashboardLayout() {
             <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 hover:bg-gray-100 rounded-xl transition-colors">
               <Menu className="w-5 h-5 text-gray-600" />
             </button>
-            <div className="hidden sm:flex items-center gap-2 text-xs text-gray-400">
+            <div className="hidden sm:flex items-center gap-2 text-xs text-gray-500">
               <Link to="/" className="hover:text-brand-600 transition-colors">Accueil</Link>
               <ChevronRight className="w-3 h-3" />
               <span className="text-gray-700 font-semibold">Dashboard</span>
@@ -231,7 +232,7 @@ export default function DashboardLayout() {
           </div>
         </header>
 
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main id="main-content" className="flex-1 p-6 overflow-y-auto">
           <Outlet />
         </main>
       </div>

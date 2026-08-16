@@ -23,6 +23,7 @@ import {
   SupplierTrackStatus, ProductTrackStatus, DEFAULT_WEIGHTS,
 } from '../../lib/buyerWorkspace';
 import { findAlternativeProducts } from '../../lib/alternativeProductsEngine';
+import { getMyOrganization, Organization } from '../../lib/organizationService';
 
 type Tab = 'suppliers' | 'products' | 'purchases' | 'rules';
 
@@ -69,6 +70,7 @@ export default function BuyerWorkspace() {
   const [draftWeights, setDraftWeights] = useState<BuyerWeights>({ ...DEFAULT_WEIGHTS });
   const [useLearned, setUseLearned] = useState(true);
   const [refreshingLearn, setRefreshingLearn] = useState(false);
+  const [orgInfo, setOrgInfo] = useState<Organization | null>(null);
 
   const reload = async () => {
     if (!user) return;
@@ -81,6 +83,7 @@ export default function BuyerWorkspace() {
       supabase.from('products').select('*, producers(*)').eq('status', 'active').limit(100).then(r => (r.data ?? []) as Product[]),
     ]);
     setSuppliers(s); setProducts(p); setPurchases(pu); setPrefs(pr); setCatalog(cat);
+    void getMyOrganization(user.id).then(o => setOrgInfo(o.organization));
     setDraftWeights({ ...pr.weights });
     setUseLearned(pr.useLearnedAdjustments);
     setLoading(false);
@@ -204,7 +207,7 @@ export default function BuyerWorkspace() {
                   <div key={pt.month} className="flex-1 flex flex-col items-center gap-1" title={`${pt.month} : score ${pt.avgScore}/100 · ${pt.spent} €`}>
                     <span className="text-[10px] font-bold text-emerald-700">{pt.avgScore}</span>
                     <div className="w-full rounded-t-lg bg-emerald-400" style={{ height: `${Math.max(4, pt.avgScore)}%` }} />
-                    <span className="text-[9px] text-gray-400">{pt.month.slice(5)}/{pt.month.slice(2, 4)}</span>
+                    <span className="text-[9px] text-gray-500">{pt.month.slice(5)}/{pt.month.slice(2, 4)}</span>
                   </div>
                 ))}
               </div>
@@ -225,7 +228,7 @@ export default function BuyerWorkspace() {
                     <span className="flex items-center gap-3">
                       {p.ethical_score ? <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">{p.ethical_score}/100</span> : null}
                       <span className="font-bold text-gray-900 tabular-nums">{(p.unit_price * p.quantity).toLocaleString('fr-FR')} €</span>
-                      <span className="text-[11px] text-gray-400">{new Date(p.purchased_at).toLocaleDateString('fr-FR')}</span>
+                      <span className="text-[11px] text-gray-500">{new Date(p.purchased_at).toLocaleDateString('fr-FR')}</span>
                     </span>
                   </li>
                 ))}
@@ -367,6 +370,18 @@ export default function BuyerWorkspace() {
       {/* ================= ONGLET MES RÈGLES ================= */}
       {tab === 'rules' && prefs && (
         <div className="space-y-5 max-w-2xl">
+          {orgInfo?.weights_enforced && (
+            <div className="rounded-2xl border-2 border-amber-200 bg-amber-50 p-4" role="status">
+              <p className="text-sm font-bold text-amber-900">
+                🏢 Les règles de décision de « {orgInfo.name} » sont imposées par votre organisation.
+              </p>
+              <p className="text-xs text-amber-800 mt-1">
+                Prix {orgInfo.weight_price}% · Environnement {orgInfo.weight_environment}% · Social {orgInfo.weight_social}% ·
+                Traçabilité {orgInfo.weight_traceability}% · Certifications {orgInfo.weight_certifications}%.
+                Vos réglages personnels ci-dessous sont conservés mais inactifs.
+              </p>
+            </div>
+          )}
           <div className="bg-white rounded-2xl border border-gray-100 p-6">
             <h3 className="text-sm font-bold text-gray-900">⚖️ Mes pondérations de décision</h3>
             <p className="text-xs text-gray-500 mt-1 mb-5">

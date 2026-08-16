@@ -448,7 +448,7 @@ export default function TemplateImportModal({
                       ou cliquez pour parcourir les fichiers de votre ordinateur
                     </p>
                   </div>
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-white px-3 py-1 rounded-full border border-gray-200">
+                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider bg-white px-3 py-1 rounded-full border border-gray-200">
                     Format attendu : .json (Standard EthiMarket)
                   </span>
                 </div>

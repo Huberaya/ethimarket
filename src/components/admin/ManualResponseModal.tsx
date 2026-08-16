@@ -309,7 +309,7 @@ export default function ManualResponseModal({
               <label htmlFor="manual-response-content" className="text-sm font-bold text-gray-900">
                 3. Contenu de la réponse reçue <span className="text-red-500">*</span>
               </label>
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-gray-500">
                 {responseContent.trim().length} / min. 10 car.
               </span>
             </div>

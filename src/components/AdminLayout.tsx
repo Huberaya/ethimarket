@@ -119,7 +119,7 @@ export default function AdminLayout() {
           </div>
           <div>
             <p className="font-black text-gray-900 text-sm leading-tight">EthiMarket</p>
-            <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Administration</p>
+            <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Administration</p>
           </div>
           <button onClick={() => setSidebarOpen(false)} className="ml-auto lg:hidden text-gray-400">
             <X className="w-5 h-5" />
@@ -131,7 +131,7 @@ export default function AdminLayout() {
             <div key={gIdx} className="space-y-1">
               {group.title && (
                 <div className="px-3 pb-1 pt-2">
-                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
                     {group.title}
                   </p>
                 </div>
@@ -228,7 +228,7 @@ export default function AdminLayout() {
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-gray-900">{n.title}</p>
                             <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{n.message}</p>
-                            <p className="text-[10px] text-gray-400 mt-1">{new Date(n.created_at).toLocaleDateString('fr-FR')}</p>
+                            <p className="text-[10px] text-gray-500 mt-1">{new Date(n.created_at).toLocaleDateString('fr-FR')}</p>
                           </div>
                           {n.priority === 'urgent' && <span className="text-[10px] font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded">URGENT</span>}
                         </button>
@@ -255,7 +255,7 @@ export default function AdminLayout() {
                 <div className="absolute right-0 top-12 z-40 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-1">
                   <div className="px-4 py-2 border-b border-gray-50">
                     <p className="text-sm font-bold text-gray-900 truncate">{profile?.full_name}</p>
-                    <p className="text-xs text-gray-400 truncate">{profile?.email}</p>
+                    <p className="text-xs text-gray-500 truncate">{profile?.email}</p>
                   </div>
                   <button onClick={handleSignOut} className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors">
                     <LogOut className="w-4 h-4" /> Déconnexion

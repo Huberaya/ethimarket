@@ -502,7 +502,7 @@ Généré par EthiMarket Message Simulator`;
               >
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-gray-800 truncate">{h.title}</span>
-                  <span className="text-[10px] text-gray-400">{h.timestamp}</span>
+                  <span className="text-[10px] text-gray-500">{h.timestamp}</span>
                 </div>
                 <p className="text-[10px] text-gray-500 truncate mt-0.5">
                   Producteur : {h.data.producer_name} ({h.data.certificate_number})
@@ -913,7 +913,7 @@ Généré par EthiMarket Message Simulator`;
                   <span>
                     <strong>De :</strong> {testData.admin_name} &lt;{testData.admin_email}&gt;
                   </span>
-                  <span className="text-[10px] text-gray-400 font-mono">Aujourd'hui, {new Date().toLocaleTimeString()}</span>
+                  <span className="text-[10px] text-gray-500 font-mono">Aujourd'hui, {new Date().toLocaleTimeString()}</span>
                 </div>
                 <div className="text-[11px] text-gray-600">
                   <strong>À :</strong> contact@{testData.body_name.toLowerCase().replace(/[^a-z0-9]/g, '') || 'organisme'}.org
@@ -936,14 +936,14 @@ Généré par EthiMarket Message Simulator`;
                     <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
                     <span>WhatsApp Business • Audit Conformité</span>
                   </div>
-                  <span className="text-[10px] text-gray-400 font-normal">Chiffré de bout en bout</span>
+                  <span className="text-[10px] text-gray-500 font-normal">Chiffré de bout en bout</span>
                 </div>
 
                 <div className="whitespace-pre-wrap font-sans text-xs text-gray-900 leading-relaxed max-h-80 overflow-y-auto">
                   {renderStyledText(renderedBody)}
                 </div>
 
-                <div className="flex items-center justify-end gap-1 text-[10px] text-gray-400 pt-1">
+                <div className="flex items-center justify-end gap-1 text-[10px] text-gray-500 pt-1">
                   <span>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                   <CheckCircle2 className="w-3 h-3 text-blue-500" />
                 </div>
@@ -1069,31 +1069,31 @@ Généré par EthiMarket Message Simulator`;
         {selectedTemplate && (
           <div className="p-3 bg-gray-50 rounded-2xl border border-gray-200 grid grid-cols-2 sm:grid-cols-5 gap-2 text-[11px] text-gray-600">
             <div>
-              <span className="text-[10px] text-gray-400 block uppercase">Caractères corps</span>
+              <span className="text-[10px] text-gray-500 block uppercase">Caractères corps</span>
               <strong className="text-gray-900 text-xs">{renderedBody.length}</strong>
             </div>
 
             {selectedTemplate.channel === 'email' && (
               <div>
-                <span className="text-[10px] text-gray-400 block uppercase">Caractères objet</span>
+                <span className="text-[10px] text-gray-500 block uppercase">Caractères objet</span>
                 <strong className="text-gray-900 text-xs">{renderedSubject ? renderedSubject.length : 0}</strong>
               </div>
             )}
 
             <div>
-              <span className="text-[10px] text-gray-400 block uppercase">Variables template</span>
+              <span className="text-[10px] text-gray-500 block uppercase">Variables template</span>
               <strong className="text-gray-900 text-xs">{detectedVars.length}</strong>
             </div>
 
             <div>
-              <span className="text-[10px] text-gray-400 block uppercase">Non résolues</span>
+              <span className="text-[10px] text-gray-500 block uppercase">Non résolues</span>
               <strong className={`text-xs ${unreplacedVars.length > 0 ? 'text-red-600 font-bold' : 'text-emerald-600'}`}>
                 {unreplacedVars.length}
               </strong>
             </div>
 
             <div>
-              <span className="text-[10px] text-gray-400 block uppercase">Temps calcul</span>
+              <span className="text-[10px] text-gray-500 block uppercase">Temps calcul</span>
               <strong className="text-gray-900 text-xs flex items-center gap-0.5">
                 <Zap className="w-3 h-3 text-amber-500" />
                 {renderDurationMs} ms

@@ -111,9 +111,9 @@ export default function SupplierSourcing() {
                       </div>
                     </div>
                     <div className="flex gap-4 text-center">
-                      <div><p className="text-lg font-black text-emerald-700">{ev.avgResponsibleScore}</p><p className="text-[9px] text-gray-400 font-bold uppercase">Score</p></div>
-                      <div><p className="text-lg font-black text-gray-900">{ev.minPrice} €</p><p className="text-[9px] text-gray-400 font-bold uppercase">Dès</p></div>
-                      {ev.monthlyCapacity > 0 && <div><p className="text-lg font-black text-gray-900">{ev.monthlyCapacity.toLocaleString('fr-FR')}</p><p className="text-[9px] text-gray-400 font-bold uppercase">u/mois</p></div>}
+                      <div><p className="text-lg font-black text-emerald-700">{ev.avgResponsibleScore}</p><p className="text-[9px] text-gray-500 font-bold uppercase">Score</p></div>
+                      <div><p className="text-lg font-black text-gray-900">{ev.minPrice} €</p><p className="text-[9px] text-gray-500 font-bold uppercase">Dès</p></div>
+                      {ev.monthlyCapacity > 0 && <div><p className="text-lg font-black text-gray-900">{ev.monthlyCapacity.toLocaleString('fr-FR')}</p><p className="text-[9px] text-gray-500 font-bold uppercase">u/mois</p></div>}
                     </div>
                   </div>
                   {ev.bestProduct && (
@@ -154,7 +154,7 @@ export default function SupplierSourcing() {
             </div>
           )}
 
-          <p className="text-[11px] text-gray-400 text-center flex items-center justify-center gap-1">
+          <p className="text-[11px] text-gray-500 text-center flex items-center justify-center gap-1">
             <CheckCircle2 className="w-3 h-3" /> L'humain garde le dernier mot : cette shortlist est une aide à la décision, pas une décision.
           </p>
         </>

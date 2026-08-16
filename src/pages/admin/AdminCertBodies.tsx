@@ -593,7 +593,7 @@ export default function AdminCertBodies() {
                           <ExternalLink className="w-3 h-3 opacity-70" />
                         </a>
                       ) : (
-                        <span className="text-[11px] text-gray-400 italic">Vérification manuelle</span>
+                        <span className="text-[11px] text-gray-500 italic">Vérification manuelle</span>
                       )}
                     </td>
 

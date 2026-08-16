@@ -130,7 +130,7 @@ export default function Login() {
 
           <div className="relative mb-5">
             <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
-            <div className="relative flex justify-center"><span className="bg-white px-4 text-xs text-gray-400 font-medium">ou avec votre email</span></div>
+            <div className="relative flex justify-center"><span className="bg-white px-4 text-xs text-gray-500 font-medium">ou avec votre email</span></div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">

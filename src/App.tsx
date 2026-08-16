@@ -31,6 +31,7 @@ import MonProfil from './pages/dashboard/MonProfil';
 import Messages from './pages/dashboard/Messages';
 import { SettingsPage } from './pages/dashboard/PlaceholderPages';
 import QuotesPage from './pages/dashboard/QuotesPage';
+import OrganizationPage from './pages/dashboard/OrganizationPage';
 import Verification from './pages/dashboard/Verification';
 import AdminLayout from './components/AdminLayout';
 import AdminRoute from './components/AdminRoute';
@@ -59,6 +60,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <BackToTop />
+      <a href="#main-content" className="skip-link">Aller au contenu principal</a>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/catalogue" element={<Catalogue />} />
@@ -89,6 +91,7 @@ export default function App() {
         <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
           <Route index element={<Dashboard />} />
           <Route path="mes-achats" element={<BuyerWorkspace />} />
+          <Route path="organisation" element={<OrganizationPage />} />
           <Route path="sourcing" element={<SupplierSourcing />} />
           <Route path="documents" element={<DocumentVault />} />
           <Route path="mes-produits" element={<MyProducts />} />

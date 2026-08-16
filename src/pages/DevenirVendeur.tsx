@@ -148,7 +148,7 @@ export default function DevenirVendeur() {
                   <span className="absolute -top-1 -right-1 w-6 h-6 bg-brand-500 text-white text-xs font-black rounded-full flex items-center justify-center">{i + 1}</span>
                 </div>
                 <h3 className="font-bold text-gray-900 text-sm mb-1">{step.title}</h3>
-                <p className="text-xs text-gray-400">{step.desc}</p>
+                <p className="text-xs text-gray-500">{step.desc}</p>
               </div>
             ))}
           </div>
@@ -171,7 +171,7 @@ export default function DevenirVendeur() {
             <div className="bg-white rounded-2xl p-6 max-w-md mx-auto">
               <p className="text-sm text-gray-500 mb-2">Exemple concret :</p>
               <p className="text-lg font-bold text-gray-900">Vous vendez 1 000€ → Vous recevez 950€</p>
-              <p className="text-xs text-gray-400 mt-1">Nous prélevons 50€ (5%) pour maintenir la plateforme</p>
+              <p className="text-xs text-gray-500 mt-1">Nous prélevons 50€ (5%) pour maintenir la plateforme</p>
             </div>
           </div>
         </div>

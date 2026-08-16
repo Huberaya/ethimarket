@@ -207,7 +207,7 @@ function SummaryRow({
         <span className="font-semibold text-gray-700">{label}</span>
         <span className={`font-black ${highlight ? 'text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200' : 'text-gray-900'}`}>{value}</span>
       </div>
-      {subtext && <p className="text-[10px] text-gray-400 mt-0.5">{subtext}</p>}
+      {subtext && <p className="text-[10px] text-gray-500 mt-0.5">{subtext}</p>}
     </div>
   );
 }

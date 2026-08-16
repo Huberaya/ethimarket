@@ -62,7 +62,7 @@ export default function ResponsibilityScoreSection({ product }: { product: Produ
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className={`text-3xl font-black ${scoreColor}`}>{report.overallScore}</span>
-              <span className="text-[10px] text-gray-400 font-bold">/100</span>
+              <span className="text-[10px] text-gray-500 font-bold">/100</span>
             </div>
           </div>
           <p className="mt-3 text-sm font-bold text-gray-900">Responsibility Score</p>
@@ -170,7 +170,7 @@ export default function ResponsibilityScoreSection({ product }: { product: Produ
                     ))}
                   </div>
                   {alt.losingDimensions.length > 0 && (
-                    <p className="text-[10px] text-gray-400 mt-1.5">
+                    <p className="text-[10px] text-gray-500 mt-1.5">
                       Moins bien : {alt.losingDimensions.slice(0, 2).map(d => DIMENSION_LABELS[d].label.toLowerCase()).join(', ')}
                     </p>
                   )}

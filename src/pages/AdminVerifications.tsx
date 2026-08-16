@@ -201,7 +201,7 @@ export default function AdminVerifications() {
                           <Icon className="w-4 h-4 text-gray-500" />
                         </div>
                         <div>
-                          <p className="text-xs font-bold text-gray-400">SECTION {section.id}/5</p>
+                          <p className="text-xs font-bold text-gray-500">SECTION {section.id}/5</p>
                           <p className="font-bold text-sm text-gray-900">{section.title}</p>
                         </div>
                       </div>

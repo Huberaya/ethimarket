@@ -223,7 +223,7 @@ export default function Register() {
 
                 <div className="relative mb-5">
                   <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
-                  <div className="relative flex justify-center"><span className="bg-white px-4 text-xs text-gray-400 font-medium">ou</span></div>
+                  <div className="relative flex justify-center"><span className="bg-white px-4 text-xs text-gray-500 font-medium">ou</span></div>
                 </div>
 
                 <p className="text-sm font-bold text-gray-700 mb-3">Vous êtes... <span className="text-gray-400 font-normal">(choisissez votre rôle)</span></p>
@@ -271,18 +271,18 @@ export default function Register() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Prénom *</label>
-                    <input required value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="Jean" className={fieldClass} />
+                    <label htmlFor="reg-firstname" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Prénom *</label>
+                    <input required id="reg-firstname" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="Jean" className={fieldClass} />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Nom *</label>
-                    <input required value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Dupont" className={fieldClass} />
+                    <label htmlFor="reg-lastname" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Nom *</label>
+                    <input required id="reg-lastname" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Dupont" className={fieldClass} />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Email professionnel *</label>
-                  <input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="vous@entreprise.com" className={fieldClass} />
+                  <label htmlFor="reg-email" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Email professionnel *</label>
+                  <input type="email" required id="reg-email" value={email} onChange={e => setEmail(e.target.value)} placeholder="vous@entreprise.com" className={fieldClass} />
                 </div>
 
                 <div>
@@ -314,8 +314,8 @@ export default function Register() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Téléphone</label>
-                    <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+33 6 ..." className={fieldClass} />
+                    <label htmlFor="reg-phone" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Téléphone</label>
+                    <input type="tel" id="reg-phone" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+33 6 ..." className={fieldClass} />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Pays *</label>

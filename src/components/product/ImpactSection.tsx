@@ -274,7 +274,7 @@ function ImpactRow({
       </div>
 
       {methodology && (
-        <p className="text-[9px] text-gray-400 italic border-t border-gray-100 pt-1 mt-1 flex items-center gap-1">
+        <p className="text-[9px] text-gray-500 italic border-t border-gray-100 pt-1 mt-1 flex items-center gap-1">
           <Info className="w-2.5 h-2.5 text-gray-400 flex-shrink-0" />
           <span>Méthode: {methodology}</span>
         </p>

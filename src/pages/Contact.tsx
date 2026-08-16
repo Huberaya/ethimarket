@@ -75,23 +75,23 @@ export default function Contact() {
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Nom complet *</label>
-                    <input type="text" required value={form.name} onChange={e => update('name', e.target.value)}
+                    <label htmlFor="ct-name" className="block text-sm font-semibold text-gray-700 mb-1.5">Nom complet *</label>
+                    <input id="ct-name" type="text" required value={form.name} onChange={e => update('name', e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 transition-all text-sm" placeholder="Jean Dupont" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email *</label>
-                    <input type="email" required value={form.email} onChange={e => update('email', e.target.value)}
+                    <label htmlFor="ct-email" className="block text-sm font-semibold text-gray-700 mb-1.5">Email *</label>
+                    <input id="ct-email" type="email" required value={form.email} onChange={e => update('email', e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 transition-all text-sm" placeholder="jean@entreprise.com" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Téléphone (optionnel)</label>
-                    <input type="tel" value={form.phone} onChange={e => update('phone', e.target.value)}
+                    <label htmlFor="ct-phone" className="block text-sm font-semibold text-gray-700 mb-1.5">Téléphone (optionnel)</label>
+                    <input id="ct-phone" type="tel" value={form.phone} onChange={e => update('phone', e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 transition-all text-sm" placeholder="+33 6 12 34 56 78" />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">Vous êtes</label>
+                      <label htmlFor="ct-role" className="block text-sm font-semibold text-gray-700 mb-1.5">Vous êtes</label>
                       <select value={form.profile} onChange={e => update('profile', e.target.value)}
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 transition-all text-sm bg-white">
                         <option value="">Sélectionner...</option>
@@ -103,8 +103,8 @@ export default function Contact() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1.5">Sujet</label>
-                      <select value={form.subject} onChange={e => update('subject', e.target.value)}
+                      <label htmlFor="ct-subject" className="block text-sm font-semibold text-gray-700 mb-1.5">Sujet</label>
+                      <select id="ct-subject" value={form.subject} onChange={e => update('subject', e.target.value)}
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 transition-all text-sm bg-white">
                         <option value="">Sélectionner...</option>
                         <option value="generale">Question générale</option>
@@ -116,8 +116,8 @@ export default function Contact() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Message *</label>
-                    <textarea required rows={5} value={form.message} onChange={e => update('message', e.target.value)}
+                    <label htmlFor="ct-message" className="block text-sm font-semibold text-gray-700 mb-1.5">Message *</label>
+                    <textarea id="ct-message" required rows={5} value={form.message} onChange={e => update('message', e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100 transition-all text-sm resize-none" placeholder="Décrivez votre demande..." />
                   </div>
                   <label className="flex items-start gap-3 cursor-pointer">
@@ -154,7 +154,7 @@ export default function Contact() {
                     <div>
                       <p className="font-semibold text-gray-900 text-sm mb-0.5">Téléphone</p>
                       <p className="text-sm text-gray-500">+33 1 23 45 67 89</p>
-                      <p className="text-xs text-gray-400">Lundi-Vendredi 9h-18h</p>
+                      <p className="text-xs text-gray-500">Lundi-Vendredi 9h-18h</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">

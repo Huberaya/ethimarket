@@ -328,7 +328,7 @@ export default function AdminVerificationDetail() {
 
       {/* SECTION A: RESUME DU PRODUCTEUR */}
       <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm">
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 flex items-center gap-2">
           <span>SECTION A</span> • Résumé du Profil Producteur
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -552,7 +552,7 @@ export default function AdminVerificationDetail() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 space-y-1">
-            <p className="text-[10px] font-bold text-gray-400 uppercase">Charte éthique signée</p>
+            <p className="text-[10px] font-bold text-gray-500 uppercase">Charte éthique signée</p>
             <div className="flex items-center gap-2">
               {producer.ethical_charter_signed ? (
                 <span className="text-xs font-bold text-brand-700 bg-brand-100 px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -565,14 +565,14 @@ export default function AdminVerificationDetail() {
           </div>
 
           <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 space-y-1">
-            <p className="text-[10px] font-bold text-gray-400 uppercase">Employés déclarés</p>
+            <p className="text-[10px] font-bold text-gray-500 uppercase">Employés déclarés</p>
             <p className="text-sm font-black text-gray-900">
               {ethical?.employee_count || producer.employee_count || 0} personnes
             </p>
           </div>
 
           <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 space-y-1">
-            <p className="text-[10px] font-bold text-gray-400 uppercase">Salaire minimum garanti</p>
+            <p className="text-[10px] font-bold text-gray-500 uppercase">Salaire minimum garanti</p>
             <p className="text-sm font-black text-brand-600">
               {ethical?.min_wage || producer.min_wage || 'Non spécifié'}
             </p>

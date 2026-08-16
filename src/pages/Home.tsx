@@ -161,7 +161,7 @@ export default function Home() {
       <Header />
 
       {/* ═══ 1. HERO ═══ */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
+      <section id="main-content" className="relative min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img src={HERO_IMG} alt="Marché bio"
             className={`w-full h-full object-cover transition-opacity duration-700 ${heroLoaded ? 'opacity-100' : 'opacity-0'}`}
@@ -473,7 +473,7 @@ export default function Home() {
                         ))}
                       </div>
                       <span className="text-xs font-semibold text-gray-800">{producer.rating}</span>
-                      <span className="text-xs text-gray-400">({producer.review_count} avis)</span>
+                      <span className="text-xs text-gray-500">({producer.review_count} avis)</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5 mb-5">
                       {producer.certifications.slice(0, 3).map(c => (
@@ -538,7 +538,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <p className="text-center text-xs text-gray-400 mt-6">Moyenne par tonne de produit livré</p>
+            <p className="text-center text-xs text-gray-500 mt-6">Moyenne par tonne de produit livré</p>
           </div>
 
           {/* Engagements 2025 */}
@@ -640,7 +640,7 @@ export default function Home() {
                     </span>
                   </div>
                   <div className="flex flex-col flex-1 p-5">
-                    <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
+                    <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         {new Date(article.published_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}

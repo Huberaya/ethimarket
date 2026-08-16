@@ -93,7 +93,7 @@ export default function AdminOrders() {
                         <span className="text-lg">{o.products?.emoji ?? '📦'}</span>
                         <span className="font-semibold text-gray-900">{o.products?.name ?? '—'}</span>
                       </div>
-                      <span className="text-xs text-gray-400">{o.quantity} {o.unit}</span>
+                      <span className="text-xs text-gray-500">{o.quantity} {o.unit}</span>
                     </td>
                     <td className="py-3 px-4 text-gray-600">{o.producers?.name ?? '—'}</td>
                     <td className="py-3 px-4 font-bold text-gray-900">{o.total_amount.toLocaleString('fr-FR')} €</td>

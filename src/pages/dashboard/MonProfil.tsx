@@ -573,7 +573,7 @@ export default function MonProfil() {
             <div className="h-full bg-gradient-to-r from-brand-500 to-teal-400 rounded-full transition-all duration-500" style={{ width: `${completion}%` }} />
           </div>
           {lastAutoSave && (
-            <p className="text-xs text-gray-400 mt-2 flex items-center gap-1">
+            <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
               <Clock className="w-3 h-3" /> Dernière sauvegarde: {lastAutoSave.toLocaleTimeString('fr-FR')}
             </p>
           )}
@@ -757,7 +757,7 @@ export default function MonProfil() {
                 {producer.identity_verified ? `✓ Vérifié le ${producer.identity_verified_at ? new Date(producer.identity_verified_at).toLocaleDateString('fr-FR') : ''}` : '🟡 En attente de vérification'}
               </span>
             </div>
-            <p className="text-xs text-gray-400 bg-gray-50 rounded-xl p-3">Vos documents sont sécurisés et vérifiés par notre équipe sous 48h. Ils ne sont visibles que par vous et l'équipe EthiMarket.</p>
+            <p className="text-xs text-gray-500 bg-gray-50 rounded-xl p-3">Vos documents sont sécurisés et vérifiés par notre équipe sous 48h. Ils ne sont visibles que par vous et l'équipe EthiMarket.</p>
             <SaveButton onClick={() => saveSection('2', { identity_type: form.identity_type, identity_number: form.identity_number || null, identity_country: form.identity_country || null, identity_issue_date: form.identity_issue_date || null, identity_expiry: form.identity_expiry || null, identity_recto_url: form.identity_recto_url || null, identity_verso_url: form.identity_verso_url || null })} saving={saving === '2'} />
           </SectionCard>
 
@@ -807,12 +807,12 @@ export default function MonProfil() {
             <div>
               <label className={labelClass}>Description courte <span className="text-red-500">*</span> <span className="text-gray-400 font-normal">(max 200 caractères)</span></label>
               <textarea rows={2} maxLength={200} value={form.short_description} onChange={e => update('short_description', e.target.value)} placeholder="Une phrase qui résume votre activité" className={`${inputClass} resize-none`} />
-              <p className="text-xs text-gray-400 mt-1">{form.short_description.length}/200</p>
+              <p className="text-xs text-gray-500 mt-1">{form.short_description.length}/200</p>
             </div>
             <div>
               <label className={labelClass}>Description longue / Histoire <span className="text-red-500">*</span> <span className="text-gray-400 font-normal">(min 500 caractères)</span></label>
               <textarea rows={5} value={form.long_description} onChange={e => update('long_description', e.target.value)} placeholder="Racontez l'histoire de votre organisation, vos valeurs, votre mission..." className={`${inputClass} resize-none`} />
-              <p className="text-xs text-gray-400 mt-1">{form.long_description.length} caractères</p>
+              <p className="text-xs text-gray-500 mt-1">{form.long_description.length} caractères</p>
             </div>
             <SaveButton onClick={() => saveSection('3', { org_type: form.org_type, name: form.org_name || null, registration_number: form.registration_number || null, founded_year: toIntOrNull(form.founded_year), employee_count: toIntOrNull(form.employee_count), families_impacted: toIntOrNull(form.families_impacted), website: form.website || null, business_email: form.business_email || null, short_description: form.short_description || null, long_description: form.long_description || null, story: form.long_description || null })} saving={saving === '3'} />
           </SectionCard>
@@ -863,7 +863,7 @@ export default function MonProfil() {
                 </div>
               )}
             </div>
-            <p className="text-xs text-gray-400 bg-gray-50 rounded-xl p-3">Ces coordonnées seront visibles publiquement sur les fiches produits pour garantir la traçabilité.</p>
+            <p className="text-xs text-gray-500 bg-gray-50 rounded-xl p-3">Ces coordonnées seront visibles publiquement sur les fiches produits pour garantir la traçabilité.</p>
             <SaveButton onClick={() => saveSection('4', { country: form.country, country_flag: getCountryFlag(form.country), region: form.region || null, city: form.city || null, address: form.address || null, postal_code: form.postal_code || null, landmark: form.landmark || null, latitude: form.latitude ? parseFloat(form.latitude) : null, longitude: form.longitude ? parseFloat(form.longitude) : null })} saving={saving === '4'} />
           </SectionCard>
 
@@ -939,7 +939,7 @@ export default function MonProfil() {
 
           {/* SECTION 6 — Certifications */}
           <SectionCard ref={el => { sectionRefs.current['6'] = el; }} data-section-id="6" id="6" title="Certifications" icon={Award} saved={savedSection === 'certs'} complete={sectionComplete('6', form, certs)}>
-            <p className="text-xs text-gray-400">Ajoutez toutes vos certifications (bio, éthique, qualité). Les certifications sont vérifiées auprès des organismes émetteurs sous 5 jours ouvrés.</p>
+            <p className="text-xs text-gray-500">Ajoutez toutes vos certifications (bio, éthique, qualité). Les certifications sont vérifiées auprès des organismes émetteurs sous 5 jours ouvrés.</p>
             <div className="space-y-4">
               {certs.map((cert, idx) => (
                 <div key={idx} className="bg-gray-50 rounded-2xl p-4 border border-gray-100 relative">
@@ -1220,7 +1220,7 @@ export default function MonProfil() {
             <div>
               <label className={labelClass}>Conditions de travail (min 200 caractères) <span className="text-red-500">*</span></label>
               <textarea rows={3} value={form.working_conditions} onChange={e => update('working_conditions', e.target.value)} placeholder="Décrivez les conditions de travail : sécurité, formation, avantages, etc." className={`${inputClass} resize-none`} />
-              <p className="text-xs text-gray-400 mt-1">{form.working_conditions.length} caractères</p>
+              <p className="text-xs text-gray-500 mt-1">{form.working_conditions.length} caractères</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
               <div>
@@ -1334,7 +1334,7 @@ export default function MonProfil() {
             <div>
               <label className={labelClass}>Vidéo de présentation <span className="text-gray-400 font-normal">(optionnel)</span></label>
               <input type="url" value={form.video_url} onChange={e => update('video_url', e.target.value)} placeholder="https://youtube.com/..." className={inputClass} />
-              <p className="text-xs text-gray-400 mt-1">Durée conseillée : 2-3 minutes</p>
+              <p className="text-xs text-gray-500 mt-1">Durée conseillée : 2-3 minutes</p>
             </div>
             <SaveButton onClick={() => saveSection('10', { logo_url: form.logo_url || null, banner_url: form.banner_url || null, team_photos: form.team_photos, product_photos: form.product_photos, video_url: form.video_url || null })} saving={saving === '10'} />
           </SectionCard>

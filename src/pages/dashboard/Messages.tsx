@@ -245,7 +245,7 @@ export default function MessagesPage() {
             {/* Conversation list */}
             <div className="flex-1 overflow-y-auto space-y-1 pr-1">
               {filtered.length === 0 ? (
-                <div className="text-center py-8 text-xs text-gray-400">
+                <div className="text-center py-8 text-xs text-gray-500">
                   Aucun contact correspondant à "{search}".
                 </div>
               ) : (
@@ -282,7 +282,7 @@ export default function MessagesPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-1 mb-0.5">
                           <h4 className="font-bold text-gray-900 text-sm truncate">{name}</h4>
-                          <span className="text-[10px] text-gray-400 font-medium flex-shrink-0">{dateStr}</span>
+                          <span className="text-[10px] text-gray-500 font-medium flex-shrink-0">{dateStr}</span>
                         </div>
 
                         <p className={`text-xs truncate ${c.unreadCount > 0 ? 'font-bold text-gray-900' : 'text-gray-500'}`}>
@@ -320,7 +320,7 @@ export default function MessagesPage() {
               <div className="hidden lg:flex flex-col items-center justify-center h-full text-center p-8 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
                 <MessageSquare className="w-12 h-12 text-gray-300 mb-3" />
                 <h3 className="font-bold text-gray-700 text-base mb-1">Sélectionnez une conversation</h3>
-                <p className="text-xs text-gray-400 max-w-xs">
+                <p className="text-xs text-gray-500 max-w-xs">
                   Choisissez un contact dans la liste de gauche pour afficher l'historique des échanges.
                 </p>
               </div>

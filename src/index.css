@@ -58,3 +58,39 @@
     animation: shimmer 1.5s infinite;
   }
 }
+
+
+/* ===== Accessibilité (audit n°10) ===== */
+/* Focus clavier visible partout, sans polluer le clic souris */
+*:focus-visible {
+  outline: 3px solid #059669;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Lien d'évitement : invisible jusqu'au focus clavier */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 100;
+  background: #065f46;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 0 0 12px 0;
+  font-weight: 700;
+  font-size: 14px;
+}
+.skip-link:focus {
+  left: 0;
+  top: 0;
+}
+
+/* Respect de prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

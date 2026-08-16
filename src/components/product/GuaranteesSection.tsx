@@ -44,7 +44,7 @@ export default function GuaranteesSection({ product }: Props) {
               </div>
             ))}
             {product.certifications.length === 0 && (
-              <p className="text-xs text-gray-400">Aucune certification enregistrée.</p>
+              <p className="text-xs text-gray-500">Aucune certification enregistrée.</p>
             )}
           </div>
         </GuaranteeCard>

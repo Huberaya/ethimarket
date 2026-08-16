@@ -175,7 +175,7 @@ export default function CertificationsDashboard() {
               <div>
                 <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Total certifications</p>
                 <p className="text-2xl sm:text-3xl font-black text-gray-900 mt-1">{stats.total}</p>
-                <p className="text-xs text-gray-400 mt-0.5">Toutes régions confondues</p>
+                <p className="text-xs text-gray-500 mt-0.5">Toutes régions confondues</p>
               </div>
               <div className="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
                 <Award className="w-6 h-6" />

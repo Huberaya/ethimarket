@@ -152,7 +152,7 @@ export default function ProcurementComparisonModal({ products, isOpen, onClose }
                       return (
                         <th key={s.product.id} className={`px-4 py-3 text-center ${isReco ? 'bg-emerald-50' : ''}`}>
                           <div className="flex flex-col items-center gap-1">
-                            <span className="text-[10px] font-bold text-gray-400 uppercase">Produit {letters[i]}</span>
+                            <span className="text-[10px] font-bold text-gray-500 uppercase">Produit {letters[i]}</span>
                             <Link to={`/produits/${s.product.slug}`} className="font-bold text-gray-900 hover:text-emerald-700 leading-tight max-w-[150px] truncate">
                               {s.product.country_flag} {s.product.name}
                             </Link>
@@ -175,7 +175,7 @@ export default function ProcurementComparisonModal({ products, isOpen, onClose }
                         <span className={`text-lg tabular-nums ${bestOf.price === s.product.id ? 'font-black text-emerald-700 underline decoration-emerald-300 decoration-2 underline-offset-4' : 'font-semibold text-gray-700'}`}>
                           {s.product.price} {s.product.currency || '€'}
                         </span>
-                        <span className="block text-[10px] text-gray-400">/{s.product.price_unit || s.product.moq_unit || 'unité'}</span>
+                        <span className="block text-[10px] text-gray-500">/{s.product.price_unit || s.product.moq_unit || 'unité'}</span>
                       </td>
                     ))}
                   </tr>
@@ -228,7 +228,7 @@ export default function ProcurementComparisonModal({ products, isOpen, onClose }
                         <span className={`text-xl tabular-nums ${reco?.recommended.product.id === s.product.id ? 'font-black text-emerald-700' : 'font-bold text-gray-600'}`}>
                           {s.overallScore}
                         </span>
-                        <span className="text-xs text-gray-400">/100</span>
+                        <span className="text-xs text-gray-500">/100</span>
                       </td>
                     ))}
                   </tr>

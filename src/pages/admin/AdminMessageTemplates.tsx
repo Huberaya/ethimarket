@@ -659,7 +659,7 @@ export default function AdminMessageTemplates() {
                         <div className="max-h-24 overflow-hidden relative">
                           {renderHighlightedBodySnippet(tpl.body)}
                         </div>
-                        <div className="text-[10px] text-gray-400 font-semibold mt-2 flex items-center justify-between">
+                        <div className="text-[10px] text-gray-500 font-semibold mt-2 flex items-center justify-between">
                           <span>{variableCount} variable{variableCount > 1 ? 's' : ''} utilisée{variableCount > 1 ? 's' : ''}</span>
                           {hasPreviousVersion && (
                             <span className="text-indigo-600 font-bold flex items-center gap-1">

@@ -485,7 +485,7 @@ export default function AddProduct() {
                 ) : (
                   <div className="text-center p-3">
                     <Upload className="w-8 h-8 text-gray-300 mx-auto mb-1" />
-                    <span className="text-xs text-gray-400">Aucune photo</span>
+                    <span className="text-xs text-gray-500">Aucune photo</span>
                   </div>
                 )}
               </div>
@@ -504,7 +504,7 @@ export default function AddProduct() {
                   <Upload className="w-4 h-4 text-gray-600" />
                   {imageFile ? "Changer la photo" : "Téléverser une photo"}
                 </label>
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="text-xs text-gray-500 mt-2">
                   Format JPG, PNG ou WebP. Max 5 Mo.
                 </p>
               </div>

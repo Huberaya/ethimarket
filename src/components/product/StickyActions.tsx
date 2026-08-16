@@ -27,13 +27,13 @@ export default function StickyActions({ product, quantity, unitPrice, isQuote, o
             <button className="btn-outline px-3.5 py-2.5 text-sm inline-flex items-center gap-2">
               <MessageSquare className="w-4 h-4" /> <span className="hidden xl:inline">Contacter</span>
             </button>
-            <button className="btn-outline px-3.5 py-2.5 text-sm inline-flex items-center gap-2">
+            <button aria-label="Télécharger les documents" className="btn-outline px-3.5 py-2.5 text-sm inline-flex items-center gap-2">
               <Download className="w-4 h-4" /> <span className="hidden xl:inline">Documents</span>
             </button>
-            <button onClick={() => setFavorited(f => !f)} className={`btn-outline px-3.5 py-2.5 ${favorited ? 'text-red-500 border-red-200 bg-red-50' : ''}`}>
+            <button onClick={() => setFavorited(f => !f)} aria-label={favorited ? 'Retirer des favoris' : 'Ajouter aux favoris'} aria-pressed={favorited} className={`btn-outline px-3.5 py-2.5 ${favorited ? 'text-red-500 border-red-200 bg-red-50' : ''}`}>
               <Heart className={`w-4 h-4 ${favorited ? 'fill-red-500' : ''}`} />
             </button>
-            <button onClick={() => setShareOpen(true)} className="btn-outline px-3.5 py-2.5">
+            <button onClick={() => setShareOpen(true)} aria-label="Partager ce produit" className="btn-outline px-3.5 py-2.5">
               <Share2 className="w-4 h-4" />
             </button>
           </div>
@@ -43,7 +43,7 @@ export default function StickyActions({ product, quantity, unitPrice, isQuote, o
       {/* Mobile sticky bar */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-gray-100 px-4 py-3">
         <div className="flex items-center gap-2">
-          <button onClick={() => setFavorited(f => !f)} className={`w-11 h-11 rounded-xl border-2 flex items-center justify-center flex-shrink-0 ${favorited ? 'border-red-200 text-red-500 bg-red-50' : 'border-gray-200 text-gray-500'}`}>
+          <button onClick={() => setFavorited(f => !f)} aria-label={favorited ? 'Retirer des favoris' : 'Ajouter aux favoris'} aria-pressed={favorited} className={`w-11 h-11 rounded-xl border-2 flex items-center justify-center flex-shrink-0 ${favorited ? 'border-red-200 text-red-500 bg-red-50' : 'border-gray-200 text-gray-500'}`}>
             <Heart className={`w-5 h-5 ${favorited ? 'fill-red-500' : ''}`} />
           </button>
           <button className="w-11 h-11 rounded-xl border-2 border-gray-200 text-gray-500 flex items-center justify-center flex-shrink-0">
@@ -69,7 +69,7 @@ export default function StickyActions({ product, quantity, unitPrice, isQuote, o
               className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 font-mono text-gray-600"
               onClick={e => (e.target as HTMLInputElement).select()}
             />
-            <p className="text-xs text-gray-400 mt-2">Cliquez pour copier le lien</p>
+            <p className="text-xs text-gray-500 mt-2">Cliquez pour copier le lien</p>
           </div>
         </div>
       )}

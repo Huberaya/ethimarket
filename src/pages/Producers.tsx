@@ -115,7 +115,7 @@ export default function Producers() {
             <div>
               <div className="mb-4 flex items-center justify-between">
                 <p className="text-sm text-gray-500">{mapMarkers.length} producteur{mapMarkers.length > 1 ? 's' : ''} géolocalisé{mapMarkers.length > 1 ? 's' : ''}</p>
-                <p className="text-xs text-gray-400">Cliquez sur un marqueur pour voir le producteur</p>
+                <p className="text-xs text-gray-500">Cliquez sur un marqueur pour voir le producteur</p>
               </div>
               {mapMarkers.length > 0 ? (
                 <LeafletMap markers={mapMarkers} height="600px" zoom={2} />
@@ -154,7 +154,7 @@ export default function Producers() {
                         ))}
                       </div>
                       <span className="text-xs font-semibold text-gray-800">{producer.rating}</span>
-                      <span className="text-xs text-gray-400">({producer.review_count} avis)</span>
+                      <span className="text-xs text-gray-500">({producer.review_count} avis)</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5 mb-5">
                       {producer.certifications.slice(0, 3).map(c => (

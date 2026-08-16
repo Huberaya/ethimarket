@@ -238,7 +238,7 @@ export default function AdminProducers() {
                           </div>
                           <div>
                             <p className="font-bold text-gray-900 leading-tight">{p.name}</p>
-                            <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
+                            <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
                               <Mail className="w-3 h-3 text-gray-300" />
                               {p.profiles?.email || 'Sans email'}
                             </p>
@@ -407,7 +407,7 @@ export default function AdminProducers() {
                   <p className="text-sm text-gray-500 font-medium">
                     {selectedProducer.country_flag} {selectedProducer.country} {selectedProducer.region && `• ${selectedProducer.region}`}
                   </p>
-                  <p className="text-xs text-gray-400 mt-1">{selectedProducer.profiles?.email || 'Email non disponible'}</p>
+                  <p className="text-xs text-gray-500 mt-1">{selectedProducer.profiles?.email || 'Email non disponible'}</p>
                 </div>
               </div>
 

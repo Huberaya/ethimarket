@@ -509,7 +509,7 @@ export default function AdminCertBodyDetail() {
                       {body.api_endpoint}
                     </p>
                   ) : (
-                    <p className="text-gray-400 italic text-[11px]">Non configurée</p>
+                    <p className="text-gray-500 italic text-[11px]">Non configurée</p>
                   )}
                 </div>
 
@@ -530,7 +530,7 @@ export default function AdminCertBodyDetail() {
                       {body.email_contact}
                     </a>
                   ) : (
-                    <p className="text-gray-400 italic text-[11px]">Non configuré</p>
+                    <p className="text-gray-500 italic text-[11px]">Non configuré</p>
                   )}
                 </div>
 
@@ -554,7 +554,7 @@ export default function AdminCertBodyDetail() {
                       <ExternalLink className="w-3.5 h-3.5 flex-shrink-0" />
                     </a>
                   ) : (
-                    <p className="text-gray-400 italic text-[11px]">Non configuré</p>
+                    <p className="text-gray-500 italic text-[11px]">Non configuré</p>
                   )}
                 </div>
 
@@ -572,7 +572,7 @@ export default function AdminCertBodyDetail() {
                       {body.whatsapp}
                     </p>
                   ) : (
-                    <p className="text-gray-400 italic text-[11px]">Non configuré</p>
+                    <p className="text-gray-500 italic text-[11px]">Non configuré</p>
                   )}
                 </div>
               </div>
@@ -663,12 +663,12 @@ export default function AdminCertBodyDetail() {
                     </div>
                     {std.scope && <p className="text-xs text-gray-600 font-medium">{std.scope}</p>}
                     {std.geographic_coverage && (
-                      <p className="text-[11px] text-gray-400">Couverture : {std.geographic_coverage}</p>
+                      <p className="text-[11px] text-gray-500">Couverture : {std.geographic_coverage}</p>
                     )}
                   </div>
 
                   <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
-                    <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">
+                    <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">
                       Type : {std.type || 'Standard'}
                     </span>
                     <button
@@ -739,7 +739,7 @@ export default function AdminCertBodyDetail() {
                     {c.phone && <p className="text-gray-700">{c.phone}</p>}
                   </div>
 
-                  <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-400">
+                  <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500">
                     <span>Langue : {c.language?.toUpperCase() || 'FR'}</span>
                     <button
                       type="button"
