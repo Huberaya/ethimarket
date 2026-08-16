@@ -11,6 +11,7 @@ import ProductCard from '../components/ProductCard';
 import SEOHead from '../components/SEOHead';
 import { supabase, type Product, type Category, type Producer, type Article } from '../lib/supabase';
 import { useI18n } from '../lib/i18n';
+import { HOME_CONTENT } from '../lib/i18n/content/home';
 
 /* ─── Constants ────────────────────────────────────────── */
 
@@ -28,83 +29,28 @@ const TRUST_FEATURES = [
   { icon: Handshake,  title: 'Commerce équitable garanti',  desc: 'Charte éthique contraignante. Rémunération juste des producteurs, conditions de travail dignes.', tag: 'Éthique' },
 ];
 
-const POPULAR = ["Huile d'argan", 'Café éthiopien', 'Safran', 'Vanille', 'Quinoa', 'Spiruline'];
 
 const HERO_IMG = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80';
 const VIDEO_POSTER = 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80';
-
-const VIDEO_BADGES = [
-  { icon: '⏱️', text: '2 minutes pour comprendre' },
-  { icon: '🎯', text: 'Notre mission expliquée' },
-  { icon: '🌍', text: 'Disponible en 5 langues' },
-];
-
-const DEMARCHE_CARDS = [
-  {
-    emoji: '🌾',
-    title: 'POUR LES PRODUCTEURS',
-    subtitle: 'Reprendre le pouvoir sur son travail',
-    points: ['+40% de marges en moyenne', 'Accès direct aux marchés mondiaux', 'Outils digitaux gratuits (IA, traduction)', 'Zéro intermédiaire, prix justes', 'Visibilité internationale'],
-    bg: 'bg-brand-50 border-brand-200',
-    iconBg: 'bg-brand-500',
-    textColor: 'text-gray-900',
-  },
-  {
-    emoji: '🏪',
-    title: 'POUR LES ACHETEURS',
-    subtitle: 'Sourcer bio, éthique et responsable',
-    points: ['-35% sur les coûts d\'approvisionnement', 'Traçabilité totale de la ferme à l\'assiette', 'Qualité garantie et certifiée', 'Gain de temps considérable (-80%)', 'Fournisseurs vérifiés physiquement'],
-    bg: 'bg-blue-50 border-blue-200',
-    iconBg: 'bg-blue-500',
-    textColor: 'text-gray-900',
-  },
-  {
-    emoji: '👥',
-    title: 'POUR LES CONSOMMATEURS FINAUX',
-    subtitle: 'Consommer en conscience',
-    points: ['Produits authentiques et vérifiés', 'Origine traçable en 1 clic', 'Impact positif sur les producteurs', 'Prix reflétant la vraie valeur', 'Soutien direct à l\'agriculture familiale'],
-    bg: 'bg-amber-50 border-amber-200',
-    iconBg: 'bg-amber-500',
-    textColor: 'text-gray-900',
-  },
-  {
-    emoji: '🌍',
-    title: 'POUR NOTRE PLANÈTE',
-    subtitle: 'Un monde plus vivable pour demain',
-    points: ['-60% d\'émissions CO2 vs commerce classique', 'Biodiversité préservée', 'Sols vivants et fertiles', 'Océans protégés', 'Circuits courts optimisés'],
-    bg: 'bg-brand-800 border-brand-700',
-    iconBg: 'bg-brand-400',
-    textColor: 'text-white',
-  },
-];
-
-const IMPACT_METRICS = [
-  { emoji: '🌳', value: '15 000',     label: 'arbres préservés',            color: 'text-brand-600' },
-  { emoji: '💧', value: '2,3 M',      label: 'litres d\'eau économisés',    color: 'text-blue-600' },
-  { emoji: '♻️', value: '60%',        label: 'de déchets plastique évités', color: 'text-teal-600' },
-  { emoji: '🌱', value: '850 t',      label: 'de CO2 évitées',              color: 'text-brand-600' },
-  { emoji: '🐝', value: '+45%',       label: 'plus de pollinisateurs protégés', color: 'text-amber-600' },
-  { emoji: '👨‍🌾', value: '6', label: 'coopératives partenaires en direct', color: 'text-purple-600' },
-];
-
-const CARBON_COMPARISON = [
-  { label: 'Commerce conventionnel',    co2: '100 kg CO₂', pct: 100, color: 'bg-red-500' },
-  { label: 'Circuit court bio classique', co2: '40 kg CO₂',  pct: 40,  color: 'bg-amber-500' },
-  { label: 'EthiMarket direct',          co2: '20 kg CO₂',  pct: 20,  color: 'bg-brand-500' },
-];
-
-const COMMITMENTS_2025 = [
-  'Neutralité carbone sur toutes nos opérations',
-  '100% emballages recyclables ou compostables',
-  'Élargir le réseau de coopératives productrices vérifiées',
-  'Programme de reforestation en Afrique et Amérique du Sud',
-];
 
 const ARTICLE_CATEGORIES: Record<string, string> = {
   'Agriculture':         'bg-brand-50 text-brand-700 border-brand-200',
   'Commerce équitable':  'bg-blue-50 text-blue-700 border-blue-200',
   'Environnement':       'bg-amber-50 text-amber-700 border-amber-200',
 };
+
+const DEMARCHE_STYLES = [
+  { bg: 'bg-brand-50 border-brand-200', iconBg: 'bg-brand-500', textColor: 'text-gray-900' },
+  { bg: 'bg-blue-50 border-blue-200', iconBg: 'bg-blue-500', textColor: 'text-gray-900' },
+  { bg: 'bg-amber-50 border-amber-200', iconBg: 'bg-amber-500', textColor: 'text-gray-900' },
+  { bg: 'bg-brand-800 border-brand-700', iconBg: 'bg-brand-400', textColor: 'text-white' },
+];
+const IMPACT_COLORS = ['text-brand-600', 'text-blue-600', 'text-teal-600', 'text-brand-600', 'text-amber-600', 'text-purple-600'];
+const CARBON_STYLE = [
+  { pct: 100, color: 'bg-red-500' },
+  { pct: 40, color: 'bg-amber-500' },
+  { pct: 20, color: 'bg-brand-500' },
+];
 
 /* ─── Skeleton ──────────────────────────────────────────── */
 function CardSkeleton() {
@@ -120,7 +66,8 @@ export default function Home() {
   const [search, setSearch]                       = useState('');
   const [heroLoaded, setHeroLoaded]               = useState(false);
   const [videoOpen, setVideoOpen]                 = useState(false);
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const hc = HOME_CONTENT[locale];
   const navigate = useNavigate();
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -215,7 +162,7 @@ export default function Home() {
 
             <div className="flex flex-wrap items-center gap-2 text-sm">
               <span className="text-white/50 font-medium">{t('home.trends')}</span>
-              {POPULAR.map(tag => (
+              {hc.popular.map(tag => (
                 <button key={tag} onClick={() => navigate(`/catalogue?q=${encodeURIComponent(tag)}`)}
                   className="text-white/70 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full text-xs font-medium transition-all border border-white/10 hover:border-white/30">
                   {tag}
@@ -350,15 +297,15 @@ export default function Home() {
             <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 text-left">
               <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md text-white text-xs font-semibold px-3 py-1.5 rounded-full border border-white/30 mb-3">
                 <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                Vidéo · 2 min 14
+                {hc.videoDuration}
               </div>
-              <h3 className="text-white text-xl sm:text-2xl font-black mb-1">Le commerce équitable, simplement</h3>
-              <p className="text-white/60 text-sm">Suivez le parcours d'une huile d'argan du Maroc jusqu'à un magasin bio à Paris.</p>
+              <h3 className="text-white text-xl sm:text-2xl font-black mb-1">{hc.videoCardTitle}</h3>
+              <p className="text-white/60 text-sm">{hc.videoCardDesc}</p>
             </div>
           </button>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
-            {VIDEO_BADGES.map(({ icon, text }) => (
+            {hc.videoBadges.map(({ icon, text }) => (
               <div key={text} className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-card">
                 <span className="text-2xl">{icon}</span>
                 <span className="font-semibold text-gray-900 text-sm">{text}</span>
@@ -387,13 +334,13 @@ export default function Home() {
               <div className="relative">
                 <div className="text-5xl text-brand-300 mb-6 font-serif">❝</div>
                 <p className="text-lg sm:text-xl text-gray-800 leading-relaxed font-medium mb-6">
-                  Le commerce mondial actuel appauvrit les producteurs, pollue notre planète et déshumanise les échanges commerciaux.
+                  {hc.manifesto[0]}
                 </p>
                 <p className="text-lg sm:text-xl text-gray-800 leading-relaxed font-medium mb-6">
-                  EthiMarket redonne le pouvoir aux producteurs bio, assure une juste rémunération, réduit l'empreinte carbone et rebâtit la confiance entre tous les acteurs du commerce responsable.
+                  {hc.manifesto[1]}
                 </p>
                 <p className="text-lg sm:text-xl text-brand-700 leading-relaxed font-bold">
-                  Nous croyons profondément qu'un monde meilleur commence par des échanges plus justes et plus transparents.
+                  {hc.manifesto[2]}
                 </p>
               </div>
             </div>
@@ -401,29 +348,32 @@ export default function Home() {
 
           {/* 4 cartes */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-            {DEMARCHE_CARDS.map(card => (
-              <div key={card.title} className={`rounded-3xl border-2 p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${card.bg}`}>
+            {hc.demarcheCards.map((card, ci) => {
+              const st = DEMARCHE_STYLES[ci] ?? DEMARCHE_STYLES[0];
+              return (
+              <div key={card.title} className={`rounded-3xl border-2 p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${st.bg}`}>
                 <div className="flex items-center gap-4 mb-5">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shadow-lg ${card.iconBg}`}>
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shadow-lg ${st.iconBg}`}>
                     {card.emoji}
                   </div>
                   <div>
-                    <h3 className={`font-black text-lg leading-tight ${card.textColor}`}>{card.title}</h3>
-                    <p className={`text-sm font-medium ${card.textColor === 'text-white' ? 'text-white/70' : 'text-gray-500'}`}>
+                    <h3 className={`font-black text-lg leading-tight ${st.textColor}`}>{card.title}</h3>
+                    <p className={`text-sm font-medium ${st.textColor === 'text-white' ? 'text-white/70' : 'text-gray-500'}`}>
                       {card.subtitle}
                     </p>
                   </div>
                 </div>
                 <ul className="space-y-2.5">
                   {card.points.map(point => (
-                    <li key={point} className={`flex items-start gap-2.5 text-sm ${card.textColor === 'text-white' ? 'text-white/90' : 'text-gray-700'}`}>
-                      <CheckCircle className={`w-4 h-4 flex-shrink-0 mt-0.5 ${card.textColor === 'text-white' ? 'text-brand-300' : 'text-brand-600'}`} />
+                    <li key={point} className={`flex items-start gap-2.5 text-sm ${st.textColor === 'text-white' ? 'text-white/90' : 'text-gray-700'}`}>
+                      <CheckCircle className={`w-4 h-4 flex-shrink-0 mt-0.5 ${st.textColor === 'text-white' ? 'text-brand-300' : 'text-brand-600'}`} />
                       <span>{point}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Bandeau final */}
@@ -431,7 +381,7 @@ export default function Home() {
             <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }} />
             <div className="relative">
               <h3 className="text-2xl sm:text-3xl font-black text-white leading-tight text-balance">
-                Ensemble, construisons le monde de demain :<br className="hidden sm:block" /> plus juste, plus vert, plus humain.
+                {hc.finalBanner}
               </h3>
               <Link to="/inscription" className="inline-flex items-center gap-2 mt-6 px-8 py-3.5 bg-white text-brand-600 font-bold rounded-xl hover:bg-brand-50 transition-colors shadow-lg text-sm">
                 {t('home.joinMovement')} <ArrowRight className="w-4 h-4" />
@@ -511,10 +461,10 @@ export default function Home() {
 
           {/* 6 stats grid */}
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 mb-16">
-            {IMPACT_METRICS.map(({ emoji, value, label, color }) => (
+            {hc.impactMetrics.map(({ emoji, value, label }, mi) => (
               <div key={label} className="bg-white rounded-3xl border-2 border-gray-100 hover:border-brand-300 p-7 text-center shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 group">
                 <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{emoji}</div>
-                <div className={`text-3xl font-black ${color} mb-1`}>{value}</div>
+                <div className={`text-3xl font-black ${IMPACT_COLORS[mi] ?? 'text-brand-600'} mb-1`}>{value}</div>
                 <div className="text-sm text-gray-500 leading-tight">{label}</div>
               </div>
             ))}
@@ -524,20 +474,23 @@ export default function Home() {
           <div className="bg-gray-50 rounded-3xl border border-gray-100 p-8 mb-16">
             <h3 className="font-black text-gray-900 text-xl mb-8 text-center">{t('home.carbonTitle')}</h3>
             <div className="space-y-6 max-w-2xl mx-auto">
-              {CARBON_COMPARISON.map(({ label, co2, pct, color }) => (
+              {hc.carbonComparison.map(({ label, co2 }, ci) => {
+                const st = CARBON_STYLE[ci] ?? CARBON_STYLE[0];
+                return (
                 <div key={label}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-semibold text-gray-700">{label}</span>
                     <span className="text-sm font-black text-gray-900">{co2}</span>
                   </div>
                   <div className="h-8 bg-white rounded-xl overflow-hidden border border-gray-200">
-                    <div className={`h-full ${color} rounded-xl flex items-center justify-end pr-3 transition-all duration-1000`}
-                      style={{ width: `${pct}%` }}>
-                      <span className="text-white text-xs font-bold">{pct}%</span>
+                    <div className={`h-full ${st.color} rounded-xl flex items-center justify-end pr-3 transition-all duration-1000`}
+                      style={{ width: `${st.pct}%` }}>
+                      <span className="text-white text-xs font-bold">{st.pct}%</span>
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
             <p className="text-center text-xs text-gray-500 mt-6">{t('home.carbonNote')}</p>
           </div>
@@ -551,7 +504,7 @@ export default function Home() {
                 <h3 className="text-2xl font-black text-white">{t('home.commitments')}</h3>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-4 max-w-3xl mx-auto">
-                {COMMITMENTS_2025.map(commitment => (
+                {hc.commitments2025.map(commitment => (
                   <div key={commitment} className="flex items-start gap-3">
                     <div className="w-6 h-6 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                       <CheckCircle className="w-4 h-4 text-brand-300" />
@@ -598,13 +551,13 @@ export default function Home() {
         <div className="relative max-w-4xl mx-auto px-4 text-center">
           <div className="text-5xl mb-6">❝</div>
           <blockquote className="text-2xl sm:text-3xl font-bold text-white leading-relaxed mb-8 text-balance">
-            "Grâce à EthiMarket, nous avons réduit nos coûts d'approvisionnement de 35% tout en améliorant la traçabilité de nos produits."
+            "{hc.testimonialQuote}"
           </blockquote>
           <div className="flex items-center justify-center gap-3">
             <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm">MV</div>
             <div className="text-left">
-              <p className="text-white font-semibold text-sm">Marie Valentin</p>
-              <p className="text-white/60 text-xs">Directrice achats, Bio Planet (500 magasins)</p>
+              <p className="text-white font-semibold text-sm">{hc.testimonialName}</p>
+              <p className="text-white/60 text-xs">{hc.testimonialRole}</p>
             </div>
           </div>
         </div>
@@ -718,8 +671,8 @@ export default function Home() {
                 <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
                   <Play className="w-7 h-7 text-white fill-white ml-0.5" />
                 </div>
-                <p className="text-white font-bold text-lg mb-1">Vidéo de présentation EthiMarket</p>
-                <p className="text-white/50 text-sm">2 min 14 · Le parcours d'un produit équitable</p>
+                <p className="text-white font-bold text-lg mb-1">{hc.videoModalTitle}</p>
+                <p className="text-white/50 text-sm">{hc.videoModalDesc}</p>
               </div>
             </div>
           </div>
