@@ -21,6 +21,7 @@ import DeliverySection from '../components/product/DeliverySection';
 import ReviewsSection from '../components/product/ReviewsSection';
 import FAQSection from '../components/product/FAQSection';
 import StickyActions from '../components/product/StickyActions';
+import TrustCenterSection from '../components/trust/TrustCenterSection';
 import {
   calculateEthiMarketScore,
   calculateVolumeDiscounts,
@@ -450,6 +451,11 @@ export default function ProductDetail() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <GuaranteesSection product={product} producer={producer} />
         <TraceabilitySection product={product} />
+
+        {/* Trust Center — pourquoi ce produit est considéré comme responsable */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <TrustCenterSection productId={product.id} />
+        </div>
         <ProducerProfileSection producer={producer} />
         <ImpactSection product={product} producer={producer} quantity={qty} />
         <TechnicalDetailsSection product={product} />

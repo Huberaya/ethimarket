@@ -10,6 +10,7 @@ import Blog from './pages/Blog';
 import Contact from './pages/Contact';
 import DevenirVendeur from './pages/DevenirVendeur';
 import NotreMission from './pages/NotreMission';
+import TrustCenter from './pages/TrustCenter';
 import Producers from './pages/Producers';
 import ComingSoon from './pages/ComingSoon';
 import Legal from './pages/Legal';
@@ -65,6 +66,7 @@ export default function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/devenir-vendeur" element={<DevenirVendeur />} />
         <Route path="/notre-mission" element={<NotreMission />} />
+        <Route path="/trust-center" element={<TrustCenter />} />
         <Route path="/producteurs" element={<Producers />} />
         <Route path="/conditions-utilisation" element={<Legal />} />
         <Route path="/confidentialite" element={<Legal />} />
