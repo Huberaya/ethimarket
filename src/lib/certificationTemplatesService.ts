@@ -314,7 +314,7 @@ export async function updateTemplate(
         body: currentNormalized.body,
         variables: currentNormalized.variables,
         saved_at: currentNormalized.updated_at,
-        modified_by: currentNormalized.last_modified_by || currentNormalized.created_by
+        modified_by: currentNormalized.last_modified_by || currentNormalized.created_by || null
       };
 
       payload.previous_version = snapshot;

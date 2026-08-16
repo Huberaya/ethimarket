@@ -3,7 +3,7 @@ import {
   Sprout, Leaf, Calendar, Package, Truck, MapPin,
   ChevronRight, Coffee,
 } from 'lucide-react';
-import type { Product } from '../lib/supabase';
+import type { Product } from '../../lib/supabase';
 import { LeafletMap } from '../LeafletMap';
 import { SectionTitle, formatDate } from './GuaranteesSection';
 

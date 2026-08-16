@@ -310,7 +310,7 @@ export default function AdminProducers() {
 
                       {/* Joined date */}
                       <td className="py-3.5 px-4 text-xs text-gray-500">
-                        {new Date(p.created_at).toLocaleDateString('fr-FR')}
+                        {p.created_at ? new Date(p.created_at).toLocaleDateString('fr-FR') : '—'}
                       </td>
 
                       {/* Actions */}

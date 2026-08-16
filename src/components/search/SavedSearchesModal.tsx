@@ -171,7 +171,7 @@ export const SavedSearchesModal: React.FC<SavedSearchesModalProps> = ({
                         </span>
                       )}
                       {currentFilters.isVegan && <span className="bg-neutral-200 px-2 py-0.5 rounded">Vegan</span>}
-                      {currentFilters.livingWage && <span className="bg-neutral-200 px-2 py-0.5 rounded">Salaire décent</span>}
+                      {currentFilters.livingWageRequired && <span className="bg-neutral-200 px-2 py-0.5 rounded">Salaire décent</span>}
                     </div>
                   </div>
 

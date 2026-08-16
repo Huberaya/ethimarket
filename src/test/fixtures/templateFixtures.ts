@@ -24,7 +24,7 @@ export const mockTemplateVariables: TemplateVariables = {
   today_date: '15/08/2026'
 };
 
-export const mockEmailTemplateFR = {
+export const mockEmailTemplateFR: CertificationMessageTemplate = {
   id: 'tpl-email-fr-1',
   name: 'Email de vérification standard (FR)',
   title: 'Email de vérification standard (FR)',
@@ -64,7 +64,7 @@ L'équipe EthiMarket`,
   updated_at: '2026-08-14T00:00:00.000Z'
 };
 
-export const mockEmailTemplateEN = {
+export const mockEmailTemplateEN: CertificationMessageTemplate = {
   id: 'tpl-email-en-1',
   name: 'Standard Verification Email (EN)',
   title: 'Standard Verification Email (EN)',
@@ -102,7 +102,7 @@ The EthiMarket Verification Team`,
   updated_at: '2026-08-14T00:00:00.000Z'
 };
 
-export const mockWhatsAppTemplate = {
+export const mockWhatsAppTemplate: CertificationMessageTemplate = {
   id: 'tpl-wa-fr-1',
   name: 'Notification WhatsApp (FR)',
   title: 'Notification WhatsApp (FR)',
@@ -118,7 +118,7 @@ export const mockWhatsAppTemplate = {
   updated_at: '2026-08-14T00:00:00.000Z'
 };
 
-export const mockAPITemplate = {
+export const mockAPITemplate: CertificationMessageTemplate = {
   id: 'tpl-api-fr-1',
   name: 'Payload JSON Requête API (FR)',
   title: 'Payload JSON Requête API (FR)',
@@ -144,7 +144,7 @@ export const mockAPITemplate = {
   updated_at: '2026-08-14T00:00:00.000Z'
 };
 
-export const mockTemplateWithVersion = {
+export const mockTemplateWithVersion: CertificationMessageTemplate = {
   id: 'tpl-versioned-1',
   name: 'Modèle avec Version 2',
   title: 'Modèle avec Version 2',
@@ -161,13 +161,14 @@ export const mockTemplateWithVersion = {
     saved_at: '2026-08-14T10:00:00.000Z',
     subject: 'Objet Initial Version 1 - {certificate_number}',
     body: 'Corps initial v1 pour {producer_name}',
-    variables: ['producer_name']
+    variables: ['producer_name'],
+    modified_by: mockAdminUserId
   },
   created_at: '2026-08-14T09:00:00.000Z',
   updated_at: '2026-08-14T11:00:00.000Z'
 };
 
-export const mockTemplateWithInvalidVariables = {
+export const mockTemplateWithInvalidVariables: CertificationMessageTemplate = {
   id: 'tpl-invalid-vars-1',
   name: 'Modèle Variables Invalides',
   title: 'Modèle Variables Invalides',

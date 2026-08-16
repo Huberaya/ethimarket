@@ -193,6 +193,7 @@ export default function ProducerCertificationDetail() {
     setIsSavingResponse(true);
     try {
       const res = await recordManualResponse(
+        id!,
         activeRequestId,
         manualResponseText,
         responseResultStatus,
@@ -756,7 +757,7 @@ export default function ProducerCertificationDetail() {
       </div>
 
       {/* Modale de contact universelle */}
-      {isContactModalOpen && (
+      {isContactModalOpen && certification && (
         <UniversalContactModal
           isOpen={isContactModalOpen}
           onClose={() => setIsContactModalOpen(false)}
@@ -764,7 +765,7 @@ export default function ProducerCertificationDetail() {
           certificateNumber={certification.certificate_number || 'N/A'}
           producerName={certification.producer?.name || 'Producteur Partenaire'}
           producerCountry={certification.producer?.country || certification.country_of_issue || 'France'}
-          declaredStandard={certification.certification_type || certification.certification_standard?.name || 'Bio'}
+          declaredStandard={String(certification.certification_type || certification.certification_standard?.name || 'Bio')}
           onBodySelected={(b) => setActiveBody(b)}
         />
       )}

@@ -11,7 +11,7 @@ import SEOHead from '../components/SEOHead';
 import QRCode from 'qrcode';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { supabase, type Product, type Producer, type Review } from '../lib/supabase';
+import { supabase, type Product, type Producer, type Review, type ScoreDetails } from '../lib/supabase';
 import GuaranteesSection from '../components/product/GuaranteesSection';
 import TraceabilitySection from '../components/product/TraceabilitySection';
 import ProducerProfileSection from '../components/product/ProducerProfileSection';
@@ -122,9 +122,11 @@ export default function ProductDetail() {
   const scoreResult = calculateEthiMarketScore(producer);
   const ethiScore = producer?.ethimarket_score && producer.ethimarket_score > 0 ? producer.ethimarket_score : scoreResult.score;
   const producerBadge = producer?.badge_level ?? scoreResult.badge;
-  const scoreDetails = producer?.score_details ?? {
+  const fallbackBadge: 'bronze' | 'silver' | 'gold' | null =
+    producerBadge === 'gold' ? 'gold' : producerBadge === 'silver' ? 'silver' : producerBadge === 'bronze' ? 'bronze' : null;
+  const scoreDetails: ScoreDetails = producer?.score_details ?? {
     total: ethiScore,
-    badge: producerBadge,
+    badge: fallbackBadge,
     categories: {
       certifications: { score: scoreResult.breakdown.certifications, max: 40 },
       traceability: { score: scoreResult.breakdown.traceability, max: 25 },
@@ -132,7 +134,7 @@ export default function ProductDetail() {
       environment: { score: scoreResult.breakdown.environment, max: 10 },
       satisfaction: { score: scoreResult.breakdown.satisfaction, max: 5 },
     },
-    penalties: { total: 0, items: [] }
+    penalties: { total: 0 }
   };
 
   // 2. Dynamic volume discounts
@@ -218,7 +220,7 @@ export default function ProductDetail() {
     <div className="min-h-screen bg-white pb-20 lg:pb-0">
       <SEOHead
         title={`${product.name} - En direct de ${product.country} | EthiMarket`}
-        description={product.description.slice(0, 160)}
+        description={(product.description || '').slice(0, 160)}
         image={gallery ? gallery[0] : undefined}
         type="product"
         jsonLd={{

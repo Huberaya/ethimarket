@@ -86,7 +86,7 @@ export const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
               {/* Producer & Origin */}
               <div className="flex items-center justify-between text-xs text-neutral-500 mb-1.5">
                 <span className="truncate max-w-[180px]">
-                  {prod.producers?.company_name || 'Producteur certifié'}
+                  {prod.producers?.name || 'Producteur certifié'}
                 </span>
                 <span className="flex items-center gap-1 font-medium text-neutral-700 shrink-0">
                   <span>{prod.country_flag}</span>

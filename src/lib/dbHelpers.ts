@@ -162,14 +162,14 @@ export const sanitizeProducerPayload = (data: Record<string, unknown>): Record<s
   return sanitizePayload(data, PRODUCER_FIELD_TYPES);
 };
 
+/**
+ * Interface structurelle minimale d'un client Supabase (réel ou mock de test).
+ * On accepte volontairement `any` sur le retour de `from` : les builders PostgREST
+ * générés par supabase-js ont des types génériques trop stricts pour un mock.
+ */
 type SupabaseClientLike = {
-  from: (table: string) => {
-    update: (data: Record<string, unknown>) => {
-      eq: (col: string, val: string) => {
-        select: (cols: string) => Promise<{ data: unknown[] | null; error: { message: string } | null }>;
-      } & Promise<{ data: unknown[] | null; error: { message: string } | null }>;
-    };
-  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  from: (table: string) => any;
 };
 
 export async function saveProducerField(

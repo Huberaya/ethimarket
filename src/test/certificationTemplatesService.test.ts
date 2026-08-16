@@ -173,7 +173,7 @@ describe('certificationTemplatesService', () => {
     it('Test 2.4 : Tous les templates ont un titre et un corps non vides', () => {
       const defaults = getDefaultTemplatesData();
       defaults.forEach((tpl) => {
-        expect(tpl.title.length).toBeGreaterThan(0);
+        expect((tpl.title || '').length).toBeGreaterThan(0);
         expect(tpl.body.length).toBeGreaterThan(0);
         expect(tpl.channel).toBeDefined();
         expect(tpl.language).toBeDefined();

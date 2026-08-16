@@ -55,7 +55,7 @@ export default function Verification() {
       } else {
         const { data: created } = await supabase
           .from('producer_verifications')
-          .insert({ producer_id: producer.id, status: producer.verification_status || 'draft' })
+          .insert({ producer_id: producer.id })
           .select('*')
           .maybeSingle();
         if (created) verifRecord = created as ProducerVerification;
@@ -74,30 +74,47 @@ export default function Verification() {
         }
       }
       if (!verifRecord) {
+        const nowIso = new Date().toISOString();
         verifRecord = {
           id: `verif-${producer.id}`,
           producer_id: producer.id,
-          status: (producer.verification_status as VerificationStatus) || 'draft',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          section_1_status: 'pending',
+          section_2_status: 'pending',
+          section_3_status: 'pending',
+          section_4_status: 'pending',
+          section_5_status: 'pending',
+          rejection_reasons: {},
+          submitted_at_1: null,
+          submitted_at_2: null,
+          submitted_at_3: null,
+          submitted_at_4: null,
+          submitted_at_5: null,
+          validated_by: null,
+          validated_at: null,
+          overall_score: 0,
+          badge_level: null,
+          onboarding_complete: false,
+          created_at: nowIso,
+          updated_at: nowIso,
         };
       }
     }
-    setVerification(verifRecord);
+    const verif: ProducerVerification = verifRecord;
+    setVerification(verif);
     try {
-      localStorage.setItem(`ethimarket_verification_${producer.id}`, JSON.stringify(verifRecord));
+      localStorage.setItem(`ethimarket_verification_${producer.id}`, JSON.stringify(verif));
     } catch (e) {
       console.warn('Error saving local verification:', e);
     }
 
     // 2. Fetch docs & certs with local storage fallback
     let fetchedDocs: VerificationDocument[] = [];
-    if (verifRecord.id && !verifRecord.id.startsWith('verif-')) {
+    if (verif.id && !verif.id.startsWith('verif-')) {
       try {
         const { data: dData } = await supabase
           .from('verification_documents')
           .select('*')
-          .eq('verification_id', verifRecord.id);
+          .eq('verification_id', verif.id);
         if (dData && dData.length > 0) fetchedDocs = dData as VerificationDocument[];
       } catch (e) {
         console.warn('Supabase verification_documents query error:', e);
@@ -119,12 +136,12 @@ export default function Verification() {
     setDocs(fetchedDocs);
 
     let fetchedCerts: VerificationCertification[] = [];
-    if (verifRecord.id && !verifRecord.id.startsWith('verif-')) {
+    if (verif.id && !verif.id.startsWith('verif-')) {
       try {
         const { data: cData } = await supabase
           .from('verification_certifications')
           .select('*')
-          .eq('verification_id', verifRecord.id);
+          .eq('verification_id', verif.id);
         if (cData && cData.length > 0) fetchedCerts = cData as VerificationCertification[];
       } catch (e) {
         console.warn('Supabase verification_certifications query error:', e);
@@ -173,7 +190,7 @@ export default function Verification() {
   const farmPhotoCount = Math.max(docs.filter(d => d.doc_type === 'farm_photo').length, producer?.farm_photos?.length || 0);
   const hasFarmPhotos = farmPhotoCount >= 5;
   const hasEthicalCharter = producer?.ethical_charter_signed === true || Boolean(producer?.ethical_charter_url) || Boolean(producer?.business_documents?.['declaration_honneur']) || docs.some(d => d.doc_type === 'no_child_labor' || d.doc_type === 'ethical_charter');
-  const hasGps = (producer?.latitude != null && producer?.longitude != null) || (producer?.gps_lat != null && producer?.gps_lng != null);
+  const hasGps = producer?.latitude != null && producer?.longitude != null;
 
   const allMandatoryUploaded = hasIdCard && hasBusinessReg && hasCertification && hasFarmPhotos && hasEthicalCharter && hasGps;
 
@@ -470,6 +487,7 @@ export default function Verification() {
           <Section5Form
             verification={verification}
             producer={producer!}
+            docs={docs}
             setDocs={setDocs}
             onRefresh={loadVerification}
           />
@@ -536,7 +554,7 @@ function Section1Form({
       doc_type: type,
       file_path: filePath,
       label,
-      uploaded_at: new Date().toISOString()
+      created_at: new Date().toISOString()
     };
 
     // 1. Immediate optimistic UI state update
@@ -665,7 +683,7 @@ function Section2Form({
         await supabase.from('verification_documents').insert(
           photos.map((p, i) => ({
             verification_id: verification.id, section: 2,
-            doc_type: 'farm_photo', file_path: p, label: photoLabels[i] || 'Photo'
+            doc_type: 'farm_photo', file_path: p, label: `Photo exploitation ${i + 1}`
           }))
         );
       }
@@ -736,7 +754,7 @@ function Section2Form({
               doc_type: 'farm_photo',
               file_path: url,
               label: `Photo exploitation ${idx + 1}`,
-              uploaded_at: new Date().toISOString()
+              created_at: new Date().toISOString()
             }));
 
             setDocs(prev => {
@@ -793,6 +811,9 @@ function Section3Form({
       issued_at: new Date().toISOString().slice(0, 10),
       expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
       file_path: filePath,
+      sticker_path: null,
+      status: 'pending',
+      created_at: new Date().toISOString(),
     };
 
     setCerts(prev => {
@@ -880,11 +901,13 @@ function Section3Form({
 function Section5Form({
   verification,
   producer,
+  docs,
   setDocs,
   onRefresh
 }: {
   verification: ProducerVerification | null;
   producer: Producer;
+  docs: VerificationDocument[];
   setDocs: React.Dispatch<React.SetStateAction<VerificationDocument[]>>;
   onRefresh: () => void;
 }) {
@@ -901,7 +924,7 @@ function Section5Form({
       doc_type: 'no_child_labor',
       file_path: path,
       label: 'Attestation absence travail des enfants',
-      uploaded_at: new Date().toISOString()
+      created_at: new Date().toISOString()
     };
 
     setDocs(prev => {

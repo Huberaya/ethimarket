@@ -3,7 +3,7 @@ import {
   ShieldCheck, Search, CheckCircle2, XCircle, Loader2,
   ChevronRight, FileText, MapPin, Award, FlaskConical, Heart, Filter,
 } from 'lucide-react';
-import { supabase, type ProducerVerification, type Producer } from '../lib/supabase';
+import { supabase, type ProducerVerification, type Producer, type VerificationStatus } from '../lib/supabase';
 
 type VerificationWithProducer = ProducerVerification & { producers?: Producer };
 
@@ -48,7 +48,7 @@ export default function AdminVerifications() {
     if (search && !name.toLowerCase().includes(search.toLowerCase())) return false;
     if (filterStatus !== 'all') {
       const statuses = [v.section_1_status, v.section_2_status, v.section_3_status, v.section_4_status, v.section_5_status];
-      if (!statuses.includes(filterStatus)) return false;
+      if (!statuses.includes(filterStatus as VerificationStatus)) return false;
     }
     return true;
   });

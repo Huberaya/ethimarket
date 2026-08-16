@@ -80,7 +80,7 @@ export default function AdminDashboard() {
     const prodMap: Record<string, { name: string; emoji: string; orders: number; revenue: number }> = {};
     for (const o of (topOrders ?? [])) {
       const pid = o.product_id as string;
-      const prod = o.products as { name: string; emoji: string } | null;
+      const prod = o.products as unknown as { name: string; emoji: string } | null;
       if (!prod) continue;
       if (!prodMap[pid]) prodMap[pid] = { name: prod.name, emoji: prod.emoji, orders: 0, revenue: 0 };
       prodMap[pid].orders += 1;

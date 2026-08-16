@@ -163,7 +163,7 @@ export const SearchAutocompleteDropdown: React.FC<SearchAutocompleteDropdownProp
                         {prod.country_flag && <span className="text-xs">{prod.country_flag}</span>}
                       </div>
                       <div className="text-xs text-neutral-500 flex items-center gap-2 mt-0.5 truncate">
-                        <span className="truncate">{prod.producers?.company_name || prod.producers?.name || prod.country}</span>
+                        <span className="truncate">{prod.producers?.name || prod.country}</span>
                         {prod.certifications && prod.certifications.length > 0 && (
                           <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded font-medium shrink-0">
                             {prod.certifications[0]}

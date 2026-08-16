@@ -1013,8 +1013,8 @@ export default function AdminCertBodyDetail() {
                     className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-medium"
                   >
                     {CERTIFICATION_REGIONS.map(r => (
-                      <option key={r} value={r}>
-                        {r}
+                      <option key={r.value} value={r.value}>
+                        {r.labelFr}
                       </option>
                     ))}
                   </select>
@@ -1080,19 +1080,19 @@ export default function AdminCertBodyDetail() {
                 <label className="font-bold text-gray-700">Types de certifications couvertes</label>
                 <div className="flex flex-wrap gap-2 pt-1">
                   {CERTIFICATION_TYPES.map(t => (
-                    <label key={t} className="inline-flex items-center gap-1.5 p-2 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer">
+                    <label key={t.value} className="inline-flex items-center gap-1.5 p-2 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer">
                       <input
                         type="checkbox"
-                        checked={editFormData.certification_types.includes(t)}
+                        checked={editFormData.certification_types.includes(t.value)}
                         onChange={e => {
                           const next = e.target.checked
-                            ? [...editFormData.certification_types, t]
-                            : editFormData.certification_types.filter(item => item !== t);
+                            ? [...editFormData.certification_types, t.value]
+                            : editFormData.certification_types.filter(item => item !== t.value);
                           setEditFormData({ ...editFormData, certification_types: next });
                         }}
                         className="rounded text-brand-600"
                       />
-                      <span className="capitalize">{t}</span>
+                      <span className="capitalize">{t.icon} {t.labelFr}</span>
                     </label>
                   ))}
                 </div>

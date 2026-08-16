@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Award,
@@ -288,7 +288,8 @@ export default function CertificationsDashboard() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
-              {CERTIFICATION_REGIONS.map(regionKey => {
+              {CERTIFICATION_REGIONS.map(r => {
+                const regionKey = r.value;
                 const meta = REGION_METADATA[regionKey];
                 const count = stats.by_region[regionKey] || 0;
                 const pct = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;

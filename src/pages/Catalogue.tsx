@@ -1,7 +1,7 @@
 // src/pages/Catalogue.tsx
 // Intelligent Multi-criteria Marketplace Catalogue with Natural Language Search
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import {
   LayoutGrid,
@@ -177,13 +177,13 @@ export default function Catalogue() {
     if (filters.countries?.length) count += filters.countries.length;
     if (filters.maxPrice !== undefined) count += 1;
     if (filters.minPrice !== undefined) count += 1;
-    if (filters.maxCo2 !== undefined) count += 1;
+    if (filters.maxCo2Kg !== undefined) count += 1;
     if (filters.isVegan) count += 1;
     if (filters.isRecycled) count += 1;
-    if (filters.livingWage) count += 1;
-    if (filters.isCooperative) count += 1;
-    if (filters.plasticFree) count += 1;
-    if (filters.fullTraceability) count += 1;
+    if (filters.livingWageRequired) count += 1;
+    if (filters.fairTradeRequired) count += 1;
+    if (filters.packagingTypes?.length) count += 1;
+    if (filters.socialConditionsRequired) count += 1;
     if (filters.minConfidenceScore) count += 1;
     if (filters.inStockOnly) count += 1;
     return count;

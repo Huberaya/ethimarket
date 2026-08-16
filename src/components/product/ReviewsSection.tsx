@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Star, BadgeCheck, MessageSquare } from 'lucide-react';
-import type { Product, Review } from '../lib/supabase';
+import type { Product, Review } from '../../lib/supabase';
 import { SectionTitle } from './GuaranteesSection';
 
 export default function ReviewsSection({ product, reviews }: { product: Product; reviews: Review[] }) {

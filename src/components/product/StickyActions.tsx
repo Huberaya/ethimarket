@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ShoppingCart, MessageSquare, Download, Heart, Share2, X } from 'lucide-react';
-import type { Product } from '../lib/supabase';
+import type { Product } from '../../lib/supabase';
 
 export default function StickyActions({ product, quantity, unitPrice, isQuote, onOrder }: {
   product: Product; quantity: number; unitPrice?: number | null; isQuote?: boolean; onOrder?: () => void;

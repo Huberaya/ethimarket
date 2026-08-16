@@ -28,7 +28,15 @@ export default function ReportProblemModal({
     if (!body.id) return;
 
     setIsSubmitting(true);
-    const { error } = await reportCertificationBodyProblem(body.id, reason, details);
+    // Mapping des motifs UI vers l'énumération attendue par le service
+    const reasonMap: Record<string, 'inactive' | 'wrong_info' | 'outdated_contact' | 'revoked_accreditation' | 'other'> = {
+      invalid_contact: 'outdated_contact',
+      broken_link: 'wrong_info',
+      accreditation_lost: 'revoked_accreditation',
+      closed_agency: 'inactive',
+      other: 'other'
+    };
+    const { error } = await reportCertificationBodyProblem(body.id, reasonMap[reason] || 'other', details);
     setIsSubmitting(false);
 
     if (!error) {

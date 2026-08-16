@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Zap,
   Loader2,
@@ -105,7 +105,7 @@ export default function OneClickVerificationButton({
     return detectBestChannel(certificationBody);
   }, [certificationBody]);
 
-  const channelInfo = CHANNEL_CONFIG[bestChannel] || CHANNEL_CONFIG.manual;
+  const channelInfo = CHANNEL_CONFIG[bestChannel as keyof typeof CHANNEL_CONFIG] || CHANNEL_CONFIG.manual;
   const isAlreadyVerified = currentStatus === 'verified';
   const isButtonDisabled = disabled || isAlreadyVerified || isLoading || !certificationBody;
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ClipboardList, Package, FlaskConical, Thermometer } from 'lucide-react';
-import type { Product } from '../lib/supabase';
+import type { Product } from '../../lib/supabase';
 import { SectionTitle } from './GuaranteesSection';
 
 const TABS = [

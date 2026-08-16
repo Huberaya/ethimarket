@@ -12,7 +12,7 @@ import {
   mockCertificationBodyNoChannel,
   mockBodyId
 } from './fixtures/certificationFixtures';
-import type { CertificationBody, CertificationBodyInsert } from '../lib/supabase';
+import type { CertificationBodyInsert } from '../lib/supabase';
 
 describe('certificationBodiesService', () => {
   beforeEach(() => {
@@ -36,7 +36,7 @@ describe('certificationBodiesService', () => {
     it('Test 1.2 : WhatsApp si pas d email', () => {
       const body = {
         ...mockCertificationBody,
-        email_contact: undefined,
+        email_contact: null,
         whatsapp: '+33600000000',
         phone: '+33100000000'
       };
@@ -46,8 +46,8 @@ describe('certificationBodiesService', () => {
     it('Test 1.3 : Formulaire / Portail si pas d email ni de WhatsApp', () => {
       const body = {
         ...mockCertificationBody,
-        email_contact: undefined,
-        whatsapp: undefined,
+        email_contact: null,
+        whatsapp: null,
         contact_form_url: 'https://cert.com/contact',
         phone: '+33100000000'
       };
@@ -57,10 +57,10 @@ describe('certificationBodiesService', () => {
     it('Test 1.4 : Téléphone si pas de formulaire', () => {
       const body = {
         ...mockCertificationBody,
-        email_contact: undefined,
-        whatsapp: undefined,
-        contact_form_url: undefined,
-        verification_url: undefined,
+        email_contact: null,
+        whatsapp: null,
+        contact_form_url: null,
+        verification_url: null,
         phone: '+33100000000'
       };
       expect(detectBestChannel(body)).toBe('phone');

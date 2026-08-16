@@ -51,7 +51,7 @@ export default function BodyAlternativeSelector({
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-3 min-w-0">
             <div className="w-11 h-11 rounded-xl bg-white border border-brand-100 flex items-center justify-center font-black text-brand-700 text-sm shadow-2xs shrink-0">
-              {currentBody ? currentBody.acronym.slice(0, 4) : 'CB'}
+              {currentBody?.acronym ? currentBody.acronym.slice(0, 4) : 'CB'}
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
@@ -116,7 +116,7 @@ export default function BodyAlternativeSelector({
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${
                           isSelected ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-700'
                         }`}>
-                          {alt.body.acronym.slice(0, 3)}
+                          {(alt.body.acronym || alt.body.name).slice(0, 3)}
                         </div>
                         <div className="min-w-0">
                           <p className="font-semibold text-xs truncate">{alt.body.name}</p>

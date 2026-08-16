@@ -4,7 +4,7 @@ import {
   Plus, Check, X, Loader2, ShieldCheck, MapPin, Award,
   Info
 } from 'lucide-react';
-import { supabase, type CertificationBody } from '../../lib/supabase';
+import { supabase, type CertificationBody, type CertificationType } from '../../lib/supabase';
 import { AdminPageHeader } from '../../components/AdminLayout';
 
 // Fallback dataset in case table is freshly created before migration script run
@@ -318,7 +318,7 @@ export default function AdminCertBodies() {
         return false;
       }
 
-      if (selectedType !== 'all' && !b.certification_types?.includes(selectedType)) {
+      if (selectedType !== 'all' && !b.certification_types?.includes(selectedType as CertificationType)) {
         return false;
       }
 

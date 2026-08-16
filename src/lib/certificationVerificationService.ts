@@ -7,7 +7,14 @@ import type {
   VerificationResult,
   CertificationDashboardStats,
   TemplateVariables,
-  CertificationRegion
+  CertificationRegion,
+  CertificationBody,
+  CertificationBodyFilters,
+  CertificationBodyContact,
+  CertificationStandard,
+  CertificationType,
+  CertificationMessageTemplate,
+  CertificationVerificationLog
 } from './supabase';
 import { DAYS_BEFORE_EXPIRY_ALERT } from './supabase';
 import {
@@ -347,8 +354,12 @@ export async function getProducerCertificationById(
 export async function triggerOneClickVerification(
   certificationId: string,
   adminId: string,
-  templateId?: string
+  templateIdOrVariables?: string | TemplateVariables
 ): Promise<VerificationResult> {
+  const templateId = typeof templateIdOrVariables === 'string' ? templateIdOrVariables : undefined;
+  const variableOverrides = typeof templateIdOrVariables === 'object' && templateIdOrVariables !== null
+    ? templateIdOrVariables
+    : undefined;
   try {
     // 1. Récupération de la certification et de son organisme
     const { data: cert, error: fetchErr } = await getProducerCertificationById(certificationId);
@@ -385,7 +396,8 @@ export async function triggerOneClickVerification(
       document_url: cert.document_path || undefined,
       platform_name: 'EthiMarket',
       admin_name: adminName,
-      admin_email: adminEmail
+      admin_email: adminEmail,
+      ...variableOverrides
     };
 
     // 2. Si aucun organisme n'est lié -> Passage en manual_required
@@ -661,6 +673,7 @@ export async function recordManualResponse(
         previous_status: localDemoCertifications[demoIndex].status,
         channel_used: 'manual',
         details: { requestId, response },
+        ip_address: null,
         created_at: now,
         admin_profile: {
           id: adminId,
@@ -763,6 +776,7 @@ export async function updateCertificationStatus(
         new_status: newStatus,
         channel_used: 'manual',
         details: { adminNotes },
+        ip_address: null,
         created_at: now,
         admin_profile: {
           id: adminId,
@@ -919,7 +933,33 @@ export function resetDemoCertifications(): void {
 
 /**
  * Récupère le journal d'audit complet d'une certification producteur
+ * (base de données d'abord, puis repli sur les journaux de démonstration en mémoire)
  */
+export async function getCertificationLogs(
+  certificationId: string
+): Promise<{ data: CertificationVerificationLog[]; error: string | null }> {
+  try {
+    const { data, error } = await supabase
+      .from('certification_verification_logs')
+      .select(`
+        *,
+        admin_profile:profiles!certification_verification_logs_admin_id_fkey (id, first_name, last_name, email)
+      `)
+      .eq('producer_certification_id', certificationId)
+      .order('created_at', { ascending: false });
+
+    if (!error && data && data.length > 0) {
+      return { data: data as CertificationVerificationLog[], error: null };
+    }
+
+    // Repli : journaux de démonstration en mémoire
+    return { data: localDemoLogs[certificationId] || [], error: null };
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Erreur chargement journal d\'audit';
+    return { data: localDemoLogs[certificationId] || [], error: msg };
+  }
+}
+
 /**
  * Récupère la liste filtrée et paginée des organismes certificateurs
  */

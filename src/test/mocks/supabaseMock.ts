@@ -162,8 +162,8 @@ export function createMockQueryBuilder(tableName: string) {
         count: resp.count
       });
     }),
-    then: <TResult1 = { data: unknown; error: unknown; count: number | null }, TResult2 = never>(
-      resolve?: ((value: { data: unknown; error: unknown; count: number | null }) => TResult1 | PromiseLike<TResult1>) | null,
+    then: <TResult1 = { data: unknown; error: { message: string; code?: string; details?: string } | null; count: number | null | undefined }, TResult2 = never>(
+      resolve?: ((value: { data: unknown; error: { message: string; code?: string; details?: string } | null; count: number | null | undefined }) => TResult1 | PromiseLike<TResult1>) | null,
       reject?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null
     ) => {
       const resp = getNextResponse();

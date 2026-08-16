@@ -146,6 +146,7 @@ export type Producer = {
   last_audit_date?: string | null;
   next_audit_date?: string | null;
   audit_count?: number | null;
+  created_at?: string;
 };
 
 export type ScoreCategory = {
@@ -191,6 +192,8 @@ export type ProductAttributes = {
 };
 
 export type Product = {
+  /** Code douanier SH (optionnel, utilisé pour l'estimation des droits de douane). */
+  hs_code?: string | null;
   id: string;
   name: string;
   slug: string;
@@ -512,6 +515,11 @@ export type CertificationBody = {
   last_updated_at: string;
   created_at: string;
 
+  // Intégration API de vérification (colonnes présentes en base)
+  api_endpoint?: string | null;
+  api_key_required?: boolean;
+  api_key_encrypted?: string | null;
+
   // Nouveaux champs d'enrichissement mondial
   address?: string | null;
   city?: string | null;
@@ -573,11 +581,13 @@ export type TrustLevel =
   | 'pending';
 
 export type VerificationChannel =
+  | 'api'
   | 'email'
   | 'form'
   | 'phone'
   | 'whatsapp'
   | 'postal'
+  | 'letter'
   | 'manual';
 
 export type ProducerCertificationStatus =
@@ -617,7 +627,9 @@ export type CertificationStandard = {
   type: CertificationType | null;
   description: string | null;
   scope: string | null;
-  geographic_coverage: string | null;
+  geographic_coverage?: string | null;
+  /** Champ UI optionnel : durée de validité usuelle du standard (mois). */
+  validity_duration_months?: number | null;
   created_at: string;
 };
 
@@ -647,6 +659,10 @@ export type ProducerCertification = {
   // Champs calculés UI
   is_expired?: boolean;
   expires_soon?: boolean;
+  /** Champ dénormalisé (données de démo / affichage) : type de certification. */
+  certification_type?: CertificationType | string;
+  /** URL publique du certificat (résolue depuis document_path pour l'affichage). */
+  document_url?: string | null;
 };
 
 export type CertificationVerificationRequest = {
@@ -700,11 +716,13 @@ export type CertificationMessageTemplate = {
   body: string;
   variables: string[];
   is_default: boolean;
+  /** Indicateur d'activation (optionnel : présent sur certains environnements). */
+  is_active?: boolean;
   version?: number;
   previous_version?: TemplateVersionSnapshot | null;
   last_modified_by?: string | null;
   last_modified_by_profile?: Pick<Profile, 'id' | 'first_name' | 'last_name' | 'email'> | null;
-  created_by: string | null;
+  created_by?: string | null;
   created_by_profile?: Pick<Profile, 'id' | 'first_name' | 'last_name' | 'email'> | null;
   created_at: string;
   updated_at: string;
@@ -714,7 +732,14 @@ export type CertificationMessageTemplate = {
 // TYPES UTILITAIRES CRUD & SERVICES (FORMULAIRES & FILTRES)
 // ==============================================================================
 
-export type CertificationBodyInsert = Omit<CertificationBody, 'id' | 'created_at' | 'last_updated_at' | 'contacts' | 'standards' | 'short_name' | 'logo_url' | 'verification_instructions' | 'description' | 'headquarters_country' | 'coverage' | 'contact_email' | 'contact_phone'>;
+/**
+ * Payload d'insertion d'un organisme certificateur.
+ * Fidèle au schéma SQL : seuls name, country et region sont NOT NULL sans défaut ;
+ * toutes les autres colonnes ont un défaut ou acceptent NULL.
+ */
+export type CertificationBodyInsert =
+  Pick<CertificationBody, 'name' | 'country' | 'region'> &
+  Partial<Omit<CertificationBody, 'id' | 'created_at' | 'last_updated_at' | 'contacts' | 'standards' | 'short_name' | 'verification_instructions' | 'description' | 'headquarters_country' | 'coverage' | 'contact_email' | 'contact_phone'>>;
 export type CertificationBodyUpdate = Partial<CertificationBodyInsert>;
 
 export type ProducerCertificationInsert = {
@@ -737,7 +762,13 @@ export type ProducerCertificationUpdate = Partial<ProducerCertificationInsert> &
   verified_at?: string | null;
 };
 
-export type CertificationMessageTemplateInsert = Omit<CertificationMessageTemplate, 'id' | 'created_at' | 'updated_at'>;
+/**
+ * Payload d'insertion d'un modèle de message : seul le corps est réellement requis,
+ * le service dérive title/name l'un de l'autre et la base fournit les défauts.
+ */
+export type CertificationMessageTemplateInsert =
+  Pick<CertificationMessageTemplate, 'body'> &
+  Partial<Omit<CertificationMessageTemplate, 'id' | 'created_at' | 'updated_at' | 'body'>>;
 export type CertificationMessageTemplateUpdate = Partial<CertificationMessageTemplateInsert>;
 
 export type VerificationResult = {
@@ -774,6 +805,7 @@ export type CertificationBodyFilters = {
   has_whatsapp?: boolean;
   has_form?: boolean;
   has_phone?: boolean;
+  has_api?: boolean;
   domain?: string;
   accreditation?: string;
 };
@@ -790,16 +822,19 @@ export type ProducerCertificationFilters = {
 };
 
 export type TemplateVariables = {
-  producer_name: string;
-  certificate_number: string;
-  certification_type: string;
-  certification_body_name: string;
-  issued_at: string;
-  expires_at: string;
+  producer_name?: string;
+  producer_company?: string;
+  certificate_number?: string;
+  certification_type?: string;
+  certification_body_name?: string;
+  issued_at?: string;
+  expires_at?: string;
   document_url?: string;
-  platform_name: string;
-  admin_name: string;
-  admin_email: string;
+  platform_name?: string;
+  admin_name?: string;
+  admin_email?: string;
+  /** Variables additionnelles libres (templates personnalisés). */
+  [key: string]: string | number | undefined | null;
 };
 
 // ==============================================================================

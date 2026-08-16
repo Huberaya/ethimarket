@@ -85,7 +85,7 @@ export const SearchResultsTable: React.FC<SearchResultsTableProps> = ({
                         {prod.name}
                       </Link>
                       <div className="text-xs text-neutral-500">
-                        {prod.producers?.company_name || 'Producteur certifié'}
+                        {prod.producers?.name || 'Producteur certifié'}
                       </div>
                     </div>
                   </div>

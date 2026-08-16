@@ -275,15 +275,31 @@ export default function AdminLayout() {
   );
 }
 
-export type AdminPageHeaderProps = { title: string; subtitle?: string; children?: ReactNode };
-export function AdminPageHeader({ title, subtitle, children }: AdminPageHeaderProps) {
+export type AdminPageHeaderProps = {
+  title: string;
+  subtitle?: string;
+  children?: ReactNode;
+  /** Pastille informative affichée à côté du titre (ex. « 21 déclarations »). */
+  badgeText?: string;
+  /** Zone d'actions à droite (boutons) — alias de children. */
+  actions?: ReactNode;
+};
+export function AdminPageHeader({ title, subtitle, children, badgeText, actions }: AdminPageHeaderProps) {
+  const rightContent = actions ?? children;
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
       <div>
-        <h1 className="text-xl sm:text-2xl font-black text-gray-900">{title}</h1>
+        <div className="flex items-center gap-2 flex-wrap">
+          <h1 className="text-xl sm:text-2xl font-black text-gray-900">{title}</h1>
+          {badgeText && (
+            <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-brand-50 text-brand-700 border border-brand-100">
+              {badgeText}
+            </span>
+          )}
+        </div>
         {subtitle && <p className="text-sm text-gray-500 mt-0.5">{subtitle}</p>}
       </div>
-      {children && <div className="flex items-center gap-2">{children}</div>}
+      {rightContent && <div className="flex items-center gap-2">{rightContent}</div>}
     </div>
   );
 }

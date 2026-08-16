@@ -381,9 +381,9 @@ export function ChatView({
                     <span>{timeStr}</span>
                     {isMe && (
                       msg.read_at ? (
-                        <CheckCheck className="w-3.5 h-3.5 text-blue-300" title="Lu" />
+                        <span title="Lu"><CheckCheck className="w-3.5 h-3.5 text-blue-300" /></span>
                       ) : (
-                        <Check className="w-3.5 h-3.5 text-brand-200" title="Envoyé" />
+                        <span title="Envoyé"><Check className="w-3.5 h-3.5 text-brand-200" /></span>
                       )
                     )}
                   </div>

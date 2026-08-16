@@ -140,7 +140,7 @@ export default function TemplateExportModal({
           item.created_at = t.created_at;
           item.updated_at = t.updated_at;
           item.created_by = t.created_by;
-          item.updated_by = t.updated_by;
+          item.updated_by = t.last_modified_by;
         }
 
         if (includePreviousVersions && t.previous_version) {

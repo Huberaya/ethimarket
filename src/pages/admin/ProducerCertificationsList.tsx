@@ -483,7 +483,7 @@ export default function ProducerCertificationsList() {
               <option value="ALL">Tous les statuts</option>
               {PRODUCER_CERTIFICATION_STATUSES.map(st => (
                 <option key={st.value} value={st.value}>
-                  {st.label}
+                  {st.labelFr}
                 </option>
               ))}
             </select>
@@ -498,8 +498,8 @@ export default function ProducerCertificationsList() {
             >
               <option value="ALL">Tous les standards</option>
               {CERTIFICATION_TYPES.map(t => (
-                <option key={t} value={t}>
-                  {t}
+                <option key={t.value} value={t.value}>
+                  {t.icon} {t.labelFr}
                 </option>
               ))}
             </select>

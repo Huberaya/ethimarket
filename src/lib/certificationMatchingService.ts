@@ -55,7 +55,7 @@ export function resolveCountryInfo(countryInput: string) {
   const found = COUNTRIES_LIST.find(
     c => normalizeText(c.name) === norm ||
          normalizeText(c.code) === norm ||
-         (c.currency && normalizeText(c.currency) === norm)
+         normalizeText(c.dialCode) === norm
   );
 
   return {
@@ -86,7 +86,7 @@ function evaluateBodyForStandardAndCountry(
   // Check if body directly declares or is linked to the standard
   const links = STANDARDS_BODIES_MAP.filter(
     l => l.standardId === standard.id && 
-         (normalizeText(l.bodyAcronym) === normalizeText(body.acronym) ||
+         (normalizeText(l.bodyAcronym) === normalizeText(body.acronym || '') ||
           normalizeText(l.bodyName) === normalizeText(body.name) ||
           l.bodyName.toLowerCase().includes(body.name.toLowerCase().slice(0, 8)))
   );
@@ -108,12 +108,12 @@ function evaluateBodyForStandardAndCountry(
     });
   } else {
     // Partial standard relevance check
-    const partialMatch = body.domains.some(d => standard.keywords.some(k => normalizeText(d).includes(normalizeText(k))));
+    const partialMatch = (body.domains || []).some(d => standard.keywords.some(k => normalizeText(d).includes(normalizeText(k))));
     if (partialMatch) {
       score += 20;
       reasons.push({
         category: 'standard',
-        label: `Domaine d'intervention compatible (${body.domains.slice(0, 2).join(', ')})`,
+        label: `Domaine d'intervention compatible (${(body.domains || []).slice(0, 2).join(', ')})`,
         points: 20,
         isPositive: true
       });
