@@ -228,10 +228,14 @@ $$;
 CREATE OR REPLACE FUNCTION enforce_claim_status_integrity()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
 DECLARE
+  v_uid uuid;
   v_is_admin boolean;
 BEGIN
+  v_uid := auth.uid();
+  IF v_uid IS NULL THEN RETURN NEW; END IF;  -- session infra de confiance (service_role, SQL editor, cron)
+
   SELECT COALESCE(is_admin, false) INTO v_is_admin
-  FROM profiles WHERE id = auth.uid();
+  FROM profiles WHERE id = v_uid;
 
   IF TG_OP = 'INSERT' THEN
     IF NOT COALESCE(v_is_admin, false) THEN
@@ -258,10 +262,14 @@ CREATE TRIGGER trg_claim_status_integrity
 CREATE OR REPLACE FUNCTION enforce_evidence_level_integrity()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
 DECLARE
+  v_uid uuid;
   v_is_admin boolean;
 BEGIN
+  v_uid := auth.uid();
+  IF v_uid IS NULL THEN RETURN NEW; END IF;  -- session infra de confiance (service_role, SQL editor, cron)
+
   SELECT COALESCE(is_admin, false) INTO v_is_admin
-  FROM profiles WHERE id = auth.uid();
+  FROM profiles WHERE id = v_uid;
 
   IF NOT COALESCE(v_is_admin, false) THEN
     IF evidence_level(NEW.evidence_type) > 2 THEN
