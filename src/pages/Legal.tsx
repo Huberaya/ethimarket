@@ -2,6 +2,7 @@ import { useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SEOHead from '../components/SEOHead';
+import { useI18n } from '../lib/i18n';
 
 const LEGAL_CONTENT: Record<string, { title: string; sections: { heading: string; body: string }[] }> = {
   '/conditions-utilisation': {
@@ -47,6 +48,7 @@ const LEGAL_CONTENT: Record<string, { title: string; sections: { heading: string
 };
 
 export default function Legal() {
+  const { t, locale } = useI18n();
   const location = useLocation();
   const content = LEGAL_CONTENT[location.pathname];
 
@@ -58,9 +60,14 @@ export default function Legal() {
       <Header />
       <main className="flex-1 pt-24 pb-20">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-3">Mentions légales</p>
+          <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-3">{t('legal.label')}</p>
           <h1 className="text-4xl font-black text-gray-900 mb-10">{content.title}</h1>
-          <p className="text-sm text-gray-400 mb-10">Dernière mise à jour : 22 juillet 2024</p>
+          <p className="text-sm text-gray-400 mb-10">{t('legal.updated')}</p>
+          {locale !== 'fr' && (
+            <div className="mb-8 p-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm text-blue-900" dir="auto">
+              {t('legal.onlyFrench')}
+            </div>
+          )}
 
           <div className="space-y-8">
             {content.sections.map((section, i) => (
@@ -73,8 +80,7 @@ export default function Legal() {
 
           <div className="mt-12 p-6 bg-brand-50 rounded-2xl border border-brand-100">
             <p className="text-sm text-gray-600 leading-relaxed">
-              Ce document est un modèle placeholder. Il devra être personnalisé et validé par un avocat
-              avant publication officielle.
+              {t('legal.notice')}
             </p>
           </div>
         </div>

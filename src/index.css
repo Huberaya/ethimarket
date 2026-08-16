@@ -122,3 +122,10 @@
 [dir="rtl"] .ltr-only {
   direction: ltr;
 }
+
+/* Garde-fou global : les tuiles Leaflet (transforms hors zone) ne doivent
+   jamais étendre la zone défilable horizontale de la page.
+   'clip' préserve position:sticky contrairement à 'hidden'. */
+html, body {
+  overflow-x: clip;
+}

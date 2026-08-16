@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Star, MapPin, ArrowRight, Award } from 'lucide-react';
 import type { Product } from '../lib/supabase';
+import { useI18n } from '../lib/i18n';
 import { badgeInfo } from './ScoreBadge';
 
 const CERT_BADGE: Record<string, string> = {
@@ -14,6 +15,7 @@ const CERT_BADGE: Record<string, string> = {
 type Props = { product: Product };
 
 export default function ProductCard({ product }: Props) {
+  const { t } = useI18n();
   const imageUrl = product.image_url ?? null;
 
   return (
@@ -108,7 +110,7 @@ export default function ProductCard({ product }: Props) {
               <span className="text-xs text-gray-500 ml-0.5">/{product.price_unit}</span>
             </div>
             <span className="text-xs text-gray-500 bg-gray-50 border border-gray-100 px-2.5 py-1 rounded-lg">
-              MOQ {product.moq_value} {product.moq_unit}
+              {t('product.moq')} {product.moq_value} {product.moq_unit}
             </span>
           </div>
 
@@ -116,7 +118,7 @@ export default function ProductCard({ product }: Props) {
             to={`/produit/${product.id}`}
             className="flex items-center justify-center gap-1.5 w-full py-2.5 text-sm font-semibold text-brand-600 border-2 border-brand-500 rounded-xl hover:bg-brand-500 hover:text-white transition-all duration-200 group/btn"
           >
-            Voir le produit
+            {t('product.view')}
             <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
           </Link>
         </div>

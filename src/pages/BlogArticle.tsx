@@ -11,6 +11,9 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SEOHead from '../components/SEOHead';
 import { supabase } from '../lib/supabase';
+import { useI18n } from '../lib/i18n';
+
+const DATE_LOCALES: Record<string, string> = { fr: 'fr-FR', en: 'en-GB', es: 'es-ES', pt: 'pt-PT', ar: 'ar' };
 
 interface Article {
   id: string;
@@ -60,6 +63,7 @@ function inline(text: string): React.ReactNode[] {
 }
 
 export default function BlogArticle() {
+  const { t, locale } = useI18n();
   const { slug } = useParams<{ slug: string }>();
   const [article, setArticle] = useState<Article | null>(null);
   const [related, setRelated] = useState<Article[]>([]);
@@ -97,8 +101,8 @@ export default function BlogArticle() {
       <div className="min-h-screen bg-white flex flex-col">
         <Header />
         <div className="flex-1 flex flex-col items-center justify-center px-4 py-24 text-center">
-          <h1 className="text-2xl font-black text-gray-900 mb-3">Article introuvable</h1>
-          <Link to="/blog" className="text-sm font-bold text-brand-700 hover:underline">← Retour au magazine</Link>
+          <h1 className="text-2xl font-black text-gray-900 mb-3">{t('blog.notFoundTitle')}</h1>
+          <Link to="/blog" className="text-sm font-bold text-brand-700 hover:underline">← {t('blog.backToBlog')}</Link>
         </div>
         <Footer />
       </div>
@@ -112,7 +116,7 @@ export default function BlogArticle() {
       <main className="flex-1 pt-28 pb-20">
         <article className="max-w-3xl mx-auto px-4 sm:px-6">
           <Link to="/blog" className="inline-flex items-center gap-1.5 text-sm font-bold text-gray-500 hover:text-brand-700 mb-6">
-            <ArrowLeft className="w-4 h-4" /> Magazine
+            <ArrowLeft className="w-4 h-4" /> {t('blog.backToBlog')}
           </Link>
 
           {article.category && (
@@ -129,7 +133,7 @@ export default function BlogArticle() {
             <div>
               <p className="font-bold text-gray-800">{article.author_name ?? 'Rédaction EthiMarket'}</p>
               <p className="text-xs flex items-center gap-2">
-                {article.published_at && new Date(article.published_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                {article.published_at && new Date(article.published_at).toLocaleDateString(DATE_LOCALES[locale] ?? 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                 {article.read_time && <><span>·</span><Clock className="w-3 h-3" /> {article.read_time}</>}
               </p>
             </div>
@@ -150,7 +154,7 @@ export default function BlogArticle() {
           {/* Articles liés */}
           {related.length > 0 && (
             <div className="mt-14 pt-8 border-t border-gray-100">
-              <h2 className="text-lg font-black text-gray-900 mb-4">À lire aussi</h2>
+              <h2 className="text-lg font-black text-gray-900 mb-4">{t('blog.otherArticles')}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {related.map(r => (
                   <Link key={r.id} to={`/blog/${r.slug}`}

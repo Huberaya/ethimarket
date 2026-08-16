@@ -9,41 +9,16 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SEOHead from '../components/SEOHead';
 import { useI18n } from '../lib/i18n';
+import { HOW_IT_WORKS_CONTENT, type HowItWorksContent } from '../lib/i18n/content/howItWorks';
 
-const BUYER_STEPS = [
-  { icon: UserPlus,    title: 'Inscription gratuite',       desc: "Créez votre compte acheteur en 2 minutes. Accès immédiat au catalogue complet." },
-  { icon: Search,      title: 'Recherche avancée',           desc: "Filtrez par pays, certification, prix, volume. Notre IA vous recommande les meilleurs fournisseurs." },
-  { icon: MessageSquare, title: 'Contact direct producteur', desc: "Discutez avec le producteur via notre messagerie sécurisée. Négociez prix, quantités, délais." },
-  { icon: ShieldCheck, title: 'Commande sécurisée',          desc: "Passez commande. Paiement protégé par escrow (argent bloqué jusqu'à réception)." },
-  { icon: Truck,       title: 'Livraison et suivi',          desc: "Suivi en temps réel via nos partenaires logistiques (DHL, UPS, Maersk)." },
-];
+const BUYER_ICONS = [UserPlus, Search, MessageSquare, ShieldCheck, Truck];
+const PRODUCER_ICONS = [Store, Package, Bell, Send, Wallet];
 
-const PRODUCER_STEPS = [
-  { icon: Store,   title: 'Créer votre boutique',   desc: "Boutique en ligne professionnelle gratuite. Notre IA vous aide à rédiger votre présentation." },
-  { icon: Package, title: 'Ajouter vos produits',    desc: "Uploadez photos et infos. L'IA génère automatiquement des descriptions optimisées et traduit en 12 langues." },
-  { icon: Bell,    title: 'Recevoir des commandes',  desc: "Notifications en temps réel. Acceptez ou refusez selon votre capacité de production." },
-  { icon: Send,    title: 'Expédier vos produits',   desc: "Génération automatique des étiquettes. Nos transporteurs partenaires viennent chercher vos colis chez vous." },
-  { icon: Wallet,  title: 'Recevoir vos paiements',  desc: "Argent versé sous 7 jours après livraison confirmée. Virement direct sur votre compte bancaire." },
-];
-
-const FAQ_ITEMS = [
-  { q: "Combien coûte l'utilisation d'EthiMarket ?", a: "Inscription gratuite. Commission de 5% uniquement sur les ventes réalisées. Pas de frais cachés." },
-  { q: 'Comment sont vérifiées les certifications ?', a: "Chaque certificat est contrôlé physiquement par notre équipe et validé par les organismes certificateurs (Ecocert, Fairtrade, Rainforest Alliance)." },
-  { q: 'Quels sont les délais de paiement ?', a: "Les producteurs reçoivent leur paiement 7 jours après confirmation de livraison par l'acheteur." },
-  { q: 'Puis-je vendre à l\'international ?', a: "Oui ! EthiMarket connecte des producteurs de 4 continents à des acheteurs internationaux, avec accompagnement logistique et douanier." },
-  { q: 'Comment sont sélectionnés les producteurs ?', a: "Audit physique de la ferme, vérification des certifications, test de la qualité des produits." },
-  { q: 'Existe-t-il une commande minimum ?', a: "Chaque producteur fixe son propre MOQ (Minimum Order Quantity), affiché clairement sur chaque produit." },
-  { q: 'Comment fonctionne l\'escrow ?', a: "L'argent de l'acheteur est bloqué chez notre partenaire Stripe jusqu'à confirmation de la livraison, protégeant les deux parties." },
-  { q: 'Puis-je essayer avant d\'acheter en gros ?', a: "Oui, la plupart des producteurs proposent des échantillons payants pour tester la qualité." },
-  { q: 'Quelles langues sont supportées ?', a: "L'interface est disponible en 12 langues et la messagerie traduit automatiquement." },
-  { q: 'Comment contacter le support ?', a: "Chat en direct, email (support@ethimarket.com) ou téléphone (+33 1 23 45 67 89), 7j/7." },
-];
-
-function FaqAccordion() {
+function FaqAccordion({ items }: { items: HowItWorksContent['faq'] }) {
   const [open, setOpen] = useState<number | null>(0);
   return (
     <div className="max-w-3xl mx-auto space-y-3">
-      {FAQ_ITEMS.map((item, i) => (
+      {items.map((item, i) => (
         <div key={i} className="border border-gray-200 rounded-2xl overflow-hidden bg-white">
           <button
             onClick={() => setOpen(open === i ? null : i)}
@@ -62,7 +37,8 @@ function FaqAccordion() {
 }
 
 export default function HowItWorks() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const c = HOW_IT_WORKS_CONTENT[locale];
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <SEOHead
@@ -88,10 +64,12 @@ export default function HowItWorks() {
             <p className="text-gray-500 text-lg">{t('how.buyersSubtitle')}</p>
           </div>
           <div className="space-y-4">
-            {BUYER_STEPS.map((step, i) => (
+            {c.buyerSteps.map((step, i) => {
+              const StepIcon = BUYER_ICONS[i] ?? UserPlus;
+              return (
               <div key={i} className="flex items-start gap-5 p-6 rounded-2xl border border-gray-100 hover:border-brand-200 hover:shadow-md transition-all">
                 <div className="flex-shrink-0 w-12 h-12 bg-brand-50 rounded-2xl flex items-center justify-center">
-                  <step.icon className="w-5 h-5 text-brand-600" />
+                  <StepIcon className="w-5 h-5 text-brand-600" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-1">
@@ -101,7 +79,8 @@ export default function HowItWorks() {
                   <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -114,10 +93,12 @@ export default function HowItWorks() {
             <p className="text-gray-500 text-lg">{t('how.producersSubtitle')}</p>
           </div>
           <div className="space-y-4">
-            {PRODUCER_STEPS.map((step, i) => (
+            {c.producerSteps.map((step, i) => {
+              const StepIcon = PRODUCER_ICONS[i] ?? Store;
+              return (
               <div key={i} className="flex items-start gap-5 p-6 rounded-2xl bg-white border border-brand-100 hover:shadow-md transition-all">
                 <div className="flex-shrink-0 w-12 h-12 bg-brand-100 rounded-2xl flex items-center justify-center">
-                  <step.icon className="w-5 h-5 text-brand-600" />
+                  <StepIcon className="w-5 h-5 text-brand-600" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-1">
@@ -127,7 +108,8 @@ export default function HowItWorks() {
                   <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -139,7 +121,7 @@ export default function HowItWorks() {
             <p className="text-brand-600 font-semibold text-xs uppercase tracking-widest mb-2">{t('how.faq')}</p>
             <h2 className="text-3xl font-black text-gray-900">{t('how.faqTitle')}</h2>
           </div>
-          <FaqAccordion />
+          <FaqAccordion items={c.faq} />
         </div>
       </section>
 

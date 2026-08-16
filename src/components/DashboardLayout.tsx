@@ -8,34 +8,36 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { supabase } from '../lib/supabase';
+import { useI18n } from '../lib/i18n';
+import LanguageSwitcher from './LanguageSwitcher';
 
 // Menu VENDEUR (producteur)
 const PRODUCER_NAV = [
-  { icon: LayoutDashboard, label: 'Vue d\'ensemble', path: '/dashboard' },
-  { icon: ShieldCheck,    label: 'Vérification',     path: '/dashboard/verification' },
-  { icon: Package,         label: 'Mes produits',    path: '/dashboard/mes-produits' },
-  { icon: PlusCircle,      label: 'Ajouter un produit', path: '/dashboard/ajouter-produit' },
-  { icon: Store,           label: 'Ma boutique',     path: '/dashboard/ma-boutique' },
-  { icon: UserCircle,      label: 'Mon profil',       path: '/dashboard/mon-profil' },
-  { icon: ShoppingCart,    label: 'Devis & commandes', path: '/dashboard/commandes' },
-  { icon: MessageSquare,   label: 'Messages',         path: '/dashboard/messages' },
-  { icon: Settings,        label: 'Paramètres',       path: '/dashboard/parametres' },
+  { icon: LayoutDashboard, labelKey: 'dash.overview', path: '/dashboard' },
+  { icon: ShieldCheck,    labelKey: 'dash.verification',     path: '/dashboard/verification' },
+  { icon: Package,         labelKey: 'dash.myProducts',    path: '/dashboard/mes-produits' },
+  { icon: PlusCircle,      labelKey: 'dash.addProduct', path: '/dashboard/ajouter-produit' },
+  { icon: Store,           labelKey: 'dash.myShop',     path: '/dashboard/ma-boutique' },
+  { icon: UserCircle,      labelKey: 'dash.myProfile',       path: '/dashboard/mon-profil' },
+  { icon: ShoppingCart,    labelKey: 'dash.orders', path: '/dashboard/commandes' },
+  { icon: MessageSquare,   labelKey: 'dash.messages',         path: '/dashboard/messages' },
+  { icon: Settings,        labelKey: 'dash.settings',       path: '/dashboard/parametres' },
 ] as const;
 
 // Menu ACHETEUR — espace dédié
 const BUYER_NAV = [
-  { icon: LayoutDashboard, label: 'Vue d\'ensemble',  path: '/dashboard' },
-  { icon: TrendingUp,      label: 'Mes achats',        path: '/dashboard/mes-achats' },
-  { icon: Factory,         label: 'Mes fournisseurs',  path: '/dashboard/mes-achats?tab=suppliers' },
-  { icon: PackageSearch,   label: 'Produits suivis',   path: '/dashboard/mes-achats?tab=products' },
-  { icon: SlidersHorizontal, label: 'Mes règles',      path: '/dashboard/mes-achats?tab=rules' },
-  { icon: Bot,             label: 'Sourcing IA',       path: '/dashboard/sourcing' },
-  { icon: Vault,           label: 'Documents',         path: '/dashboard/documents' },
-  { icon: Building2,       label: 'Mon organisation',  path: '/dashboard/organisation' },
-  { icon: ShoppingCart,    label: 'Devis & commandes', path: '/dashboard/commandes' },
-  { icon: MessageSquare,   label: 'Messages',          path: '/dashboard/messages' },
-  { icon: UserCircle,      label: 'Mon profil',        path: '/dashboard/mon-profil' },
-  { icon: Settings,        label: 'Paramètres',        path: '/dashboard/parametres' },
+  { icon: LayoutDashboard, labelKey: 'dash.overview',  path: '/dashboard' },
+  { icon: TrendingUp,      labelKey: 'dash.myPurchases',        path: '/dashboard/mes-achats' },
+  { icon: Factory,         labelKey: 'dash.mySuppliers',  path: '/dashboard/mes-achats?tab=suppliers' },
+  { icon: PackageSearch,   labelKey: 'dash.trackedProducts',   path: '/dashboard/mes-achats?tab=products' },
+  { icon: SlidersHorizontal, labelKey: 'dash.myRules',      path: '/dashboard/mes-achats?tab=rules' },
+  { icon: Bot,             labelKey: 'dash.sourcing',       path: '/dashboard/sourcing' },
+  { icon: Vault,           labelKey: 'dash.documents',         path: '/dashboard/documents' },
+  { icon: Building2,       labelKey: 'dash.myOrg',  path: '/dashboard/organisation' },
+  { icon: ShoppingCart,    labelKey: 'dash.orders', path: '/dashboard/commandes' },
+  { icon: MessageSquare,   labelKey: 'dash.messages',          path: '/dashboard/messages' },
+  { icon: UserCircle,      labelKey: 'dash.myProfile',        path: '/dashboard/mon-profil' },
+  { icon: Settings,        labelKey: 'dash.settings',        path: '/dashboard/parametres' },
 ] as const;
 
 function VerificationBadge({ producerId }: { producerId: string }) {
@@ -120,6 +122,7 @@ function UnreadMessagesBadge({ userId }: { userId: string }) {
 }
 
 export default function DashboardLayout() {
+  const { t } = useI18n();
   const { user, profile, producer, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -172,7 +175,7 @@ export default function DashboardLayout() {
 
         <nav className="flex-1 px-3 py-3 overflow-y-auto">
           <ul className="space-y-0.5">
-            {(profile?.role === 'producer' || producer ? PRODUCER_NAV : BUYER_NAV).map(({ icon: Icon, label, path }) => (
+            {(profile?.role === 'producer' || producer ? PRODUCER_NAV : BUYER_NAV).map(({ icon: Icon, labelKey, path }) => (
               <li key={path}>
                 <Link
                   to={path}
@@ -180,7 +183,7 @@ export default function DashboardLayout() {
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${isActive(path) ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
                 >
                   <Icon className={`w-4 h-4 flex-shrink-0 ${isActive(path) ? 'text-brand-600' : 'text-gray-400'}`} />
-                  <span className="flex-1 text-left">{label}</span>
+                  <span className="flex-1 text-start">{t(labelKey)}</span>
                   {path === '/dashboard/verification' && producer && (
                     <VerificationBadge producerId={producer.id} />
                   )}
@@ -197,12 +200,12 @@ export default function DashboardLayout() {
           {producer && (
             <Link to={`/boutique/${producer.slug}`} className="flex items-center gap-2 text-xs text-gray-500 hover:text-brand-600 transition-colors font-medium">
               <ChevronRight className="w-3.5 h-3.5" />
-              Voir ma boutique publique
+              {t('dash.myShop')}
             </Link>
           )}
           <button onClick={handleSignOut} className="flex items-center gap-2 text-xs text-gray-500 hover:text-red-500 transition-colors font-medium">
             <LogOut className="w-3.5 h-3.5" />
-            Se déconnecter
+            {t('dash.logout')}
           </button>
         </div>
       </aside>
@@ -216,7 +219,7 @@ export default function DashboardLayout() {
               <Menu className="w-5 h-5 text-gray-600" />
             </button>
             <div className="hidden sm:flex items-center gap-2 text-xs text-gray-500">
-              <Link to="/" className="hover:text-brand-600 transition-colors">Accueil</Link>
+              <Link to="/" className="hover:text-brand-600 transition-colors">{t('dash.backToSite')}</Link>
               <ChevronRight className="w-3 h-3" />
               <span className="text-gray-700 font-semibold">Dashboard</span>
             </div>
@@ -225,9 +228,10 @@ export default function DashboardLayout() {
             <button className="relative p-2.5 hover:bg-gray-100 rounded-xl transition-colors">
               <Bell className="w-5 h-5 text-gray-500" />
             </button>
+            <LanguageSwitcher />
             <Link to="/dashboard/ajouter-produit" className="hidden sm:flex items-center gap-2 px-4 py-2 bg-brand-500 text-white text-sm font-bold rounded-xl hover:bg-brand-600 transition-colors">
               <PlusCircle className="w-4 h-4" />
-              Ajouter un produit
+              {t('dash.addProduct')}
             </Link>
           </div>
         </header>

@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ArrowLeft, Mail, Leaf } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useI18n } from '../lib/i18n';
 
 const PAGE_TITLES: Record<string, string> = {
   '/notre-equipe': 'Notre équipe',
@@ -13,6 +14,7 @@ const PAGE_TITLES: Record<string, string> = {
 };
 
 export default function ComingSoon() {
+  const { t } = useI18n();
   const location = useLocation();
   const title = PAGE_TITLES[location.pathname] ?? 'Page';
 
@@ -26,17 +28,17 @@ export default function ComingSoon() {
           </div>
           <h1 className="text-4xl font-black text-gray-900 mb-4">{title}</h1>
           <p className="text-lg text-gray-500 leading-relaxed mb-8">
-            Cette section sera disponible très prochainement. En attendant, contactez-nous à{' '}
+            {t('coming.text')}{' '}
             <a href="mailto:contact@ethimarket.com" className="text-brand-600 font-semibold hover:underline">
               contact@ethimarket.com
             </a>
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link to="/" className="btn-primary px-6 py-3 text-sm inline-flex items-center gap-2">
-              <ArrowLeft className="w-4 h-4" /> Retour à l'accueil
+              <ArrowLeft className="w-4 h-4" /> {t('coming.backHome')}
             </Link>
             <a href="mailto:contact@ethimarket.com" className="btn-outline px-6 py-3 text-sm inline-flex items-center gap-2">
-              <Mail className="w-4 h-4" /> Nous contacter
+              <Mail className="w-4 h-4" /> {t('coming.contactUs')}
             </a>
           </div>
         </div>

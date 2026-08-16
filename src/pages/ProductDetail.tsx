@@ -12,6 +12,7 @@ import QRCode from 'qrcode';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { supabase, type Product, type Producer, type Review, type ScoreDetails } from '../lib/supabase';
+import { useI18n } from '../lib/i18n';
 import GuaranteesSection from '../components/product/GuaranteesSection';
 import TraceabilitySection from '../components/product/TraceabilitySection';
 import ProducerProfileSection from '../components/product/ProducerProfileSection';
@@ -55,6 +56,7 @@ function Skeleton() {
 }
 
 export default function ProductDetail() {
+  const { t } = useI18n();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -105,8 +107,8 @@ export default function ProductDetail() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">🔍</div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Produit introuvable</h2>
-          <Link to="/catalogue" className="text-brand-600 hover:underline font-medium">Retour au catalogue</Link>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">{t('pd.notFound')}</h2>
+          <Link to="/catalogue" className="text-brand-600 hover:underline font-medium">{t('pd.backToCatalogue')}</Link>
         </div>
       </div>
     );
@@ -328,7 +330,7 @@ export default function ProductDetail() {
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                   <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                  {euConformity.is_conform ? 'Conforme UE' : 'En cours de vérification UE'}
+                  {euConformity.is_conform ? t('pd.euConform') : t('pd.euPending')}
                 </span>
                 <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
                   <UserCheck className="w-3 h-3 text-blue-600" />
@@ -375,7 +377,7 @@ export default function ProductDetail() {
                 <span className="text-4xl font-black text-gray-900">{product.price.toFixed(2)} €</span>
                 <span className="text-lg text-gray-400 font-medium">/{product.price_unit}</span>
               </div>
-              <p className="text-xs text-gray-500 mt-1">Prix dégressifs automatiques selon le volume commandé</p>
+              <p className="text-xs text-gray-500 mt-1">{t('pd.tieredPricing')}</p>
             </div>
 
             {/* Volume Price Tiers */}
@@ -383,9 +385,9 @@ export default function ProductDetail() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="text-left py-2.5 px-4 text-xs font-bold text-gray-500 uppercase">Volume ({product.price_unit})</th>
-                    <th className="text-left py-2.5 px-4 text-xs font-bold text-gray-500 uppercase">Prix Unitaire</th>
-                    <th className="text-left py-2.5 px-4 text-xs font-bold text-gray-500 uppercase">Remise</th>
+                    <th className="text-start py-2.5 px-4 text-xs font-bold text-gray-500 uppercase">{t('pd.volume')} ({product.price_unit})</th>
+                    <th className="text-start py-2.5 px-4 text-xs font-bold text-gray-500 uppercase">{t('pd.unitPrice')}</th>
+                    <th className="text-start py-2.5 px-4 text-xs font-bold text-gray-500 uppercase">{t('pd.discount')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -395,7 +397,7 @@ export default function ProductDetail() {
                         {tier.max ? `${tier.min} – ${tier.max}` : `${tier.min}+`}
                       </td>
                       <td className="py-3 px-4 font-bold text-gray-900">
-                        {tier.price !== null ? `${tier.price.toFixed(2)} € / ${product.price_unit}` : 'Sur devis'}
+                        {tier.price !== null ? `${tier.price.toFixed(2)} € / ${product.price_unit}` : t('pd.onQuote')}
                       </td>
                       <td className="py-3 px-4">
                         {tier.discount !== null ? (
@@ -404,10 +406,10 @@ export default function ProductDetail() {
                               -{tier.discount}%
                             </span>
                           ) : (
-                            <span className="text-gray-500 text-xs">Prix standard</span>
+                            <span className="text-gray-500 text-xs">{t('pd.standardPrice')}</span>
                           )
                         ) : (
-                          <span className="text-brand-600 font-bold text-xs">Sur devis</span>
+                          <span className="text-brand-600 font-bold text-xs">{t('pd.onQuote')}</span>
                         )}
                       </td>
                     </tr>
@@ -418,13 +420,13 @@ export default function ProductDetail() {
 
             {/* Quantity */}
             <div className="flex items-center gap-4 mb-4">
-              <span className="text-sm font-semibold text-gray-700 w-24 flex-shrink-0">Quantité</span>
+              <span className="text-sm font-semibold text-gray-700 w-24 flex-shrink-0">{t('pd.quantity')}</span>
               <div className="flex items-center bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
                 <button onClick={() => setQty(q => Math.max(product.moq_value, q - 1))} className="px-3.5 py-2.5 hover:bg-gray-100 transition-colors text-gray-600"><Minus className="w-4 h-4" /></button>
                 <input type="number" value={qty} min={product.moq_value} onChange={e => setQty(Math.max(product.moq_value, parseInt(e.target.value) || product.moq_value))} className="w-16 text-center text-sm font-bold py-2.5 bg-transparent border-x border-gray-200 outline-none" />
                 <button onClick={() => setQty(q => q + 1)} className="px-3.5 py-2.5 hover:bg-gray-100 transition-colors text-gray-600"><Plus className="w-4 h-4" /></button>
               </div>
-              <span className="text-xs text-gray-500 bg-gray-100 px-2.5 py-1.5 rounded-lg font-medium">MOQ min. {product.moq_value} {product.moq_unit}</span>
+              <span className="text-xs text-gray-500 bg-gray-100 px-2.5 py-1.5 rounded-lg font-medium">{t('pd.moqMin')} {product.moq_value} {product.moq_unit}</span>
             </div>
 
             {/* Prix appliqué au palier courant */}
@@ -442,9 +444,9 @@ export default function ProductDetail() {
             {/* Stock info */}
             <div className="grid grid-cols-3 gap-3 mb-5">
               {[
-                { icon: Package, label: 'Stock', value: `${logistics.stockValue.toLocaleString('fr-FR')} ${logistics.stockUnit}`, color: 'text-brand-600' },
-                { icon: Clock, label: 'Livraison', value: `${logistics.deliveryDaysLabel} jours${logistics.deliverySource !== 'product' ? ' (est.)' : ''}`, color: 'text-blue-600' },
-                { icon: Truck, label: 'Capacité', value: logistics.monthlyCapacity > 0 ? `${logistics.monthlyCapacity.toLocaleString('fr-FR')} ${logistics.stockUnit}/mois` : 'Sur demande', color: 'text-purple-600' },
+                { icon: Package, label: t('pd.stock'), value: `${logistics.stockValue.toLocaleString('fr-FR')} ${logistics.stockUnit}`, color: 'text-brand-600' },
+                { icon: Clock, label: t('pd.delivery'), value: `${logistics.deliveryDaysLabel} ${t('pd.deliveryDays')}${logistics.deliverySource !== 'product' ? ' ' + t('pd.estimate') : ''}`, color: 'text-blue-600' },
+                { icon: Truck, label: t('pd.capacity'), value: logistics.monthlyCapacity > 0 ? `${logistics.monthlyCapacity.toLocaleString('fr-FR')} ${logistics.stockUnit}${t('pd.perMonth')}` : t('pd.onDemand'), color: 'text-purple-600' },
               ].map(({ icon: Icon, label, value, color }) => (
                 <div key={label} className="bg-gray-50 rounded-xl p-3 text-center">
                   <Icon className={`w-4 h-4 mx-auto mb-1 ${color}`} />
@@ -460,7 +462,7 @@ export default function ProductDetail() {
                 onClick={handleOrderClick}
                 className="btn-primary flex-1 py-3.5 text-base inline-flex items-center justify-center gap-2"
               >
-                Commander maintenant
+                {t('pd.orderNow')}
               </button>
               <button
                 onClick={handleContactSeller}
@@ -468,11 +470,11 @@ export default function ProductDetail() {
                 className="btn-outline flex-1 py-3.5 text-base inline-flex items-center justify-center gap-2 hover:bg-brand-50 hover:text-brand-700 transition-colors"
               >
                 <MessageSquare className="w-4 h-4 text-brand-600" />
-                {contacting ? 'Ouverture...' : '💬 Contacter le vendeur'}
+                {contacting ? t('pd.opening') : t('pd.contactSeller')}
               </button>
             </div>
             <button onClick={() => setFavorited(f => !f)} className={`flex items-center gap-2 text-sm font-semibold w-full justify-center py-2.5 rounded-xl transition-all border-2 ${favorited ? 'border-red-200 text-red-500 bg-red-50' : 'border-gray-200 text-gray-500 hover:border-red-200 hover:text-red-400 hover:bg-red-50'}`}>
-              <Heart className={`w-4 h-4 ${favorited ? 'fill-red-500' : ''}`} /> {favorited ? 'Retiré des favoris' : 'Ajouter aux favoris'}
+              <Heart className={`w-4 h-4 ${favorited ? 'fill-red-500' : ''}`} /> {favorited ? t('pd.removeFavorite') : t('pd.addFavorite')}
             </button>
 
             {/* QR Code */}
@@ -481,7 +483,7 @@ export default function ProductDetail() {
                 <img src={qrUrl} alt="QR Code" className="w-14 h-14 rounded-lg border border-gray-100" />
                 <div>
                   <p className="text-xs font-bold text-gray-900 flex items-center gap-1.5"><QrCode className="w-3.5 h-3.5 text-brand-500" /> QR Code de traçabilité</p>
-                  <p className="text-[10px] text-gray-500">Scannez pour vérifier l'authenticité</p>
+                  <p className="text-[10px] text-gray-500">{t('pd.scanQr')}</p>
                 </div>
               </div>
             )}

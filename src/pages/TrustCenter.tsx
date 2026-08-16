@@ -1,99 +1,56 @@
 // =============================================================
 // EthiMarket Trust Center — Page publique /trust-center
-// Méthodologie transparente : hiérarchie des preuves, processus,
-// limites reconnues. But : que l'acheteur comprenne EXACTEMENT
-// ce que « vérifié » veut dire (et ce que ça ne veut pas dire).
+// Méthodologie transparente, multilingue (fr/en/es/pt/ar).
 // =============================================================
 
 import { ShieldCheck, FileSearch, Building2, AlertTriangle, Scale, BookOpenCheck } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import SEOHead from '../components/SEOHead';
+import { useI18n } from '../lib/i18n';
+import { TRUST_CENTER_CONTENT } from '../lib/i18n/content/trustCenter';
 
-const EVIDENCE_LADDER = [
-  {
-    level: 5,
-    title: 'Certificat vérifié auprès de l\'organisme',
-    detail: 'Nous avons contacté l\'organisme certificateur (Ecocert, FLOCERT, Control Union, Africert…) qui a confirmé l\'authenticité et la validité du certificat. C\'est le seul niveau qui donne le statut « ✅ Certifié ».',
-    color: 'bg-emerald-500',
-  },
-  {
-    level: 4,
-    title: 'Certificat déposé / rapport d\'audit indépendant',
-    detail: 'Un certificat officiel ou un rapport d\'audit tiers (SA8000, BSCI, SMETA…) est au dossier. La confirmation auprès de l\'émetteur est en cours : statut « 🕓 Vérification en cours ».',
-    color: 'bg-emerald-400',
-  },
-  {
-    level: 3,
-    title: 'Contrôle documentaire EthiMarket',
-    detail: 'Notre équipe a examiné les documents (factures matières, contrats, photos d\'atelier, registres) sans confirmation externe. Ne suffit pas pour « Certifié ».',
-    color: 'bg-blue-400',
-  },
-  {
-    level: 2,
-    title: 'Document fournisseur non contrôlé',
-    detail: 'Le fournisseur a déposé un document que nous n\'avons pas encore examiné.',
-    color: 'bg-amber-400',
-  },
-  {
-    level: 1,
-    title: 'Simple déclaration',
-    detail: 'Le fournisseur affirme, sans document. Statut affiché : « ⚠️ Déclaration fournisseur — preuve indépendante non trouvée. »',
-    color: 'bg-amber-500',
-  },
-];
+const LADDER_COLORS = ['bg-amber-500', 'bg-amber-400', 'bg-blue-400', 'bg-emerald-400', 'bg-emerald-500'];
 
 export default function TrustCenter() {
+  const { locale } = useI18n();
+  const c = TRUST_CENTER_CONTENT[locale];
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <SEOHead
-        title="Trust Center — Comment nous vérifions | EthiMarket"
-        description="Pourquoi EthiMarket considère qu'un produit est responsable : hiérarchie des preuves, processus de vérification auprès des organismes certificateurs, et nos limites en toute transparence."
-      />
+      <SEOHead title={c.seoTitle} description={c.seoDesc} />
       <Header />
       <main className="mx-auto max-w-4xl px-4 py-12 flex-1">
       {/* En-tête */}
-      <header className="text-center">
+      <header className="text-center pt-16">
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100">
           <ShieldCheck className="h-7 w-7 text-emerald-700" aria-hidden />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900">Trust Center</h1>
-        <p className="mx-auto mt-3 max-w-2xl text-gray-600">
-          Pourquoi EthiMarket considère-t-il qu'un produit est responsable ?
-          Voici exactement comment nous le décidons — et ce que nous ne pouvons pas garantir.
-        </p>
+        <h1 className="text-3xl font-bold text-gray-900">{c.title}</h1>
+        <p className="mx-auto mt-3 max-w-2xl text-gray-600">{c.intro}</p>
       </header>
 
       {/* Principe fondateur */}
       <section className="mt-12 rounded-2xl border border-emerald-200 bg-emerald-50 p-6">
         <h2 className="flex items-center gap-2 text-xl font-bold text-emerald-900">
-          <Scale className="h-5 w-5" aria-hidden /> Notre règle n°1
+          <Scale className="h-5 w-5" aria-hidden /> {c.rule1Title}
         </h2>
         <p className="mt-3 text-emerald-900">
-          <strong>Chaque information affichée a une source, et le statut de vérification est
-          calculé par la plateforme — jamais déclaré par le fournisseur.</strong>
+          <strong>{c.rule1Strong}</strong>
         </p>
-        <p className="mt-2 text-sm text-emerald-800">
-          Quand une allégation n'a pas de preuve indépendante, nous ne la cachons pas et nous
-          ne l'embellissons pas : nous affichons
-          « ⚠️ Déclaration fournisseur — preuve indépendante non trouvée. »
-          EthiMarket refuse d'être un site qui répète les arguments marketing des fournisseurs.
-        </p>
+        <p className="mt-2 text-sm text-emerald-800">{c.rule1Text}</p>
       </section>
 
       {/* Hiérarchie des preuves */}
       <section className="mt-12">
         <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
-          <FileSearch className="h-5 w-5" aria-hidden /> La hiérarchie des preuves
+          <FileSearch className="h-5 w-5" aria-hidden /> {c.ladderTitle}
         </h2>
-        <p className="mt-2 text-sm text-gray-600">
-          Toutes les preuves ne se valent pas. Une allégation n'obtient le statut
-          « Certifié » que si elle est appuyée par une preuve de niveau 4 ou 5, valide et non expirée.
-        </p>
+        <p className="mt-2 text-sm text-gray-600">{c.ladderIntro}</p>
         <ol className="mt-6 space-y-3">
-          {EVIDENCE_LADDER.map(step => (
+          {c.ladder.map(step => (
             <li key={step.level} className="flex items-start gap-4 rounded-xl border border-gray-200 bg-white p-4">
-              <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${step.color} text-sm font-bold text-white`}>
+              <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${LADDER_COLORS[step.level - 1]} text-sm font-bold text-white`}>
                 {step.level}
               </span>
               <div>
@@ -108,19 +65,12 @@ export default function TrustCenter() {
       {/* Processus de vérification */}
       <section className="mt-12">
         <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
-          <Building2 className="h-5 w-5" aria-hidden /> Comment nous vérifions
+          <Building2 className="h-5 w-5" aria-hidden /> {c.processTitle}
         </h2>
         <div className="mt-4 space-y-4 text-sm text-gray-700">
-          <p>
-            Notre annuaire interne référence <strong>plus de 55 organismes certificateurs</strong> dans
-            le monde (Europe, Afrique, Asie, Amérique latine), avec leurs canaux de vérification
-            officiels : API, registres publics, e-mail, formulaires, téléphone.
-          </p>
-          <ul className="list-disc space-y-2 pl-5">
-            <li>Chaque certificat déposé est confronté à l'organisme émetteur (numéro, titulaire, périmètre, dates).</li>
-            <li>Chaque vérification est <strong>horodatée et journalisée dans un registre immuable</strong> : personne, pas même un administrateur, ne peut effacer l'historique.</li>
-            <li>À l'expiration d'un certificat, le statut de l'allégation est <strong>automatiquement rétrogradé</strong> — un produit ne reste jamais « certifié » avec un certificat périmé.</li>
-            <li>Si un organisme infirme un certificat, l'allégation passe en « ❌ Non confirmé » et le fournisseur est notifié.</li>
+          <p>{c.processIntro1}</p>
+          <ul className="list-disc space-y-2 ps-5">
+            {c.processPoints.map((p, i) => <li key={i}>{p}</li>)}
           </ul>
         </div>
       </section>
@@ -128,25 +78,19 @@ export default function TrustCenter() {
       {/* Ce que ça ne garantit pas */}
       <section className="mt-12 rounded-2xl border border-amber-200 bg-amber-50 p-6">
         <h2 className="flex items-center gap-2 text-xl font-bold text-amber-900">
-          <AlertTriangle className="h-5 w-5" aria-hidden /> Nos limites, en toute transparence
+          <AlertTriangle className="h-5 w-5" aria-hidden /> {c.limitsTitle}
         </h2>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-amber-900">
-          <li>« Certifié » signifie que le certificat est authentique et valide — pas que nous avons visité l'usine nous-mêmes.</li>
-          <li>Les estimations d'impact (CO2, eau) issues de modèles sectoriels sont toujours étiquetées comme telles, jamais présentées comme des mesures.</li>
-          <li>Une « déclaration fournisseur » n'est pas nécessairement fausse — elle est simplement non prouvée à ce jour.</li>
-          <li>La vérification auprès de certains organismes peut prendre plusieurs semaines ; le statut « vérification en cours » reflète ce délai réel.</li>
+        <ul className="mt-3 list-disc space-y-2 ps-5 text-sm text-amber-900">
+          {c.limits.map((l, i) => <li key={i}>{l}</li>)}
         </ul>
       </section>
 
       {/* Engagement */}
       <section className="mt-12 text-center">
         <h2 className="flex items-center justify-center gap-2 text-xl font-bold text-gray-900">
-          <BookOpenCheck className="h-5 w-5" aria-hidden /> Notre engagement
+          <BookOpenCheck className="h-5 w-5" aria-hidden /> {c.engagementTitle}
         </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-sm text-gray-600">
-          Si vous repérez une allégation douteuse, signalez-la : chaque signalement déclenche
-          un contrôle documenté. La confiance ne se décrète pas, elle se prouve — source par source.
-        </p>
+        <p className="mx-auto mt-3 max-w-2xl text-sm text-gray-600">{c.engagementText}</p>
       </section>
       </main>
       <Footer />

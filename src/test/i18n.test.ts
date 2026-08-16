@@ -123,3 +123,74 @@ describe('i18n — système de traduction multilingue', () => {
     });
   });
 });
+
+// ─────────────────────────────────────────────────────────────
+// Contenus éditoriaux multilingues (pages complètes)
+// ─────────────────────────────────────────────────────────────
+import { HOME_CONTENT } from '../lib/i18n/content/home';
+import { MISSION_CONTENT } from '../lib/i18n/content/mission';
+import { TRUST_CENTER_CONTENT } from '../lib/i18n/content/trustCenter';
+import { VENDOR_CONTENT } from '../lib/i18n/content/vendor';
+import { HOW_IT_WORKS_CONTENT } from '../lib/i18n/content/howItWorks';
+import { SCORE_CONTENT } from '../lib/i18n/content/score';
+import { INSTITUTIONAL_CONTENT } from '../lib/i18n/content/institutional';
+
+describe('i18n — contenus éditoriaux des pages', () => {
+  const CONTENTS = {
+    home: HOME_CONTENT,
+    mission: MISSION_CONTENT,
+    trustCenter: TRUST_CENTER_CONTENT,
+    vendor: VENDOR_CONTENT,
+    howItWorks: HOW_IT_WORKS_CONTENT,
+    score: SCORE_CONTENT,
+    institutional: INSTITUTIONAL_CONTENT,
+  } as const;
+
+  for (const [name, content] of Object.entries(CONTENTS)) {
+    it(`${name}: les 5 langues sont présentes`, () => {
+      expect(Object.keys(content).sort()).toEqual(['ar', 'en', 'es', 'fr', 'pt']);
+    });
+
+    it(`${name}: structure identique entre les langues (mêmes clés et mêmes longueurs de listes)`, () => {
+      const shape = (obj: unknown): unknown => {
+        if (Array.isArray(obj)) return { __len: obj.length, __item: obj.length ? shape(obj[0]) : null };
+        if (obj && typeof obj === 'object') {
+          return Object.fromEntries(Object.keys(obj as object).sort().map(k => [k, shape((obj as Record<string, unknown>)[k])]));
+        }
+        return typeof obj;
+      };
+      const ref = JSON.stringify(shape(content.fr));
+      for (const loc of ['en', 'es', 'pt', 'ar'] as const) {
+        expect(JSON.stringify(shape(content[loc])), `${name}.${loc} diverge du fr`).toBe(ref);
+      }
+    });
+  }
+
+  it('trustCenter: l\'échelle de preuves garde 5 niveaux dans toutes les langues', () => {
+    for (const loc of ['fr', 'en', 'es', 'pt', 'ar'] as const) {
+      expect(TRUST_CENTER_CONTENT[loc].ladder.map(l => l.level)).toEqual([5, 4, 3, 2, 1]);
+    }
+  });
+
+  it('howItWorks: 5 étapes acheteur, 5 étapes producteur, 10 FAQ dans toutes les langues', () => {
+    for (const loc of ['fr', 'en', 'es', 'pt', 'ar'] as const) {
+      expect(HOW_IT_WORKS_CONTENT[loc].buyerSteps).toHaveLength(5);
+      expect(HOW_IT_WORKS_CONTENT[loc].producerSteps).toHaveLength(5);
+      expect(HOW_IT_WORKS_CONTENT[loc].faq).toHaveLength(10);
+    }
+  });
+
+  it('score: les points par catégorie sont identiques dans toutes les langues', () => {
+    const refPoints = SCORE_CONTENT.fr.categories.map(c => c.items.map(i => i.points));
+    for (const loc of ['en', 'es', 'pt', 'ar'] as const) {
+      expect(SCORE_CONTENT[loc].categories.map(c => c.items.map(i => i.points))).toEqual(refPoints);
+    }
+  });
+
+  it('institutional: 3 plans tarifaires et 8 FAQ dans toutes les langues', () => {
+    for (const loc of ['fr', 'en', 'es', 'pt', 'ar'] as const) {
+      expect(INSTITUTIONAL_CONTENT[loc].pricing.plans).toHaveLength(3);
+      expect(INSTITUTIONAL_CONTENT[loc].help.faqs).toHaveLength(8);
+    }
+  });
+});
