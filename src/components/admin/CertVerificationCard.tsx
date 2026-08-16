@@ -37,7 +37,7 @@ const DEFAULT_BODIES: Partial<CertificationBody>[] = [
     verification_instructions: 'Entrez le numéro de certificat sur certificat.ecocert.com pour vérifier sa validité.',
     headquarters_country: 'France',
     contact_email: 'info@ecocert.com',
-    certification_types: ['Bio', 'EU Organic', 'Cosmétique bio', 'Textile bio', 'Commerce équitable']
+    certification_types: ['Bio', 'EU Organic', 'Cosmétique bio', 'Textile bio', 'Commerce équitable'] as never
   },
   {
     name: 'Bureau Veritas Certification',
@@ -47,7 +47,7 @@ const DEFAULT_BODIES: Partial<CertificationBody>[] = [
     verification_instructions: 'Utilisez le portail de vérification Bureau Veritas avec le numéro de certificat.',
     headquarters_country: 'France',
     contact_email: 'certification@bureauveritas.com',
-    certification_types: ['ISO 9001', 'ISO 14001', 'FSSC 22000', 'Bio', 'RSE']
+    certification_types: ['ISO 9001', 'ISO 14001', 'FSSC 22000', 'Bio', 'RSE'] as never
   },
   {
     name: 'AFNOR Certification',
@@ -57,7 +57,7 @@ const DEFAULT_BODIES: Partial<CertificationBody>[] = [
     verification_instructions: 'Recherchez le certificat sur le portail AFNOR Certification.',
     headquarters_country: 'France',
     contact_email: 'certification@afnor.org',
-    certification_types: ['NF', 'ISO', 'Bio AB']
+    certification_types: ['NF', 'ISO', 'Bio AB'] as never
   },
   {
     name: 'Control Union Certifications',
@@ -67,7 +67,7 @@ const DEFAULT_BODIES: Partial<CertificationBody>[] = [
     verification_instructions: 'Recherchez dans la base de données des certificats Control Union.',
     headquarters_country: 'Pays-Bas',
     contact_email: 'info@controlunion.com',
-    certification_types: ['Bio', 'GOTS', 'GlobalG.A.P.', 'UTZ', 'Rainforest Alliance']
+    certification_types: ['Bio', 'GOTS', 'GlobalG.A.P.', 'UTZ', 'Rainforest Alliance'] as never
   },
   {
     name: 'SGS SA',
@@ -77,7 +77,7 @@ const DEFAULT_BODIES: Partial<CertificationBody>[] = [
     verification_instructions: 'Vérifiez les clients certifiés SGS via leur portail de recherche.',
     headquarters_country: 'Suisse',
     contact_email: 'sgs.verification@sgs.com',
-    certification_types: ['ISO', 'HACCP', 'Bio', 'GlobalG.A.P.', 'BRC', 'IFS']
+    certification_types: ['ISO', 'HACCP', 'Bio', 'GlobalG.A.P.', 'BRC', 'IFS'] as never
   },
   {
     name: 'Fairtrade International',
@@ -87,7 +87,7 @@ const DEFAULT_BODIES: Partial<CertificationBody>[] = [
     verification_instructions: 'Recherchez le producteur dans la base Fairtrade Producer Search. Entrez le FLO-ID ou le nom.',
     headquarters_country: 'Allemagne',
     contact_email: 'info@fairtrade.net',
-    certification_types: ['Fairtrade', 'Commerce équitable']
+    certification_types: ['Fairtrade', 'Commerce équitable'] as never
   },
   {
     name: 'FLO-CERT',
@@ -97,7 +97,7 @@ const DEFAULT_BODIES: Partial<CertificationBody>[] = [
     verification_instructions: 'Utilisez la recherche FLO-CERT Customer Search avec le nom de l\'organisation.',
     headquarters_country: 'Allemagne',
     contact_email: 'info@flocert.net',
-    certification_types: ['Fairtrade']
+    certification_types: ['Fairtrade'] as never
   },
   {
     name: 'Demeter International',
@@ -107,7 +107,7 @@ const DEFAULT_BODIES: Partial<CertificationBody>[] = [
     verification_instructions: 'Recherchez les producteurs Demeter certifiés sur le portail Find Demeter.',
     headquarters_country: 'Allemagne',
     contact_email: 'info@demeter.net',
-    certification_types: ['Biodynamie', 'Demeter']
+    certification_types: ['Biodynamie', 'Demeter'] as never
   },
   {
     name: 'Rainforest Alliance',
@@ -117,7 +117,7 @@ const DEFAULT_BODIES: Partial<CertificationBody>[] = [
     verification_instructions: 'Utilisez la recherche Find Certified pour vérifier un producteur Rainforest Alliance.',
     headquarters_country: 'États-Unis',
     contact_email: 'info@ra.org',
-    certification_types: ['Rainforest Alliance Certified', 'UTZ']
+    certification_types: ['Rainforest Alliance Certified', 'UTZ'] as never
   },
   {
     name: 'GlobalG.A.P.',
@@ -127,7 +127,7 @@ const DEFAULT_BODIES: Partial<CertificationBody>[] = [
     verification_instructions: 'Recherchez le producteur dans la base de données GLOBALG.A.P. (GGN).',
     headquarters_country: 'Allemagne',
     contact_email: 'info@globalgap.org',
-    certification_types: ['GlobalG.A.P.', 'GRASP']
+    certification_types: ['GlobalG.A.P.', 'GRASP'] as never
   },
   {
     name: 'USDA Organic',
@@ -137,7 +137,7 @@ const DEFAULT_BODIES: Partial<CertificationBody>[] = [
     verification_instructions: 'Recherchez dans la base Organic Integrity Database de l\'USDA.',
     headquarters_country: 'États-Unis',
     contact_email: 'organic@usda.gov',
-    certification_types: ['USDA Organic', 'NOP']
+    certification_types: ['USDA Organic', 'NOP'] as never
   },
   {
     name: 'GOTS (Global Organic Textile Standard)',
@@ -147,7 +147,7 @@ const DEFAULT_BODIES: Partial<CertificationBody>[] = [
     verification_instructions: 'Recherchez les fournisseurs certifiés GOTS dans leur base publique.',
     headquarters_country: 'Allemagne',
     contact_email: 'info@global-standard.org',
-    certification_types: ['GOTS', 'Textile bio']
+    certification_types: ['GOTS', 'Textile bio'] as never
   },
   {
     name: 'OEKO-TEX',
@@ -157,7 +157,7 @@ const DEFAULT_BODIES: Partial<CertificationBody>[] = [
     verification_instructions: 'Vérifiez les labels OEKO-TEX via le Buying Guide.',
     headquarters_country: 'Suisse',
     contact_email: 'info@oeko-tex.com',
-    certification_types: ['OEKO-TEX Standard 100', 'OEKO-TEX Made in Green']
+    certification_types: ['OEKO-TEX Standard 100', 'OEKO-TEX Made in Green'] as never
   },
   {
     name: 'Certisys',
@@ -167,7 +167,7 @@ const DEFAULT_BODIES: Partial<CertificationBody>[] = [
     verification_instructions: 'Recherchez un opérateur certifié sur le portail Certisys.',
     headquarters_country: 'Belgique',
     contact_email: 'info@certisys.eu',
-    certification_types: ['Bio', 'EU Organic']
+    certification_types: ['Bio', 'EU Organic'] as never
   }
 ];
 

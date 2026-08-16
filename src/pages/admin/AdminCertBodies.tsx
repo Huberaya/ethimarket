@@ -18,7 +18,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Organisme de certification bio leader mondial, fondé en 1991.',
     headquarters_country: 'France',
     coverage: ['Mondial', 'Europe', 'Afrique', 'Asie', 'Amérique'],
-    certification_types: ['Bio', 'EU Organic', 'Cosmétique bio', 'Textile bio', 'Commerce équitable'],
+    certification_types: ['Bio', 'EU Organic', 'Cosmétique bio', 'Textile bio', 'Commerce équitable'] as never,
     contact_email: 'info@ecocert.com',
     is_active: true
   },
@@ -31,7 +31,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Leader mondial en certification, inspection et audit.',
     headquarters_country: 'France',
     coverage: ['Mondial'],
-    certification_types: ['ISO 9001', 'ISO 14001', 'FSSC 22000', 'Bio', 'RSE'],
+    certification_types: ['ISO 9001', 'ISO 14001', 'FSSC 22000', 'Bio', 'RSE'] as never,
     contact_email: 'certification@bureauveritas.com',
     is_active: true
   },
@@ -44,7 +44,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Association française de normalisation.',
     headquarters_country: 'France',
     coverage: ['France', 'Europe', 'Afrique francophone'],
-    certification_types: ['NF', 'ISO', 'Bio AB'],
+    certification_types: ['NF', 'ISO', 'Bio AB'] as never,
     contact_email: 'certification@afnor.org',
     is_active: true
   },
@@ -57,7 +57,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Organisme néerlandais de certification durable.',
     headquarters_country: 'Pays-Bas',
     coverage: ['Mondial', 'Europe', 'Asie', 'Afrique'],
-    certification_types: ['Bio', 'GOTS', 'GlobalG.A.P.', 'UTZ', 'Rainforest Alliance'],
+    certification_types: ['Bio', 'GOTS', 'GlobalG.A.P.', 'UTZ', 'Rainforest Alliance'] as never,
     contact_email: 'info@controlunion.com',
     is_active: true
   },
@@ -70,7 +70,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Société Générale de Surveillance, leader mondial inspection.',
     headquarters_country: 'Suisse',
     coverage: ['Mondial'],
-    certification_types: ['ISO', 'HACCP', 'Bio', 'GlobalG.A.P.', 'BRC', 'IFS'],
+    certification_types: ['ISO', 'HACCP', 'Bio', 'GlobalG.A.P.', 'BRC', 'IFS'] as never,
     contact_email: 'sgs.verification@sgs.com',
     is_active: true
   },
@@ -83,7 +83,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Organisation mondiale du commerce équitable, label le plus reconnu.',
     headquarters_country: 'Allemagne',
     coverage: ['Mondial', 'Afrique', 'Amérique latine', 'Asie'],
-    certification_types: ['Fairtrade', 'Commerce équitable'],
+    certification_types: ['Fairtrade', 'Commerce équitable'] as never,
     contact_email: 'info@fairtrade.net',
     is_active: true
   },
@@ -96,7 +96,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Organisme de certification indépendant de Fairtrade.',
     headquarters_country: 'Allemagne',
     coverage: ['Mondial'],
-    certification_types: ['Fairtrade'],
+    certification_types: ['Fairtrade'] as never,
     contact_email: 'info@flocert.net',
     is_active: true
   },
@@ -109,7 +109,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Réseau mondial du commerce équitable.',
     headquarters_country: 'Pays-Bas',
     coverage: ['Mondial'],
-    certification_types: ['Commerce équitable', 'WFTO Guarantee System'],
+    certification_types: ['Commerce équitable', 'WFTO Guarantee System'] as never,
     contact_email: 'info@wfto.com',
     is_active: true
   },
@@ -122,7 +122,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Symbole des Petits Producteurs, certification pour organisations paysannes.',
     headquarters_country: 'Mexique',
     coverage: ['Amérique latine', 'Afrique', 'Asie'],
-    certification_types: ['SPP', 'Commerce équitable petits producteurs'],
+    certification_types: ['SPP', 'Commerce équitable petits producteurs'] as never,
     contact_email: 'info@spp.coop',
     is_active: true
   },
@@ -135,7 +135,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Certification biodynamique, la plus exigeante du bio.',
     headquarters_country: 'Allemagne',
     coverage: ['Mondial', 'Europe', 'Amérique', 'Asie'],
-    certification_types: ['Biodynamie', 'Demeter'],
+    certification_types: ['Biodynamie', 'Demeter'] as never,
     contact_email: 'info@demeter.net',
     is_active: true
   },
@@ -148,7 +148,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Association française de promotion de l agriculture bio et biodynamique.',
     headquarters_country: 'France',
     coverage: ['France'],
-    certification_types: ['Bio', 'Mention Nature & Progrès'],
+    certification_types: ['Bio', 'Mention Nature & Progrès'] as never,
     contact_email: 'federation@natureetprogres.org',
     is_active: true
   },
@@ -161,7 +161,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Organisation de certification pour agriculture durable.',
     headquarters_country: 'États-Unis',
     coverage: ['Mondial', 'Afrique', 'Amérique latine', 'Asie'],
-    certification_types: ['Rainforest Alliance Certified', 'UTZ'],
+    certification_types: ['Rainforest Alliance Certified', 'UTZ'] as never,
     contact_email: 'info@ra.org',
     is_active: true
   },
@@ -174,7 +174,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Standard mondial de bonnes pratiques agricoles.',
     headquarters_country: 'Allemagne',
     coverage: ['Mondial'],
-    certification_types: ['GlobalG.A.P.', 'GRASP', 'localg.a.p.'],
+    certification_types: ['GlobalG.A.P.', 'GRASP', 'localg.a.p.'] as never,
     contact_email: 'info@globalgap.org',
     is_active: true
   },
@@ -187,7 +187,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Certification biologique du Département de l Agriculture des États-Unis.',
     headquarters_country: 'États-Unis',
     coverage: ['États-Unis', 'Mondial'],
-    certification_types: ['USDA Organic', 'NOP'],
+    certification_types: ['USDA Organic', 'NOP'] as never,
     contact_email: 'organic@usda.gov',
     is_active: true
   },
@@ -200,7 +200,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Régime biologique canadien.',
     headquarters_country: 'Canada',
     coverage: ['Canada'],
-    certification_types: ['Canada Organic', 'COR'],
+    certification_types: ['Canada Organic', 'COR'] as never,
     contact_email: 'cfia.organic@inspection.gc.ca',
     is_active: true
   },
@@ -213,7 +213,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Global Organic Textile Standard, textile bio.',
     headquarters_country: 'Allemagne',
     coverage: ['Mondial'],
-    certification_types: ['GOTS', 'Textile bio'],
+    certification_types: ['GOTS', 'Textile bio'] as never,
     contact_email: 'info@global-standard.org',
     is_active: true
   },
@@ -226,7 +226,7 @@ const FALLBACK_BODIES: Partial<CertificationBody>[] = [
     description: 'Association internationale pour la sécurité textile.',
     headquarters_country: 'Suisse',
     coverage: ['Mondial'],
-    certification_types: ['OEKO-TEX Standard 100', 'OEKO-TEX Made in Green'],
+    certification_types: ['OEKO-TEX Standard 100', 'OEKO-TEX Made in Green'] as never,
     contact_email: 'info@oeko-tex.com',
     is_active: true
   }

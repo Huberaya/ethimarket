@@ -1,0 +1,55 @@
+# =============================================================
+# EthiMarket — CI : tests + build sur chaque push et pull request
+# Empêche les régressions du type « bouton mort » ou « route cassée »
+# d'atteindre la production (Vercel déploie main automatiquement).
+# =============================================================
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-and-build:
+    name: Tests & build de production
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package.json
+
+      - name: Installer les dépendances
+        run: npm install --no-fund --no-audit
+
+      - name: Tests unitaires (199 tests)
+        run: npx vitest run src/test
+
+      - name: Build de production
+        run: npm run build
+        env:
+          # Clés publiques anon (le build les fige ; les vraies valeurs
+          # sont injectées par Vercel au déploiement)
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: placeholder-key
+
+      - name: Vérifier que le bundle contient les pages critiques
+        run: |
+          # Smoke test statique : les chaînes clés doivent être dans le bundle
+          BUNDLE=$(ls dist/assets/index-*.js | head -1)
+          for marker in "Trust Center" "Responsibility Score" "Demande de devis" "Comparateur"; do
+            if ! grep -q "$marker" "$BUNDLE"; then
+              echo "::error::Marqueur absent du bundle : $marker"
+              exit 1
+            fi
+          done
+          echo "✓ Tous les marqueurs critiques présents dans le bundle"

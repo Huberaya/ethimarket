@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   detectBestChannel,
@@ -23,7 +24,7 @@ describe('certificationBodiesService', () => {
   // =========================================================================
   describe('GROUPE 1 — detectBestChannel', () => {
     it('Test 1.1 : Email prioritaire', () => {
-      const body: CertificationBody = {
+      const body = {
         ...mockCertificationBody,
         email_contact: 'contact@cert.com',
         whatsapp: '+33600000000',
@@ -33,7 +34,7 @@ describe('certificationBodiesService', () => {
     });
 
     it('Test 1.2 : WhatsApp si pas d email', () => {
-      const body: CertificationBody = {
+      const body = {
         ...mockCertificationBody,
         email_contact: undefined,
         whatsapp: '+33600000000',
@@ -43,7 +44,7 @@ describe('certificationBodiesService', () => {
     });
 
     it('Test 1.3 : Formulaire / Portail si pas d email ni de WhatsApp', () => {
-      const body: CertificationBody = {
+      const body = {
         ...mockCertificationBody,
         email_contact: undefined,
         whatsapp: undefined,
@@ -54,7 +55,7 @@ describe('certificationBodiesService', () => {
     });
 
     it('Test 1.4 : Téléphone si pas de formulaire', () => {
-      const body: CertificationBody = {
+      const body = {
         ...mockCertificationBody,
         email_contact: undefined,
         whatsapp: undefined,
@@ -66,7 +67,7 @@ describe('certificationBodiesService', () => {
     });
 
     it('Test 1.5 : Phone si pas de WhatsApp', () => {
-      const body: CertificationBody = {
+      const body = {
         ...mockCertificationBody,
         api_endpoint: null,
         email_contact: null,
@@ -83,7 +84,7 @@ describe('certificationBodiesService', () => {
     });
 
     it('Test 1.7 : api_endpoint vide string replie sur le canal suivant', () => {
-      const body: CertificationBody = {
+      const body = {
         ...mockCertificationBody,
         api_endpoint: '   ',
         email_contact: 'contact@cert.com'

@@ -5,7 +5,7 @@ import { Product } from '../lib/supabase';
 import { executeIntelligentSearch, findSpellingCorrection } from '../lib/productSearchEngine';
 
 // Realistic mock dataset representing diverse marketplace inventory
-const MOCK_CATALOG: Product[] = [
+const MOCK_CATALOG: Product[] = ([
   // 1. Cafés
   {
     id: 'prod-cafe-1',
@@ -173,7 +173,7 @@ const MOCK_CATALOG: Product[] = [
     product_type: 'huile',
     certifications: ['Bio', 'Fairtrade']
   }
-];
+] as unknown) as Product[];
 
 describe('Strict Search Precision Engine (Validation Tests)', () => {
   // TEST 1: Recherche "café"

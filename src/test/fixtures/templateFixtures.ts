@@ -24,7 +24,7 @@ export const mockTemplateVariables: TemplateVariables = {
   today_date: '15/08/2026'
 };
 
-export const mockEmailTemplateFR: CertificationMessageTemplate = {
+export const mockEmailTemplateFR = {
   id: 'tpl-email-fr-1',
   name: 'Email de vérification standard (FR)',
   title: 'Email de vérification standard (FR)',
@@ -64,7 +64,7 @@ L'équipe EthiMarket`,
   updated_at: '2026-08-14T00:00:00.000Z'
 };
 
-export const mockEmailTemplateEN: CertificationMessageTemplate = {
+export const mockEmailTemplateEN = {
   id: 'tpl-email-en-1',
   name: 'Standard Verification Email (EN)',
   title: 'Standard Verification Email (EN)',
@@ -102,7 +102,7 @@ The EthiMarket Verification Team`,
   updated_at: '2026-08-14T00:00:00.000Z'
 };
 
-export const mockWhatsAppTemplate: CertificationMessageTemplate = {
+export const mockWhatsAppTemplate = {
   id: 'tpl-wa-fr-1',
   name: 'Notification WhatsApp (FR)',
   title: 'Notification WhatsApp (FR)',
@@ -118,7 +118,7 @@ export const mockWhatsAppTemplate: CertificationMessageTemplate = {
   updated_at: '2026-08-14T00:00:00.000Z'
 };
 
-export const mockAPITemplate: CertificationMessageTemplate = {
+export const mockAPITemplate = {
   id: 'tpl-api-fr-1',
   name: 'Payload JSON Requête API (FR)',
   title: 'Payload JSON Requête API (FR)',
@@ -144,7 +144,7 @@ export const mockAPITemplate: CertificationMessageTemplate = {
   updated_at: '2026-08-14T00:00:00.000Z'
 };
 
-export const mockTemplateWithVersion: CertificationMessageTemplate = {
+export const mockTemplateWithVersion = {
   id: 'tpl-versioned-1',
   name: 'Modèle avec Version 2',
   title: 'Modèle avec Version 2',
@@ -167,7 +167,7 @@ export const mockTemplateWithVersion: CertificationMessageTemplate = {
   updated_at: '2026-08-14T11:00:00.000Z'
 };
 
-export const mockTemplateWithInvalidVariables: CertificationMessageTemplate = {
+export const mockTemplateWithInvalidVariables = {
   id: 'tpl-invalid-vars-1',
   name: 'Modèle Variables Invalides',
   title: 'Modèle Variables Invalides',

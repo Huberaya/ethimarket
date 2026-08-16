@@ -18,6 +18,8 @@ import {
   ComparisonAnalysis, ProductScorecard, RiskLevel, TrustSnapshot,
 } from '../../lib/procurementComparator';
 import { enhanceRecommendationWithFreeAi } from '../../lib/procurementLlm';
+import { recordBuyerEvent } from '../../lib/buyerWorkspace';
+import { useAuth } from '../../lib/auth';
 
 const RISK_DISPLAY: Record<RiskLevel, { emoji: string; label: string; cls: string }> = {
   low: { emoji: '🟢', label: 'Faible', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
@@ -53,8 +55,11 @@ export default function ProcurementComparisonModal({ products, isOpen, onClose }
   const [loading, setLoading] = useState(false);
   const [aiUsed, setAiUsed] = useState<string>('local');
 
+  const { user } = useAuth();
+
   useEffect(() => {
     if (!isOpen || products.length < 2) return;
+    if (user) void recordBuyerEvent(user.id, 'comparison_run', { extra: { productCount: products.length } });
     let cancelled = false;
     setLoading(true);
     (async () => {

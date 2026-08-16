@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from 'vitest';
 import {
   detectBestChannel
@@ -10,7 +11,7 @@ import { generatePostalLetterHtml } from '../lib/postalLetterGenerator';
 import type { CertificationBody } from '../lib/supabase';
 
 describe('Global Certification Bodies Directory & Verification Logic', () => {
-  const mockBody: CertificationBody = {
+  const mockBody = {
     id: 'body-123',
     name: 'Ecocert West Africa',
     acronym: 'Ecocert WA',
@@ -44,7 +45,7 @@ describe('Global Certification Bodies Directory & Verification Logic', () => {
     is_active: true,
     created_at: '2026-08-15T00:00:00Z',
     updated_at: '2026-08-15T00:00:00Z'
-  };
+  } as unknown as CertificationBody;
 
   it('detects email as primary channel when available without API dependency', () => {
     const channel = detectBestChannel(mockBody);
@@ -55,7 +56,7 @@ describe('Global Certification Bodies Directory & Verification Logic', () => {
     const channel = detectBestChannel({
       ...mockBody,
       email_contact: undefined
-    });
+    } as unknown as CertificationBody);
     expect(channel).toBe('whatsapp');
   });
 
@@ -64,7 +65,7 @@ describe('Global Certification Bodies Directory & Verification Logic', () => {
       ...mockBody,
       email_contact: undefined,
       whatsapp: undefined
-    });
+    } as unknown as CertificationBody);
     expect(channel).toBe('form');
   });
 
@@ -75,7 +76,7 @@ describe('Global Certification Bodies Directory & Verification Logic', () => {
       whatsapp: undefined,
       verification_url: undefined,
       contact_form_url: undefined
-    });
+    } as unknown as CertificationBody);
     expect(channel).toBe('phone');
   });
 
@@ -87,7 +88,7 @@ describe('Global Certification Bodies Directory & Verification Logic', () => {
       verification_url: undefined,
       contact_form_url: undefined,
       phone: undefined
-    });
+    } as unknown as CertificationBody);
     expect(channel).toBe('postal');
   });
 

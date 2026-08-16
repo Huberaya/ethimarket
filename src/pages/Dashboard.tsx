@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import BuyerCockpit from '../components/dashboard/BuyerCockpit';
+import BuyerOnboarding from '../components/dashboard/BuyerOnboarding';
 import { supabase, type Product } from '../lib/supabase';
 
 export default function Dashboard() {
@@ -332,6 +333,9 @@ function BuyerHome({ firstName, today }: { firstName: string; today: string }) {
         <h1 className="text-2xl font-black text-gray-900">Bonjour, {firstName} 👋</h1>
         <p className="text-sm text-gray-500 capitalize mt-1">{today}</p>
       </div>
+
+      {/* Guide de démarrage (checklist auto-cochée, disparaît une fois complet) */}
+      {user && <div className="mb-6"><BuyerOnboarding userId={user.id} /></div>}
 
       {/* Cockpit « Aujourd'hui » : compteurs + alertes proactives */}
       {user && <div className="mb-8"><BuyerCockpit userId={user.id} /></div>}

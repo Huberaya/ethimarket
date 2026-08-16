@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Calendar, Clock, ArrowRight, ArrowUpRight, Mail } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -70,7 +71,7 @@ export default function Blog() {
       {featured && (
         <section className="py-12 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <a href="#" className="group block rounded-3xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
+            <Link to={`/blog/${featured.slug}`} className="group block rounded-3xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                 <div className="relative overflow-hidden" style={{ minHeight: '320px' }}>
                   {featured.image_url && (
@@ -101,7 +102,7 @@ export default function Blog() {
                   </span>
                 </div>
               </div>
-            </a>
+            </Link>
           </div>
         </section>
       )}
@@ -112,7 +113,7 @@ export default function Blog() {
           {rest.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {rest.map(article => (
-                <a key={article.id} href={`/blog#${article.id}`} onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                <Link key={article.id} to={`/blog/${article.slug}`}
                   className="group flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                   <div className="relative overflow-hidden" style={{ height: '200px' }}>
                     {article.image_url ? (
@@ -144,7 +145,7 @@ export default function Blog() {
                       </span>
                     </div>
                   </div>
-                </a>
+                </Link>
               ))}
             </div>
           ) : (

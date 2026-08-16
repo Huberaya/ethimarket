@@ -437,7 +437,7 @@ export default function MonProfil() {
     );
   };
 
-  const saveSection = useCallback(async (section: string, data: Partial<FormState>) => {
+  const saveSection = useCallback(async (section: string, data: Record<string, unknown>) => {
     if (!producer) return;
     setSaving(section);
     setError('');

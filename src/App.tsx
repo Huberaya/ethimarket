@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import ProducerShop from './pages/ProducerShop';
 import HowItWorks from './pages/HowItWorks';
 import Blog from './pages/Blog';
+import BlogArticle from './pages/BlogArticle';
 import Contact from './pages/Contact';
 import DevenirVendeur from './pages/DevenirVendeur';
 import NotreMission from './pages/NotreMission';
@@ -68,6 +69,7 @@ export default function App() {
         <Route path="/boutique/:id" element={<ProducerShop />} />
         <Route path="/comment-ca-marche" element={<HowItWorks />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogArticle />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/devenir-vendeur" element={<DevenirVendeur />} />
         <Route path="/notre-mission" element={<NotreMission />} />
