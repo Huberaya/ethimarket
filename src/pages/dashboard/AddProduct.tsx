@@ -64,6 +64,20 @@ export default function AddProduct() {
     gps_coordinates: '',
     batch_number: '',
     co2_estimate: '',
+    // --- Impact & Éthique (17 facettes du moteur intelligent) ---
+    product_type: '',
+    manufacturing_country: '',
+    raw_materials_origin: '',
+    carbon_footprint_kg: '',
+    water_footprint_liters: '',
+    is_vegan: false,
+    is_recycled: false,
+    recycled_percentage: '',
+    living_wage_guaranteed: false,
+    fair_trade: false,
+    social_audit_passed: false,
+    is_cooperative: false,
+    packaging_types: [] as string[],
   });
 
   // Load categories and auto-retrieve or auto-create user's producer profile
@@ -155,6 +169,19 @@ export default function AddProduct() {
   }, [user]);
 
   const update = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }));
+
+  const togglePackaging = (pk: string) => {
+    setForm(prev => ({
+      ...prev,
+      packaging_types: prev.packaging_types.includes(pk)
+        ? prev.packaging_types.filter(x => x !== pk)
+        : [...prev.packaging_types, pk],
+    }));
+  };
+
+  const toggleBool = (field: 'is_vegan' | 'is_recycled' | 'living_wage_guaranteed' | 'fair_trade' | 'social_audit_passed' | 'is_cooperative') => {
+    setForm(prev => ({ ...prev, [field]: !prev[field] }));
+  };
 
   const toggleCert = (cert: string) => {
     setForm(prev => ({
@@ -322,6 +349,21 @@ export default function AddProduct() {
         gps_coordinates: toStringOrNull(form.gps_coordinates),
         co2_estimate: toStringOrNull(form.co2_estimate),
         batch_number: toStringOrNull(form.batch_number),
+        // --- Impact & Éthique : facettes du moteur intelligent ---
+        product_type: toStringOrNull(form.product_type),
+        manufacturing_country: toStringOrNull(form.manufacturing_country) ?? toStringOrNull(form.country),
+        raw_materials_origin: toStringOrNull(form.raw_materials_origin) ?? toStringOrNull(form.country),
+        carbon_footprint_kg: toFloatOrNull(form.carbon_footprint_kg),
+        water_footprint_liters: toFloatOrNull(form.water_footprint_liters),
+        is_vegan: form.is_vegan,
+        is_recycled: form.is_recycled,
+        recycled_percentage: form.is_recycled ? toFloatOrNull(form.recycled_percentage) : null,
+        living_wage_guaranteed: form.living_wage_guaranteed,
+        fair_trade: form.fair_trade,
+        social_audit_passed: form.social_audit_passed,
+        is_cooperative: form.is_cooperative,
+        packaging_types: form.packaging_types.length > 0 ? form.packaging_types : [],
+        keywords: [form.product_type, form.name].filter(Boolean).map(k => String(k).toLowerCase()),
       };
 
       const payloadToInsert: Record<string, unknown> = cleanPayload(rawProductData);
@@ -774,6 +816,154 @@ export default function AddProduct() {
                     💡 Renseigner le numéro de lot améliore votre Score EthiMarket de +3 points.
                   </p>
                 )}
+              </div>
+            </div>
+          </div>
+
+
+          {/* Impact & Ethique — les 17 facettes du moteur intelligent */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-5">
+            <div>
+              <h2 className="text-base font-bold text-gray-900 border-b border-gray-100 pb-3">
+                🌍 Impact & Éthique
+              </h2>
+              <p className="text-xs text-gray-500 mt-2">
+                Ces informations alimentent le moteur de recherche multicritères et le Trust Center.
+                Plus elles sont complètes, plus votre produit ressort dans les recherches des acheteurs
+                (bio, salaire décent, bas carbone, emballage…).
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className={labelClass}>Type de produit</label>
+                <input
+                  type="text"
+                  value={form.product_type}
+                  onChange={e => update('product_type', e.target.value)}
+                  placeholder="Ex: café, miel, huile, t-shirt…"
+                  className={inputClass}
+                />
+                <p className="text-[11px] text-gray-500 mt-1">Utilisé pour la recherche « je cherche du café bio »</p>
+              </div>
+              <div>
+                <label className={labelClass}>Pays de fabrication</label>
+                <input
+                  type="text"
+                  value={form.manufacturing_country}
+                  onChange={e => update('manufacturing_country', e.target.value)}
+                  placeholder={form.country || 'Ex: Éthiopie'}
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Origine des matières premières</label>
+                <input
+                  type="text"
+                  value={form.raw_materials_origin}
+                  onChange={e => update('raw_materials_origin', e.target.value)}
+                  placeholder={form.country || 'Ex: Ghana'}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>Empreinte carbone (kg CO2e / unité)</label>
+                <input
+                  type="number" step="0.1" min="0"
+                  value={form.carbon_footprint_kg}
+                  onChange={e => update('carbon_footprint_kg', e.target.value)}
+                  placeholder="Ex: 1.6"
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Empreinte eau (litres / unité)</label>
+                <input
+                  type="number" step="1" min="0"
+                  value={form.water_footprint_liters}
+                  onChange={e => update('water_footprint_liters', e.target.value)}
+                  placeholder="Ex: 140"
+                  className={inputClass}
+                />
+              </div>
+            </div>
+
+            {/* Engagements ethiques et sociaux */}
+            <div>
+              <label className={labelClass}>Engagements éthiques & sociaux</label>
+              <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-3">
+                ⚠️ Ces déclarations apparaîtront dans le Trust Center comme « Déclaration fournisseur »
+                tant qu'elles ne sont pas appuyées par un certificat ou un audit vérifié.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {([
+                  ['is_vegan', '🌱 100% vegan (aucun ingrédient animal)'],
+                  ['is_recycled', "♻️ Contient des matières recyclées"],
+                  ['living_wage_guaranteed', '💰 Salaire décent garanti aux travailleurs'],
+                  ['fair_trade', '🤝 Commerce équitable'],
+                  ['social_audit_passed', '📋 Audit social réalisé (SA8000, BSCI…)'],
+                  ['is_cooperative', '👥 Production en coopérative'],
+                ] as const).map(([field, label]) => (
+                  <button
+                    key={field}
+                    type="button"
+                    onClick={() => toggleBool(field)}
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border-2 transition-all cursor-pointer text-left ${
+                      form[field]
+                        ? 'border-brand-500 bg-brand-50 text-brand-800 shadow-sm'
+                        : 'border-gray-200 text-gray-600 hover:border-gray-300 bg-white'
+                    }`}
+                  >
+                    {form[field] ? <Check className="w-4 h-4 text-brand-600 shrink-0" /> : <span className="w-4 shrink-0" />}
+                    {label}
+                  </button>
+                ))}
+              </div>
+              {form.is_recycled && (
+                <div className="mt-3 max-w-xs">
+                  <label className={labelClass}>% de matières recyclées</label>
+                  <input
+                    type="number" min="1" max="100"
+                    value={form.recycled_percentage}
+                    onChange={e => update('recycled_percentage', e.target.value)}
+                    placeholder="Ex: 70"
+                    className={inputClass}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Emballage */}
+            <div>
+              <label className={labelClass}>Emballage</label>
+              <div className="flex flex-wrap gap-2.5">
+                {([
+                  ['plastic_free', '🚫 Sans plastique'],
+                  ['compostable', '🌿 Compostable'],
+                  ['recyclable', '♻️ Recyclable'],
+                  ['bulk', '🛍️ Vrac disponible'],
+                  ['deposit', '🔄 Consigné'],
+                ] as const).map(([pk, label]) => {
+                  const selected = form.packaging_types.includes(pk);
+                  return (
+                    <button
+                      key={pk}
+                      type="button"
+                      onClick={() => togglePackaging(pk)}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border-2 transition-all cursor-pointer ${
+                        selected
+                          ? 'border-brand-500 bg-brand-50 text-brand-800 shadow-sm'
+                          : 'border-gray-200 text-gray-600 hover:border-gray-300 bg-white'
+                      }`}
+                    >
+                      {selected ? <Check className="w-4 h-4 text-brand-600" /> : null}
+                      {label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>

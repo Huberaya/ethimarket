@@ -41,6 +41,20 @@ export default function EditProduct() {
     country: 'France', region: '',
     certifications: [] as string[],
     status: 'active',
+    // --- Impact & Éthique ---
+    product_type: '',
+    manufacturing_country: '',
+    raw_materials_origin: '',
+    carbon_footprint_kg: '',
+    water_footprint_liters: '',
+    is_vegan: false,
+    is_recycled: false,
+    recycled_percentage: '',
+    living_wage_guaranteed: false,
+    fair_trade: false,
+    social_audit_passed: false,
+    is_cooperative: false,
+    packaging_types: [] as string[],
   });
 
   useEffect(() => {
@@ -60,14 +74,40 @@ export default function EditProduct() {
             stock_value: p.stock_value.toString(), stock_unit: p.stock_unit,
             country: p.country, region: p.region ?? '',
             certifications: p.certifications, status: p.status,
+            product_type: (p as Record<string, unknown>).product_type as string ?? '',
+            manufacturing_country: (p as Record<string, unknown>).manufacturing_country as string ?? '',
+            raw_materials_origin: (p as Record<string, unknown>).raw_materials_origin as string ?? '',
+            carbon_footprint_kg: ((p as Record<string, unknown>).carbon_footprint_kg ?? '').toString(),
+            water_footprint_liters: ((p as Record<string, unknown>).water_footprint_liters ?? '').toString(),
+            is_vegan: Boolean((p as Record<string, unknown>).is_vegan),
+            is_recycled: Boolean((p as Record<string, unknown>).is_recycled),
+            recycled_percentage: ((p as Record<string, unknown>).recycled_percentage ?? '').toString(),
+            living_wage_guaranteed: Boolean((p as Record<string, unknown>).living_wage_guaranteed),
+            fair_trade: Boolean((p as Record<string, unknown>).fair_trade),
+            social_audit_passed: Boolean((p as Record<string, unknown>).social_audit_passed),
+            is_cooperative: Boolean((p as Record<string, unknown>).is_cooperative),
+            packaging_types: ((p as Record<string, unknown>).packaging_types as string[]) ?? [],
           });
-          setImagePreview(p.image_url);
+          setImagePreview(p.image_url ?? null);
         }
         setLoading(false);
       });
   }, [id, user]);
 
   const update = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }));
+
+  const togglePackaging = (pk: string) => {
+    setForm(prev => ({
+      ...prev,
+      packaging_types: prev.packaging_types.includes(pk)
+        ? prev.packaging_types.filter(x => x !== pk)
+        : [...prev.packaging_types, pk],
+    }));
+  };
+
+  const toggleBool = (field: 'is_vegan' | 'is_recycled' | 'living_wage_guaranteed' | 'fair_trade' | 'social_audit_passed' | 'is_cooperative') => {
+    setForm(prev => ({ ...prev, [field]: !prev[field] }));
+  };
 
   const toggleCert = (cert: string) => {
     setForm(prev => ({
@@ -114,6 +154,19 @@ export default function EditProduct() {
       certifications: form.certifications,
       status: form.status,
       image_url: imageUrl,
+      product_type: form.product_type || null,
+      manufacturing_country: form.manufacturing_country || form.country || null,
+      raw_materials_origin: form.raw_materials_origin || form.country || null,
+      carbon_footprint_kg: form.carbon_footprint_kg ? parseFloat(form.carbon_footprint_kg) : null,
+      water_footprint_liters: form.water_footprint_liters ? parseFloat(form.water_footprint_liters) : null,
+      is_vegan: form.is_vegan,
+      is_recycled: form.is_recycled,
+      recycled_percentage: form.is_recycled && form.recycled_percentage ? parseFloat(form.recycled_percentage) : null,
+      living_wage_guaranteed: form.living_wage_guaranteed,
+      fair_trade: form.fair_trade,
+      social_audit_passed: form.social_audit_passed,
+      is_cooperative: form.is_cooperative,
+      packaging_types: form.packaging_types,
     }).eq('id', product.id).eq('user_id', user.id);
 
     if (updateErr) setError(updateErr.message);
@@ -249,6 +302,97 @@ export default function EditProduct() {
                 {cert}
               </button>
             ))}
+          </div>
+        </div>
+
+
+        {/* Impact & Éthique — facettes du moteur intelligent */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
+          <div>
+            <h3 className="font-bold text-gray-900 text-sm">🌍 Impact & Éthique</h3>
+            <p className="text-xs text-gray-500 mt-1">
+              Ces informations alimentent le moteur de recherche multicritères et le Trust Center.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className={labelClass}>Type de produit</label>
+              <input type="text" value={form.product_type} onChange={e => update('product_type', e.target.value)}
+                placeholder="Ex: café, miel, huile…" className={inputClass} />
+            </div>
+            <div>
+              <label className={labelClass}>Pays de fabrication</label>
+              <input type="text" value={form.manufacturing_country} onChange={e => update('manufacturing_country', e.target.value)}
+                placeholder={form.country} className={inputClass} />
+            </div>
+            <div>
+              <label className={labelClass}>Origine matières premières</label>
+              <input type="text" value={form.raw_materials_origin} onChange={e => update('raw_materials_origin', e.target.value)}
+                placeholder={form.country} className={inputClass} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelClass}>Empreinte carbone (kg CO2e)</label>
+              <input type="number" step="0.1" min="0" value={form.carbon_footprint_kg}
+                onChange={e => update('carbon_footprint_kg', e.target.value)} placeholder="Ex: 1.6" className={inputClass} />
+            </div>
+            <div>
+              <label className={labelClass}>Empreinte eau (litres)</label>
+              <input type="number" step="1" min="0" value={form.water_footprint_liters}
+                onChange={e => update('water_footprint_liters', e.target.value)} placeholder="Ex: 140" className={inputClass} />
+            </div>
+          </div>
+
+          <div>
+            <label className={labelClass}>Engagements éthiques & sociaux</label>
+            <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-3">
+              ⚠️ Affichés comme « Déclaration fournisseur » dans le Trust Center tant que non vérifiés par certificat/audit.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {([
+                ['is_vegan', '🌱 100% vegan'],
+                ['is_recycled', '♻️ Matières recyclées'],
+                ['living_wage_guaranteed', '💰 Salaire décent garanti'],
+                ['fair_trade', '🤝 Commerce équitable'],
+                ['social_audit_passed', '📋 Audit social réalisé'],
+                ['is_cooperative', '👥 Coopérative'],
+              ] as const).map(([field, label]) => (
+                <button key={field} type="button" onClick={() => toggleBool(field)}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-all text-left ${form[field] ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
+                  {form[field] && <Check className="w-3.5 h-3.5 shrink-0" />}
+                  {label}
+                </button>
+              ))}
+            </div>
+            {form.is_recycled && (
+              <div className="mt-3 max-w-xs">
+                <label className={labelClass}>% de matières recyclées</label>
+                <input type="number" min="1" max="100" value={form.recycled_percentage}
+                  onChange={e => update('recycled_percentage', e.target.value)} placeholder="Ex: 70" className={inputClass} />
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label className={labelClass}>Emballage</label>
+            <div className="flex flex-wrap gap-2">
+              {([
+                ['plastic_free', '🚫 Sans plastique'],
+                ['compostable', '🌿 Compostable'],
+                ['recyclable', '♻️ Recyclable'],
+                ['bulk', '🛍️ Vrac'],
+                ['deposit', '🔄 Consigné'],
+              ] as const).map(([pk, label]) => (
+                <button key={pk} type="button" onClick={() => togglePackaging(pk)}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-all ${form.packaging_types.includes(pk) ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
+                  {form.packaging_types.includes(pk) && <Check className="w-3.5 h-3.5" />}
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

@@ -253,6 +253,10 @@ export type Product = {
   confidence_score?: number;
   similarity_score?: number;
   relevance_rank?: number;
+  batch_number?: string | null;
+  packaging_types?: string[];
+  fair_trade?: boolean;
+  social_audit_passed?: boolean;
 };
 
 export type ProductScoreCalc = {

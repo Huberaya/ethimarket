@@ -38,7 +38,7 @@ export default function TraceabilitySection({ product }: { product: Product }) {
     {
       icon: Package, title: 'Emballage',
       date: product.packaging_date ? formatDate(product.packaging_date) : 'Non renseigné',
-      detail: 'Sacs jute biodégradables. Étiquetage conforme UE.',
+      detail: `${product.batch_number ? `N° de lot : ${product.batch_number}. ` : ''}${product.packaging_types?.length ? `Emballage : ${product.packaging_types.map((pk: string) => ({ plastic_free: 'sans plastique', compostable: 'compostable', recyclable: 'recyclable', bulk: 'vrac disponible', deposit: 'consigné' } as Record<string, string>)[pk] ?? pk).join(', ')}. ` : 'Étiquetage conforme UE. '}`,
       photo: null,
     },
     {
