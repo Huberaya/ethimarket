@@ -1,3 +1,4 @@
+// @vitest-environment node
 // src/test/strictSearchPrecision.test.ts
 import { describe, it, expect } from 'vitest';
 import { Product } from '../lib/supabase';

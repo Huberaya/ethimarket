@@ -1,3 +1,4 @@
+import { parseQueryZeroApi as parseQueryV2Local } from './search/zeroApiParser';
 // src/lib/naturalLanguageSearchService.ts
 // Multi-layered Natural Language Search Parser for EthiMarket
 // Layer 1: In-house Zero-API pure TypeScript parser (< 5 ms, 100% offline, multilingual FR/EN/ES)
@@ -103,7 +104,7 @@ export interface ParsedSearchQuery {
   extractedKeywords: string[];
   residualKeywords: string[];
   confidence: number;
-  layerUsed?: 'layer1_zero_api' | 'layer2_llm_fused';
+  layerUsed?: 'layer1_zero_api' | 'layer2_local_fused';
 }
 
 /**
@@ -569,87 +570,77 @@ export function parseNaturalLanguageQuery(query: string): ParsedSearchQuery {
  */
 export async function parseNaturalLanguageQueryWithFallback(
   rawQuery: string,
-  options: { timeoutMs?: number; userLocation?: { lat: number; lng: number } } = {}
+  _options: { timeoutMs?: number; userLocation?: { lat: number; lng: number } } = {}
 ): Promise<ParsedSearchQuery> {
-  const timeoutMs = options.timeoutMs ?? 2500;
-  
-  // Layer 1 runs synchronously in < 2ms
+  // Couche 1 : parser zero-API historique (< 2 ms)
   const layer1Result = parseNaturalLanguageQuery(rawQuery);
 
   if (!rawQuery || rawQuery.trim().length < 5) {
     return layer1Result;
   }
 
-  // Attempt Layer 2 via API endpoint with timeout
+  // Couche 2 : moteur semantique LOCAL (src/lib/search/zeroApiParser) — 100% gratuit,
+  // zero reseau, zero LLM. Il complete les facettes que la couche 1 ne couvre pas
+  // (fournisseur, delai, emballage, score de confiance, priorites de classement,
+  // pays matieres premieres) et fusionne. Les valeurs numeriques de la couche 1
+  // gardent strictement la priorite (determinisme).
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    const v2 = parseQueryV2Local(rawQuery);
 
-    const res = await fetch('/api/search/nlp-parse', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query: rawQuery,
-        userLocation: options.userLocation
-      }),
-      signal: controller.signal
-    });
+    const packagingFromV2: PackagingType[] = [];
+    if (v2.flags.plasticFreePackaging) packagingFromV2.push('plastic_free');
+    if (v2.flags.compostablePackaging) packagingFromV2.push('compostable');
+    if (v2.flags.recyclablePackaging) packagingFromV2.push('recyclable');
+    if (v2.flags.bulkPackaging) packagingFromV2.push('bulk');
 
-    clearTimeout(timer);
+    const fused: ParsedSearchQuery = {
+      ...layer1Result,
+      intent: layer1Result.intent !== 'standard_search' ? layer1Result.intent : v2.intent,
+      referenceTarget: layer1Result.referenceTarget || v2.referenceSupplier || v2.referenceProduct,
+      supplierName: layer1Result.supplierName || v2.referenceSupplier,
+      supplierFilter: layer1Result.supplierFilter || (v2.intent !== 'alternative_search' ? v2.referenceSupplier : undefined),
 
-    if (res.ok) {
-      const llmData = await res.json();
-      if (llmData && typeof llmData === 'object') {
-        // FUSION: The LLM complements categorical terms, but Layer 1 strictly keeps priority on extracted numbers
-        const fused: ParsedSearchQuery = {
-          ...layer1Result,
-          intent: llmData.intent || layer1Result.intent,
-          referenceTarget: layer1Result.referenceTarget || llmData.referenceTarget,
-          comparisonTarget: layer1Result.comparisonTarget || llmData.comparisonTarget,
-          supplierName: layer1Result.supplierName || llmData.supplierName,
-          
-          // Categorical values: combine unique items
-          certifications: Array.from(new Set([...layer1Result.certifications, ...(llmData.certifications || [])])),
-          countries: Array.from(new Set([...layer1Result.countries, ...(llmData.countries || [])])),
-          manufacturingCountry: layer1Result.manufacturingCountry || llmData.manufacturingCountry,
-          rawMaterialsOrigin: layer1Result.rawMaterialsOrigin || llmData.rawMaterialsOrigin,
-          materials: Array.from(new Set([...layer1Result.materials, ...(llmData.materials || [])])),
-          regions: Array.from(new Set([...layer1Result.regions, ...(llmData.regions || [])])),
-          packaging: Array.from(new Set([...layer1Result.packaging, ...(llmData.packaging || [])])) as PackagingType[],
-          
-          // Numerical values: Layer 1 parser preserves strict priority
-          minPrice: layer1Result.minPrice ?? llmData.minPrice,
-          maxPrice: layer1Result.maxPrice ?? llmData.maxPrice,
-          currency: layer1Result.currency || llmData.currency || 'EUR',
-          maxMoq: layer1Result.maxMoq ?? llmData.maxMoq,
-          minRecycledPercent: layer1Result.minRecycledPercent ?? llmData.minRecycledPercent,
-          maxDistanceKm: layer1Result.maxDistanceKm ?? llmData.maxDistanceKm,
-          maxCo2Kg: layer1Result.maxCo2Kg ?? llmData.maxCo2Kg,
-          maxDeliveryDays: layer1Result.maxDeliveryDays ?? llmData.maxDeliveryDays,
-          minConfidenceScore: layer1Result.minConfidenceScore ?? llmData.minConfidenceScore,
-          
-          // Boolean flags: True if either detected
-          isVegan: layer1Result.isVegan || !!llmData.isVegan,
-          isRecycled: layer1Result.isRecycled || !!llmData.isRecycled,
-          livingWage: layer1Result.livingWage || !!llmData.livingWage,
-          socialConditions: layer1Result.socialConditions || !!llmData.socialConditions,
-          fairTrade: layer1Result.fairTrade || !!llmData.fairTrade,
-          fullTraceability: layer1Result.fullTraceability || !!llmData.fullTraceability,
-          cheaperPriority: layer1Result.cheaperPriority || !!llmData.cheaperPriority,
-          lowerCarbonPriority: layer1Result.lowerCarbonPriority || !!llmData.lowerCarbonPriority,
-          
-          gender: layer1Result.gender || llmData.gender,
-          productType: layer1Result.productType || llmData.productType,
-          productTypeCanonical: layer1Result.productTypeCanonical || llmData.productTypeCanonical,
-          confidence: Math.max(layer1Result.confidence, Number(llmData.confidence || 0.85)),
-          layerUsed: 'layer2_llm_fused'
-        };
+      certifications: Array.from(new Set([...layer1Result.certifications, ...v2.certifications])),
+      countries: Array.from(new Set([...layer1Result.countries, ...v2.originCountries])),
+      manufacturingCountry: layer1Result.manufacturingCountry || v2.manufacturingCountries[0],
+      rawMaterialsOrigin: layer1Result.rawMaterialsOrigin || v2.rawMaterialCountries[0],
+      materials: Array.from(new Set([...layer1Result.materials, ...v2.materials])),
+      regions: Array.from(new Set([...layer1Result.regions, ...v2.regions])),
+      packaging: Array.from(new Set([...layer1Result.packaging, ...packagingFromV2])) as PackagingType[],
 
-        return fused;
-      }
-    }
+      // Numerique : couche 1 prioritaire, V2 en complement
+      minPrice: layer1Result.minPrice ?? v2.minPrice,
+      maxPrice: layer1Result.maxPrice ?? v2.maxPrice,
+      currency: layer1Result.currency || v2.currency || 'EUR',
+      maxMoq: layer1Result.maxMoq ?? v2.maxMoq,
+      minRecycledPercent: layer1Result.minRecycledPercent ?? v2.minRecycledPercent,
+      maxDistanceKm: layer1Result.maxDistanceKm ?? v2.maxDistanceKm,
+      maxCo2Kg: layer1Result.maxCo2Kg ?? v2.maxCarbonKg,
+      maxDeliveryDays: layer1Result.maxDeliveryDays ?? v2.maxDeliveryDays,
+      minConfidenceScore: layer1Result.minConfidenceScore ?? v2.minTrustScore,
+
+      isVegan: layer1Result.isVegan || v2.flags.vegan,
+      isRecycled: layer1Result.isRecycled || v2.flags.recycled,
+      livingWage: layer1Result.livingWage || v2.flags.livingWage,
+      socialConditions: layer1Result.socialConditions || v2.flags.socialConditions,
+      fairTrade: layer1Result.fairTrade || v2.flags.fairTrade,
+      isCooperative: layer1Result.isCooperative || v2.flags.cooperative,
+      fullTraceability: layer1Result.fullTraceability || v2.flags.fullTraceability,
+      cheaperPriority: layer1Result.cheaperPriority || v2.priorities.cheaper,
+      lowerCarbonPriority: layer1Result.lowerCarbonPriority || v2.priorities.lowerCarbon,
+      lowCarbonPriority: layer1Result.lowCarbonPriority || v2.priorities.lowerCarbon,
+      fastDelivery: layer1Result.fastDelivery || v2.priorities.fasterDelivery,
+
+      gender: layer1Result.gender || v2.gender,
+      productType: layer1Result.productType || v2.productType,
+      productTypeCanonical: layer1Result.productTypeCanonical || v2.productType,
+      confidence: Math.max(layer1Result.confidence, v2.confidence),
+      layerUsed: 'layer2_local_fused'
+    };
+
+    return fused;
   } catch {
-    // Timeout or network error -> transparent silent degradation to Layer 1
+    // Toute erreur -> degradation silencieuse vers la couche 1
   }
 
   return layer1Result;

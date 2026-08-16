@@ -1,3 +1,4 @@
+// @vitest-environment node
 // src/test/nlpSearchService.test.ts
 import { describe, it, expect } from 'vitest';
 import { parseNaturalLanguageQuery } from '../lib/naturalLanguageSearchService';

@@ -654,18 +654,34 @@ export async function executeIntelligentSearch(
 
   try {
     // Attempt Supabase PostgreSQL RPC search_products_advanced or search_products_v2
+    // Les 17 facettes, transmises à la RPC search_products_v2 (PostgreSQL natif, gratuit)
     const rpcParams: Record<string, unknown> = {
       p_query: mergedFilters.query || null,
       p_category_id: mergedFilters.category_id || null,
-      p_certifications: mergedFilters.certifications || null,
-      p_countries: mergedFilters.countries || null,
-      p_min_price: mergedFilters.minPrice ?? null,
+      p_product_types: mergedFilters.product_types?.length ? mergedFilters.product_types : null,
+      p_materials: mergedFilters.materials?.length ? mergedFilters.materials : null,
+      p_certifications: mergedFilters.certifications?.length ? mergedFilters.certifications : null,      // Facette 1
+      p_countries: mergedFilters.countries?.length ? mergedFilters.countries : null,                     // Facette 2
+      p_manufacturing_countries: mergedFilters.manufacturingCountries?.length ? mergedFilters.manufacturingCountries : null, // Facette 3
+      p_raw_materials_origins: mergedFilters.rawMaterialsOrigins?.length ? mergedFilters.rawMaterialsOrigins : null,         // Facette 4
+      p_user_lat: userLocation?.lat ?? mergedFilters.userLatitude ?? null,                               // Facette 5
+      p_user_lng: userLocation?.lng ?? mergedFilters.userLongitude ?? null,
+      p_max_distance_km: mergedFilters.maxDistanceKm ?? null,
+      p_max_co2: mergedFilters.maxCo2Kg ?? null,                                                         // Facette 6
+      p_social_conditions: mergedFilters.socialConditionsRequired ?? null,                               // Facette 7
+      p_living_wage: mergedFilters.livingWageRequired ?? null,                                           // Facette 8
+      p_fair_trade: mergedFilters.fairTradeRequired ?? null,                                             // Facette 9
+      p_is_recycled: mergedFilters.isRecycled ?? null,                                                   // Facette 10
+      p_min_recycled_percent: mergedFilters.minRecycledPercent ?? null,
+      p_is_vegan: mergedFilters.isVegan ?? null,                                                         // Facette 11
+      p_packaging_types: mergedFilters.packagingTypes?.length ? mergedFilters.packagingTypes : null,     // Facette 12
+      p_max_moq: mergedFilters.maxMoq ?? null,                                                           // Facette 13
+      p_min_price: mergedFilters.minPrice ?? null,                                                       // Facette 14
       p_max_price: mergedFilters.maxPrice ?? null,
-      p_max_co2: mergedFilters.maxCo2Kg ?? null,
-      p_is_vegan: mergedFilters.isVegan ?? null,
-      p_is_recycled: mergedFilters.isRecycled ?? null,
-      p_living_wage: mergedFilters.livingWageRequired ?? null,
-      p_min_confidence: mergedFilters.minConfidenceScore ?? null,
+      p_max_delivery_days: mergedFilters.maxDeliveryDays ?? null,                                        // Facette 15
+      p_supplier_name: mergedFilters.supplierName || null,                                               // Facette 16
+      p_producer_id: mergedFilters.producerId || null,
+      p_min_confidence: mergedFilters.minConfidenceScore ?? null,                                        // Facette 17
       p_min_rating: mergedFilters.minRating ?? null,
       p_in_stock_only: mergedFilters.inStockOnly || false,
       p_sort_by: mergedFilters.sortBy || 'relevance',
@@ -673,7 +689,7 @@ export async function executeIntelligentSearch(
       p_offset: 0
     };
 
-    const { data, error } = await supabase.rpc('search_products_advanced', rpcParams);
+    const { data, error } = await supabase.rpc('search_products_v2', rpcParams);
 
     if (!error && Array.isArray(data) && data.length > 0) {
       enrichedItems = data.map(item => {
