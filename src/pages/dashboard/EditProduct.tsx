@@ -58,6 +58,14 @@ export default function EditProduct() {
     social_audit_passed: false,
     is_cooperative: false,
     packaging_types: [] as string[],
+    monthly_capacity: '',
+    delivery_days: '5-7',
+    max_volume_discount_pct: '20',
+    quote_threshold_qty: '',
+    tier2_min_qty: '',
+    tier2_discount_pct: '',
+    tier3_min_qty: '',
+    tier3_discount_pct: '',
   });
 
   useEffect(() => {
@@ -90,6 +98,14 @@ export default function EditProduct() {
             social_audit_passed: Boolean((p as Record<string, unknown>).social_audit_passed),
             is_cooperative: Boolean((p as Record<string, unknown>).is_cooperative),
             packaging_types: ((p as Record<string, unknown>).packaging_types as string[]) ?? [],
+            monthly_capacity: ((p as Record<string, unknown>).monthly_capacity ?? '').toString(),
+            delivery_days: ((p as Record<string, unknown>).delivery_days as string) ?? '5-7',
+            max_volume_discount_pct: ((p as Record<string, unknown>).max_volume_discount_pct ?? '20').toString(),
+            quote_threshold_qty: ((p as Record<string, unknown>).quote_threshold_qty ?? '').toString(),
+            tier2_min_qty: (((p as Record<string, unknown>).volume_tiers as { min_qty: number; discount_pct: number }[] | null)?.[0]?.min_qty ?? '').toString(),
+            tier2_discount_pct: (((p as Record<string, unknown>).volume_tiers as { min_qty: number; discount_pct: number }[] | null)?.[0]?.discount_pct ?? '').toString(),
+            tier3_min_qty: (((p as Record<string, unknown>).volume_tiers as { min_qty: number; discount_pct: number }[] | null)?.[1]?.min_qty ?? '').toString(),
+            tier3_discount_pct: (((p as Record<string, unknown>).volume_tiers as { min_qty: number; discount_pct: number }[] | null)?.[1]?.discount_pct ?? '').toString(),
           });
           setImagePreview(p.image_url ?? null);
           supabase.from('product_claims')
@@ -177,6 +193,16 @@ export default function EditProduct() {
       social_audit_passed: form.social_audit_passed,
       is_cooperative: form.is_cooperative,
       packaging_types: form.packaging_types,
+      monthly_capacity: form.monthly_capacity ? parseInt(form.monthly_capacity) : 0,
+      delivery_days: form.delivery_days || '5-7',
+      max_volume_discount_pct: form.max_volume_discount_pct ? parseFloat(form.max_volume_discount_pct) : 20,
+      quote_threshold_qty: form.quote_threshold_qty ? parseInt(form.quote_threshold_qty) : null,
+      volume_tiers: (() => {
+        const tiers: { min_qty: number; discount_pct: number }[] = [];
+        if (form.tier2_min_qty && form.tier2_discount_pct) tiers.push({ min_qty: parseInt(form.tier2_min_qty), discount_pct: parseFloat(form.tier2_discount_pct) });
+        if (form.tier3_min_qty && form.tier3_discount_pct) tiers.push({ min_qty: parseInt(form.tier3_min_qty), discount_pct: parseFloat(form.tier3_discount_pct) });
+        return tiers.length > 0 ? tiers : null;
+      })(),
     }).eq('id', product.id).eq('user_id', user.id);
 
     if (updateErr) {
@@ -326,6 +352,48 @@ export default function EditProduct() {
           </div>
         </div>
 
+
+        {/* Conditions commerciales */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
+          <div>
+            <h3 className="font-bold text-gray-900 text-sm">💶 Conditions commerciales</h3>
+            <p className="text-xs text-gray-500 mt-1">Génèrent la grille dégressive, les délais et la capacité affichés aux acheteurs.</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className={labelClass}>Capacité mensuelle</label>
+              <input type="number" min="0" value={form.monthly_capacity} onChange={e => update('monthly_capacity', e.target.value)} placeholder="Ex : 3000" className={inputClass} />
+            </div>
+            <div>
+              <label className={labelClass}>Délai de livraison (jours)</label>
+              <select value={form.delivery_days} onChange={e => update('delivery_days', e.target.value)} className={inputClass}>
+                {['3-5', '5-7', '7-10', '7-14', '10-14', '14-21', '21-30'].map(d => <option key={d} value={d}>{d} jours</option>)}
+              </select>
+            </div>
+            <div>
+              <label className={labelClass}>« Sur devis » à partir de</label>
+              <input type="number" min="1" value={form.quote_threshold_qty} onChange={e => update('quote_threshold_qty', e.target.value)} placeholder="Ex : 1000" className={inputClass} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div>
+              <label className="block text-[11px] font-semibold text-gray-500 mb-1">Palier 2 : dès (qté)</label>
+              <input type="number" min="1" value={form.tier2_min_qty} onChange={e => update('tier2_min_qty', e.target.value)} placeholder="100" className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-gray-500 mb-1">Remise 2 (%)</label>
+              <input type="number" min="0" max="60" value={form.tier2_discount_pct} onChange={e => update('tier2_discount_pct', e.target.value)} placeholder="11" className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-gray-500 mb-1">Palier 3 : dès (qté)</label>
+              <input type="number" min="1" value={form.tier3_min_qty} onChange={e => update('tier3_min_qty', e.target.value)} placeholder="500" className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-gray-500 mb-1">Remise 3 (%)</label>
+              <input type="number" min="0" max="60" value={form.tier3_discount_pct} onChange={e => update('tier3_discount_pct', e.target.value)} placeholder="21" className={inputClass} />
+            </div>
+          </div>
+        </div>
 
         {/* Allégations Trust Center déjà déclarées */}
         {existingClaims.length > 0 && (

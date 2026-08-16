@@ -2,10 +2,14 @@ import { useState } from 'react';
 import { ShoppingCart, MessageSquare, Download, Heart, Share2, X } from 'lucide-react';
 import type { Product } from '../lib/supabase';
 
-export default function StickyActions({ product, quantity }: { product: Product; quantity: number }) {
+export default function StickyActions({ product, quantity, unitPrice, isQuote }: {
+  product: Product; quantity: number; unitPrice?: number | null; isQuote?: boolean;
+}) {
   const [favorited, setFavorited] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
-  const total = product.price * quantity;
+  // Total dérivé du palier tarifaire du producteur (pas du prix de base)
+  const effectiveUnit = unitPrice ?? product.price;
+  const total = isQuote ? null : effectiveUnit * quantity;
 
   return (
     <>
@@ -14,7 +18,7 @@ export default function StickyActions({ product, quantity }: { product: Product;
         <div className="max-w-7xl mx-auto flex items-center gap-3">
           <div className="flex-1 min-w-0">
             <p className="text-xs text-gray-500">Commander — tout inclus</p>
-            <p className="text-lg font-black text-gray-900 truncate">{total.toLocaleString('fr-FR')} € <span className="text-sm font-medium text-gray-400">+ livraison</span></p>
+            <p className="text-lg font-black text-gray-900 truncate">{total === null ? 'Sur devis' : `${total === null ? 'Sur devis' : `${total.toLocaleString('fr-FR')} €`}`} <span className="text-sm font-medium text-gray-400">{total === null ? '' : '+ livraison'}</span></p>
           </div>
           <div className="flex gap-2">
             <button className="btn-primary px-5 py-2.5 text-sm inline-flex items-center gap-2">
@@ -46,7 +50,7 @@ export default function StickyActions({ product, quantity }: { product: Product;
             <MessageSquare className="w-5 h-5" />
           </button>
           <button className="btn-primary flex-1 py-3 text-sm inline-flex items-center justify-center gap-2">
-            <ShoppingCart className="w-4 h-4" /> Commander — {total.toLocaleString('fr-FR')} €
+            <ShoppingCart className="w-4 h-4" /> Commander — {total === null ? 'Sur devis' : `${total.toLocaleString('fr-FR')} €`}
           </button>
         </div>
       </div>

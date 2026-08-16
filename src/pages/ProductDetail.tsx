@@ -21,11 +21,11 @@ import DeliverySection from '../components/product/DeliverySection';
 import ReviewsSection from '../components/product/ReviewsSection';
 import FAQSection from '../components/product/FAQSection';
 import StickyActions from '../components/product/StickyActions';
+import { buildPricingSchedule, priceForQuantity, resolveLogistics } from '../lib/pricingEngine';
 import TrustCenterSection from '../components/trust/TrustCenterSection';
 import ResponsibilityScoreSection from '../components/product/ResponsibilityScoreSection';
 import {
   calculateEthiMarketScore,
-  calculateVolumeDiscounts,
   checkEUConformity,
   calculateProfileCompletion
 } from '../lib/calculations';
@@ -134,7 +134,12 @@ export default function ProductDetail() {
   };
 
   // 2. Dynamic volume discounts
-  const volumeDiscounts = calculateVolumeDiscounts(product.price, product.price_unit);
+  // Grille tarifaire DÉRIVÉE des conditions saisies par le producteur
+  // (paliers volume_tiers, remise max, seuil de devis) — cf. pricingEngine.
+  const pricingSchedule = buildPricingSchedule(product as unknown as Parameters<typeof buildPricingSchedule>[0]);
+  const volumeDiscounts = pricingSchedule.tiers;
+  const qtyPricing = priceForQuantity(pricingSchedule, product.price, qty);
+  const logistics = resolveLogistics(product, producer);
 
   // 9. EU Conformity
   const euConformity = checkEUConformity(producer, product);
@@ -409,12 +414,24 @@ export default function ProductDetail() {
               <span className="text-xs text-gray-500 bg-gray-100 px-2.5 py-1.5 rounded-lg font-medium">MOQ min. {product.moq_value} {product.moq_unit}</span>
             </div>
 
+            {/* Prix appliqué au palier courant */}
+            {qtyPricing.isQuote ? (
+              <p className="mb-4 -mt-1 text-xs font-bold text-brand-700 bg-brand-50 border border-brand-200 rounded-lg px-3 py-2">
+                Volume {qty} {product.price_unit} : tarif sur devis — contactez le producteur pour une offre personnalisée.
+              </p>
+            ) : qtyPricing.tier && (qtyPricing.tier.discount ?? 0) > 0 ? (
+              <p className="mb-4 -mt-1 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
+                Palier volume atteint : {qtyPricing.unitPrice?.toFixed(2)} €/{product.price_unit} (−{qtyPricing.tier.discount}%)
+                {qtyPricing.savingsVsBase > 0 ? ` · vous économisez ${qtyPricing.savingsVsBase.toLocaleString('fr-FR')} €` : ''}
+              </p>
+            ) : null}
+
             {/* Stock info */}
             <div className="grid grid-cols-3 gap-3 mb-5">
               {[
-                { icon: Package, label: 'Stock', value: `${product.stock_value.toLocaleString('fr-FR')} ${product.stock_unit}`, color: 'text-brand-600' },
-                { icon: Clock, label: 'Livraison', value: `${product.delivery_days} jours`, color: 'text-blue-600' },
-                { icon: Truck, label: 'Capacité', value: `${product.monthly_capacity.toLocaleString('fr-FR')} ${product.stock_unit}/mois`, color: 'text-purple-600' },
+                { icon: Package, label: 'Stock', value: `${logistics.stockValue.toLocaleString('fr-FR')} ${logistics.stockUnit}`, color: 'text-brand-600' },
+                { icon: Clock, label: 'Livraison', value: `${logistics.deliveryDaysLabel} jours${logistics.deliverySource !== 'product' ? ' (est.)' : ''}`, color: 'text-blue-600' },
+                { icon: Truck, label: 'Capacité', value: logistics.monthlyCapacity > 0 ? `${logistics.monthlyCapacity.toLocaleString('fr-FR')} ${logistics.stockUnit}/mois` : 'Sur demande', color: 'text-purple-600' },
               ].map(({ icon: Icon, label, value, color }) => (
                 <div key={label} className="bg-gray-50 rounded-xl p-3 text-center">
                   <Icon className={`w-4 h-4 mx-auto mb-1 ${color}`} />
@@ -485,7 +502,7 @@ export default function ProductDetail() {
       <Footer />
 
       {/* Sticky actions */}
-      <StickyActions product={product} quantity={qty} />
+      <StickyActions product={product} quantity={qty} unitPrice={qtyPricing.unitPrice} isQuote={qtyPricing.isQuote} />
 
       {/* Zoom modal */}
       {zoom && gallery && (

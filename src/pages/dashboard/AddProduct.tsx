@@ -80,6 +80,15 @@ export default function AddProduct() {
     social_audit_passed: false,
     is_cooperative: false,
     packaging_types: [] as string[],
+    // --- Conditions commerciales (grille dégressive dérivée) ---
+    monthly_capacity: '',
+    delivery_days: '5-7',
+    max_volume_discount_pct: '20',
+    quote_threshold_qty: '',
+    tier2_min_qty: '',
+    tier2_discount_pct: '',
+    tier3_min_qty: '',
+    tier3_discount_pct: '',
   });
 
   // Load categories and auto-retrieve or auto-create user's producer profile
@@ -331,8 +340,18 @@ export default function AddProduct() {
         moq_unit: form.moq_unit,
         stock_value: toIntOrNull(form.stock_value) ?? 0,
         stock_unit: form.stock_unit,
-        monthly_capacity: 0,
-        delivery_days: '5-7',
+        monthly_capacity: toIntOrNull(form.monthly_capacity) ?? 0,
+        delivery_days: toStringOrNull(form.delivery_days) ?? '5-7',
+        max_volume_discount_pct: toFloatOrNull(form.max_volume_discount_pct) ?? 20,
+        quote_threshold_qty: toIntOrNull(form.quote_threshold_qty),
+        volume_tiers: (() => {
+          const tiers: { min_qty: number; discount_pct: number }[] = [];
+          const t2q = toIntOrNull(form.tier2_min_qty); const t2d = toFloatOrNull(form.tier2_discount_pct);
+          const t3q = toIntOrNull(form.tier3_min_qty); const t3d = toFloatOrNull(form.tier3_discount_pct);
+          if (t2q && t2d) tiers.push({ min_qty: t2q, discount_pct: t2d });
+          if (t3q && t3d) tiers.push({ min_qty: t3q, discount_pct: t3d });
+          return tiers.length > 0 ? tiers : null;
+        })(),
         certifications: form.certifications && form.certifications.length > 0 ? form.certifications : [],
         rating: 0,
         review_count: 0,
@@ -831,6 +850,68 @@ export default function AddProduct() {
             </div>
           </div>
 
+
+          {/* Conditions commerciales — grille dégressive dérivée */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-5">
+            <div>
+              <h2 className="text-base font-bold text-gray-900 border-b border-gray-100 pb-3">💶 Conditions commerciales</h2>
+              <p className="text-xs text-gray-500 mt-2">
+                Ces informations génèrent automatiquement la grille de prix dégressifs, les délais et la capacité
+                affichés sur votre fiche produit. Les acheteurs B2B les consultent avant de vous contacter.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className={labelClass}>Capacité mensuelle ({form.stock_unit})</label>
+                <input type="number" min="0" value={form.monthly_capacity}
+                  onChange={e => update('monthly_capacity', e.target.value)}
+                  placeholder="Ex : 3000" className={inputClass} />
+              </div>
+              <div>
+                <label className={labelClass}>Délai de livraison (jours)</label>
+                <select value={form.delivery_days} onChange={e => update('delivery_days', e.target.value)} className={inputClass}>
+                  {['3-5', '5-7', '7-10', '7-14', '10-14', '14-21', '21-30'].map(d => <option key={d} value={d}>{d} jours</option>)}
+                </select>
+              </div>
+              <div>
+                <label className={labelClass}>Volume « sur devis » à partir de</label>
+                <input type="number" min="1" value={form.quote_threshold_qty}
+                  onChange={e => update('quote_threshold_qty', e.target.value)}
+                  placeholder={`Ex : ${(parseInt(form.moq_value) || 1) * 50}`} className={inputClass} />
+              </div>
+            </div>
+
+            <div>
+              <label className={labelClass}>Paliers de remise volume (optionnel)</label>
+              <p className="text-[11px] text-gray-500 mb-3">
+                Définissez vos remises par volume. Sans paliers, une grille standard est générée à partir
+                de votre MOQ et de la remise maximale ci-dessous.
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-500 mb-1">Palier 2 : dès (qté)</label>
+                  <input type="number" min="1" value={form.tier2_min_qty} onChange={e => update('tier2_min_qty', e.target.value)} placeholder="100" className={inputClass} />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-500 mb-1">Remise palier 2 (%)</label>
+                  <input type="number" min="0" max="60" value={form.tier2_discount_pct} onChange={e => update('tier2_discount_pct', e.target.value)} placeholder="11" className={inputClass} />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-500 mb-1">Palier 3 : dès (qté)</label>
+                  <input type="number" min="1" value={form.tier3_min_qty} onChange={e => update('tier3_min_qty', e.target.value)} placeholder="500" className={inputClass} />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-500 mb-1">Remise palier 3 (%)</label>
+                  <input type="number" min="0" max="60" value={form.tier3_discount_pct} onChange={e => update('tier3_discount_pct', e.target.value)} placeholder="21" className={inputClass} />
+                </div>
+              </div>
+              <div className="mt-3 max-w-xs">
+                <label className="block text-[11px] font-semibold text-gray-500 mb-1">Remise maximale consentie (%) — si pas de paliers</label>
+                <input type="number" min="0" max="60" value={form.max_volume_discount_pct} onChange={e => update('max_volume_discount_pct', e.target.value)} className={inputClass} />
+              </div>
+            </div>
+          </div>
 
           {/* Allégations Trust Center avec preuves */}
           <ProductClaimsEditor claims={draftClaims} onChange={setDraftClaims} />
