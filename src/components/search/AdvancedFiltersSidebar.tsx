@@ -1,5 +1,5 @@
 // src/components/search/AdvancedFiltersSidebar.tsx
-// Comprehensive Multi-criteria Faceted Filter Sidebar
+// Comprehensive Multi-criteria Faceted Filter Sidebar for 17 Search Facets
 
 import React, { useState } from 'react';
 import {
@@ -12,10 +12,14 @@ import {
   Leaf,
   Users,
   CreditCard,
-  Award
+  Award,
+  Package,
+  Clock,
+  MapPin
 } from 'lucide-react';
 import { StructuredFilters } from '../../lib/productSearchEngine';
 import { Product } from '../../lib/supabase';
+import { PackagingType } from '../../lib/naturalLanguageSearchService';
 
 interface AdvancedFiltersSidebarProps {
   filters: StructuredFilters;
@@ -30,12 +34,14 @@ interface AdvancedFiltersSidebarProps {
 
 const AVAILABLE_CERTIFICATIONS = [
   { id: 'Bio', label: 'Agriculture Biologique (AB / Bio UE / USDA)', icon: '🌱' },
-  { id: 'Commerce Équitable', label: 'Commerce Équitable (Fairtrade / WFTO)', icon: '🤝' },
   { id: 'GOTS', label: 'GOTS (Global Organic Textile Standard)', icon: '👕' },
+  { id: 'Commerce Équitable', label: 'Commerce Équitable (Fairtrade / WFTO)', icon: '🤝' },
   { id: 'OEKO-TEX', label: 'OEKO-TEX Standard 100', icon: '🧵' },
   { id: 'FSC', label: 'FSC / PEFC (Forêt Durable)', icon: '🌲' },
-  { id: 'Rainforest Alliance', label: 'Rainforest Alliance / UTZ', icon: '🐸' },
+  { id: 'B-Corp', label: 'B-Corp Certified', icon: '🏢' },
   { id: 'Demeter', label: 'Demeter (Biodynamie)', icon: '✨' },
+  { id: 'Rainforest Alliance', label: 'Rainforest Alliance', icon: '🐸' },
+  { id: 'EU Ecolabel', label: 'EU Ecolabel', icon: '🇪🇺' },
   { id: 'Cruelty-Free', label: 'Cruelty-Free / Leaping Bunny', icon: '🐰' }
 ];
 
@@ -47,7 +53,17 @@ const AVAILABLE_COUNTRIES = [
   { code: 'Italie', label: 'Italie', flag: '🇮🇹' },
   { code: 'Espagne', label: 'Espagne', flag: '🇪🇸' },
   { code: 'Portugal', label: 'Portugal', flag: '🇵🇹' },
-  { code: 'Éthiopie', label: 'Éthiopie', flag: '🇪🇹' }
+  { code: 'Éthiopie', label: 'Éthiopie', flag: '🇪🇹' },
+  { code: 'Ghana', label: 'Ghana', flag: '🇬🇭' },
+  { code: 'Inde', label: 'Inde', flag: '🇮🇳' }
+];
+
+const PACKAGING_OPTIONS: { id: PackagingType; label: string }[] = [
+  { id: 'plastic_free', label: 'Sans plastique' },
+  { id: 'compostable', label: 'Compostable / Biodégradable' },
+  { id: 'recyclable', label: 'Recyclable' },
+  { id: 'deposit', label: 'Consigné' },
+  { id: 'bulk', label: 'En vrac' }
 ];
 
 export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
@@ -67,6 +83,8 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
     environment: true,
     social: true,
     commercial: true,
+    packaging: true,
+    distance: false,
     quality: true
   });
 
@@ -88,6 +106,14 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
       ? current.filter(c => c !== country)
       : [...current, country];
     onFilterChange({ ...filters, countries: next.length > 0 ? next : undefined });
+  };
+
+  const handlePackagingToggle = (pack: PackagingType) => {
+    const current = filters.packagingTypes || [];
+    const next = current.includes(pack)
+      ? current.filter(p => p !== pack)
+      : [...current, pack];
+    onFilterChange({ ...filters, packagingTypes: next.length > 0 ? next : undefined });
   };
 
   // Helper count badges
@@ -150,7 +176,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
         <span>Sauvegarder cette recherche</span>
       </button>
 
-      {/* 1. SECTION: CERTIFICATIONS & LABELS */}
+      {/* 1. SECTION: CERTIFICATIONS (Facet 1) */}
       <div className="border-b border-neutral-100 pb-5">
         <button
           type="button"
@@ -165,7 +191,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
         </button>
 
         {openSections.certs && (
-          <div className="space-y-2">
+          <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
             {AVAILABLE_CERTIFICATIONS.map(cert => {
               const checked = (filters.certifications || []).includes(cert.id);
               const count = getCertCount(cert.id);
@@ -193,7 +219,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
         )}
       </div>
 
-      {/* 2. SECTION: ORIGINE GÉOGRAPHIQUE */}
+      {/* 2. SECTION: ORIGINE & FABRICATION (Facets 2, 3, 4) */}
       <div className="border-b border-neutral-100 pb-5">
         <button
           type="button"
@@ -208,7 +234,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
         </button>
 
         {openSections.origin && (
-          <div className="space-y-2">
+          <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
             {AVAILABLE_COUNTRIES.map(country => {
               const checked = (filters.countries || []).includes(country.code);
               const count = getCountryCount(country.code);
@@ -236,7 +262,42 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
         )}
       </div>
 
-      {/* 3. SECTION: IMPACT ENVIRONNEMENTAL */}
+      {/* 3. SECTION: DISTANCE & PROXIMITÉ (Facet 5) */}
+      <div className="border-b border-neutral-100 pb-5">
+        <button
+          type="button"
+          onClick={() => toggleSection('distance')}
+          className="w-full flex items-center justify-between font-semibold text-sm text-neutral-900 mb-3"
+        >
+          <span className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-rose-500" />
+            Rayon & Distance Max
+          </span>
+          {openSections.distance ? <ChevronUp className="w-4 h-4 text-neutral-400" /> : <ChevronDown className="w-4 h-4 text-neutral-400" />}
+        </button>
+
+        {openSections.distance && (
+          <div className="space-y-2 text-xs">
+            <div className="flex justify-between text-neutral-700 mb-1">
+              <span>Distance maximale :</span>
+              <span className="font-bold text-neutral-900">
+                {filters.maxDistanceKm !== undefined ? `${filters.maxDistanceKm} km` : 'Toutes distances'}
+              </span>
+            </div>
+            <input
+              type="range"
+              min="50"
+              max="2000"
+              step="50"
+              value={filters.maxDistanceKm || 2000}
+              onChange={e => onFilterChange({ ...filters, maxDistanceKm: parseInt(e.target.value, 10) })}
+              className="w-full accent-emerald-600"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* 4. SECTION: IMPACT ENVIRONNEMENTAL (Facets 6, 10, 11) */}
       <div className="border-b border-neutral-100 pb-5">
         <button
           type="button"
@@ -245,7 +306,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
         >
           <span className="flex items-center gap-2">
             <Leaf className="w-4 h-4 text-emerald-600" />
-            Impact Environnemental
+            Impact Écologique & Recyclé
           </span>
           {openSections.environment ? <ChevronUp className="w-4 h-4 text-neutral-400" /> : <ChevronDown className="w-4 h-4 text-neutral-400" />}
         </button>
@@ -257,7 +318,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
               <div className="flex justify-between text-neutral-700 mb-1">
                 <span>Empreinte carbone max :</span>
                 <span className="font-bold text-emerald-700">
-                  {filters.maxCo2 !== undefined ? `${filters.maxCo2} kg CO2` : 'Toutes'}
+                  {filters.maxCo2Kg !== undefined ? `${filters.maxCo2Kg} kg CO2` : 'Toutes'}
                 </span>
               </div>
               <input
@@ -265,8 +326,8 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
                 min="0.5"
                 max="10"
                 step="0.5"
-                value={filters.maxCo2 || 10}
-                onChange={e => onFilterChange({ ...filters, maxCo2: parseFloat(e.target.value) })}
+                value={filters.maxCo2Kg || 10}
+                onChange={e => onFilterChange({ ...filters, maxCo2Kg: parseFloat(e.target.value) })}
                 className="w-full accent-emerald-600"
               />
             </div>
@@ -283,7 +344,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
             </label>
 
             <label className="flex items-center justify-between cursor-pointer select-none">
-              <span className="text-neutral-700">Matières recyclées / Upcyclées</span>
+              <span className="text-neutral-700">Matières recyclées</span>
               <input
                 type="checkbox"
                 checked={filters.isRecycled || false}
@@ -291,21 +352,45 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
                 className="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4"
               />
             </label>
-
-            <label className="flex items-center justify-between cursor-pointer select-none">
-              <span className="text-neutral-700">Emballage sans plastique</span>
-              <input
-                type="checkbox"
-                checked={filters.plasticFree || false}
-                onChange={e => onFilterChange({ ...filters, plasticFree: e.target.checked || undefined })}
-                className="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4"
-              />
-            </label>
           </div>
         )}
       </div>
 
-      {/* 4. SECTION: IMPACT SOCIAL */}
+      {/* 5. SECTION: EMBALLAGES ÉCO-RESPONSABLES (Facet 12) */}
+      <div className="border-b border-neutral-100 pb-5">
+        <button
+          type="button"
+          onClick={() => toggleSection('packaging')}
+          className="w-full flex items-center justify-between font-semibold text-sm text-neutral-900 mb-3"
+        >
+          <span className="flex items-center gap-2">
+            <Package className="w-4 h-4 text-amber-600" />
+            Type d'emballage
+          </span>
+          {openSections.packaging ? <ChevronUp className="w-4 h-4 text-neutral-400" /> : <ChevronDown className="w-4 h-4 text-neutral-400" />}
+        </button>
+
+        {openSections.packaging && (
+          <div className="space-y-2 text-xs">
+            {PACKAGING_OPTIONS.map(opt => {
+              const checked = (filters.packagingTypes || []).includes(opt.id);
+              return (
+                <label key={opt.id} className="flex items-center justify-between cursor-pointer select-none">
+                  <span className="text-neutral-700">{opt.label}</span>
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => handlePackagingToggle(opt.id)}
+                    className="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4"
+                  />
+                </label>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* 6. SECTION: IMPACT SOCIAL & SALAIRES (Facets 7, 8, 9) */}
       <div className="border-b border-neutral-100 pb-5">
         <button
           type="button"
@@ -325,18 +410,18 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
               <span className="text-neutral-700">Salaire décent garanti</span>
               <input
                 type="checkbox"
-                checked={filters.livingWage || false}
-                onChange={e => onFilterChange({ ...filters, livingWage: e.target.checked || undefined })}
+                checked={filters.livingWageRequired || false}
+                onChange={e => onFilterChange({ ...filters, livingWageRequired: e.target.checked || undefined })}
                 className="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4"
               />
             </label>
 
             <label className="flex items-center justify-between cursor-pointer select-none">
-              <span className="text-neutral-700">Coopérative de producteurs</span>
+              <span className="text-neutral-700">Protection sociale des artisans</span>
               <input
                 type="checkbox"
-                checked={filters.isCooperative || false}
-                onChange={e => onFilterChange({ ...filters, isCooperative: e.target.checked || undefined })}
+                checked={filters.socialConditionsRequired || false}
+                onChange={e => onFilterChange({ ...filters, socialConditionsRequired: e.target.checked || undefined })}
                 className="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4"
               />
             </label>
@@ -344,7 +429,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
         )}
       </div>
 
-      {/* 5. SECTION: CONDITIONS COMMERCIALES */}
+      {/* 7. SECTION: CONDITIONS COMMERCIALES, MOQ & DÉLAIS (Facets 13, 14, 15) */}
       <div className="border-b border-neutral-100 pb-5">
         <button
           type="button"
@@ -353,7 +438,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
         >
           <span className="flex items-center gap-2">
             <CreditCard className="w-4 h-4 text-amber-600" />
-            Prix & Disponibilité
+            Prix, MOQ & Délais
           </span>
           {openSections.commercial ? <ChevronUp className="w-4 h-4 text-neutral-400" /> : <ChevronDown className="w-4 h-4 text-neutral-400" />}
         </button>
@@ -379,6 +464,47 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
               />
             </div>
 
+            {/* Max MOQ */}
+            <div>
+              <div className="flex justify-between text-neutral-700 mb-1">
+                <span>MOQ max (Qté min) :</span>
+                <span className="font-bold text-neutral-900">
+                  {filters.maxMoq !== undefined ? `${filters.maxMoq} unités` : 'Toutes'}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="1"
+                max="500"
+                step="10"
+                value={filters.maxMoq || 500}
+                onChange={e => onFilterChange({ ...filters, maxMoq: parseInt(e.target.value, 10) })}
+                className="w-full accent-emerald-600"
+              />
+            </div>
+
+            {/* Delivery max days */}
+            <div>
+              <div className="flex justify-between text-neutral-700 mb-1">
+                <span className="flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5 text-neutral-400" />
+                  Délai livraison max :
+                </span>
+                <span className="font-bold text-neutral-900">
+                  {filters.maxDeliveryDays !== undefined ? `${filters.maxDeliveryDays} jours` : 'Tous'}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="1"
+                max="14"
+                step="1"
+                value={filters.maxDeliveryDays || 14}
+                onChange={e => onFilterChange({ ...filters, maxDeliveryDays: parseInt(e.target.value, 10) })}
+                className="w-full accent-emerald-600"
+              />
+            </div>
+
             {/* In stock only */}
             <label className="flex items-center justify-between cursor-pointer select-none">
               <span className="text-neutral-700">En stock uniquement</span>
@@ -393,7 +519,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
         )}
       </div>
 
-      {/* 6. SECTION: CONFIANCE & TRAÇABILITÉ */}
+      {/* 8. SECTION: SCORE DE CONFIANCE & TRAÇABILITÉ (Facet 17) */}
       <div>
         <button
           type="button"
@@ -402,17 +528,16 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
         >
           <span className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            Confiance & Traçabilité
+            Score de Confiance Éthique
           </span>
           {openSections.quality ? <ChevronUp className="w-4 h-4 text-neutral-400" /> : <ChevronDown className="w-4 h-4 text-neutral-400" />}
         </button>
 
         {openSections.quality && (
           <div className="space-y-3 text-xs">
-            {/* Minimum Trust Score */}
             <div>
               <div className="flex justify-between text-neutral-700 mb-1">
-                <span>Score de confiance min :</span>
+                <span>Score éthique min :</span>
                 <span className="font-bold text-emerald-700">
                   {filters.minConfidenceScore || 0}/100
                 </span>
@@ -427,17 +552,6 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
                 className="w-full accent-emerald-600"
               />
             </div>
-
-            {/* Full Traceability */}
-            <label className="flex items-center justify-between cursor-pointer select-none">
-              <span className="text-neutral-700">Traçabilité complète (QR / GPS)</span>
-              <input
-                type="checkbox"
-                checked={filters.fullTraceability || false}
-                onChange={e => onFilterChange({ ...filters, fullTraceability: e.target.checked || undefined })}
-                className="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4"
-              />
-            </label>
           </div>
         )}
       </div>

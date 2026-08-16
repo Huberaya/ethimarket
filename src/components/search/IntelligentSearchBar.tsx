@@ -91,15 +91,16 @@ export const IntelligentSearchBar: React.FC<IntelligentSearchBarProps> = ({
   const previewMatchingProducts: SearchResultItem[] = React.useMemo(() => {
     if (!debouncedQuery || debouncedQuery.trim().length < 1) return [];
 
+    const filters = { query: debouncedQuery, certifications: parsedQuery.certifications };
     const scored: SearchResultItem[] = [];
     for (const p of catalogProducts) {
-      const { score, matchReasons, matchType } = scoreProductClientSide(p, parsedQuery);
-      if (score > 0) {
+      const { rawScore, searchScore, matchReasons } = scoreProductClientSide(p, filters);
+      if (searchScore > 0) {
         scored.push({
           ...p,
-          searchScore: score,
-          matchReasons,
-          matchType
+          searchScore,
+          rawScore,
+          matchReasons
         });
       }
     }
