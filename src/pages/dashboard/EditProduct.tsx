@@ -8,6 +8,7 @@ import { useI18n } from '../../lib/i18n';
 import ImpactAssistant from '../../components/dashboard/ImpactAssistant';
 import { estimateFootprints } from '../../lib/impactEstimator';
 import { buildProductTranslations } from '../../lib/i18n/productAutoTranslate';
+import DescriptionTranslations, { type DescriptionTranslationsValue } from '../../components/dashboard/DescriptionTranslations';
 
 const COUNTRIES = [
   'France', 'Belgique', 'Suisse', 'Canada', 'Maroc', 'Éthiopie', 'Iran', 'Madagascar',
@@ -43,6 +44,7 @@ export default function EditProduct() {
   // Assistant d'impact : true si les empreintes en base proviennent
   // d'une ACV producteur (et non de notre estimation sectorielle).
   const [hasAcv, setHasAcv] = useState(false);
+  const [descTranslations, setDescTranslations] = useState<DescriptionTranslationsValue>({});
 
   const [form, setForm] = useState({
     name: '', short_description: '', description: '',
@@ -115,6 +117,12 @@ export default function EditProduct() {
             tier2_discount_pct: (((p as Record<string, unknown>).volume_tiers as { min_qty: number; discount_pct: number }[] | null)?.[0]?.discount_pct ?? '').toString(),
             tier3_min_qty: (((p as Record<string, unknown>).volume_tiers as { min_qty: number; discount_pct: number }[] | null)?.[1]?.min_qty ?? '').toString(),
             tier3_discount_pct: (((p as Record<string, unknown>).volume_tiers as { min_qty: number; discount_pct: number }[] | null)?.[1]?.discount_pct ?? '').toString(),
+          });
+          // Descriptions traduites existantes → panneau multilingue
+          const exTr = (p.translations ?? {}) as Record<string, Record<string, string>>;
+          setDescTranslations({
+            en: exTr.en?.description ?? '', es: exTr.es?.description ?? '',
+            pt: exTr.pt?.description ?? '', ar: exTr.ar?.description ?? '',
           });
           // ACV producteur = valeur présente ET non marquée 'estimated'
           const rawP = p as Record<string, unknown>;
@@ -190,17 +198,22 @@ export default function EditProduct() {
       stock_unit: form.stock_unit,
       country: form.country,
       country_flag: COUNTRY_FLAGS[form.country] ?? '🌍',
-      // Nom modifié → retraduit automatiquement, en préservant les champs
-      // déjà traduits manuellement (description…) langue par langue.
-      ...(product && form.name !== product.name ? (() => {
-        const auto = buildProductTranslations(form.name);
-        const existing = (product.translations ?? {}) as Record<string, Record<string, string>>;
+      // Traductions : nom auto (si renommé) + descriptions du panneau
+      // multilingue, fusionnées langue par langue sans perte.
+      translations: (() => {
+        const existing = (product?.translations ?? {}) as Record<string, Record<string, string>>;
+        const auto = (product && form.name !== product.name
+          ? buildProductTranslations(form.name)
+          : {}) as Record<string, Record<string, string>>;
         const merged: Record<string, Record<string, string>> = {};
         for (const loc of ['en', 'es', 'pt', 'ar'] as const) {
           merged[loc] = { ...existing[loc], ...(auto[loc] ?? {}) };
+          const desc = (descTranslations[loc] ?? '').trim();
+          if (desc) merged[loc].description = desc;
+          else delete merged[loc].description;
         }
-        return { translations: merged };
-      })() : {}),
+        return merged;
+      })(),
       region: form.region || null,
       certifications: form.certifications,
       status: form.status,
@@ -497,6 +510,8 @@ export default function EditProduct() {
                 placeholder={form.country} className={inputClass} />
             </div>
           </div>
+
+          <DescriptionTranslations value={descTranslations} onChange={setDescTranslations} inputClass={inputClass} />
 
           <ImpactAssistant
             productType={form.product_type}

@@ -10,6 +10,7 @@ import { useI18n } from '../../lib/i18n';
 import ImpactAssistant from '../../components/dashboard/ImpactAssistant';
 import { estimateFootprints } from '../../lib/impactEstimator';
 import { buildProductTranslations } from '../../lib/i18n/productAutoTranslate';
+import DescriptionTranslations, { type DescriptionTranslationsValue } from '../../components/dashboard/DescriptionTranslations';
 
 const CERT_OPTIONS = ['Bio', 'Fairtrade', 'Ecocert', 'Rainforest Alliance', 'GlobalGAP'];
 const CURRENCIES = ['EUR', 'USD', 'MAD', 'XOF'];
@@ -51,6 +52,7 @@ export default function AddProduct() {
   // Assistant d'impact : par défaut la plateforme estime les empreintes ;
   // le producteur peut basculer en mode « ACV » pour saisir ses mesures.
   const [hasAcv, setHasAcv] = useState(false);
+  const [descTranslations, setDescTranslations] = useState<DescriptionTranslationsValue>({});
 
   const [form, setForm] = useState({
     name: '',
@@ -410,9 +412,16 @@ export default function AddProduct() {
         is_cooperative: form.is_cooperative,
         packaging_types: form.packaging_types.length > 0 ? form.packaging_types : [],
         keywords: [form.product_type, form.name].filter(Boolean).map(k => String(k).toLowerCase()),
-        // Traduction automatique du nom (dictionnaire local, zéro API).
-        // Couverture < 50% → pas de traduction (fallback fr propre).
-        translations: buildProductTranslations(form.name),
+        // Traduction automatique du nom (dictionnaire local) fusionnée
+        // avec les descriptions saisies manuellement par le vendeur.
+        translations: (() => {
+          const auto = buildProductTranslations(form.name) as Record<string, Record<string, string>>;
+          for (const loc of ['en', 'es', 'pt', 'ar'] as const) {
+            const desc = (descTranslations[loc] ?? '').trim();
+            if (desc) auto[loc] = { ...auto[loc], description: desc };
+          }
+          return auto;
+        })(),
       };
 
       const payloadToInsert: Record<string, unknown> = cleanPayload(rawProductData);
@@ -990,6 +999,8 @@ export default function AddProduct() {
                 />
               </div>
             </div>
+
+            <DescriptionTranslations value={descTranslations} onChange={setDescTranslations} inputClass={inputClass} />
 
             <ImpactAssistant
               productType={form.product_type}

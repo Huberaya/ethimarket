@@ -9,6 +9,9 @@ import type { Locale } from './index';
 type Dict = Record<string, string>;
 
 const en: Dict = {
+  'Description dans d\'autres langues (optionnel)': 'Description in other languages (optional)',
+  'Si vous parlez ces langues, saisissez votre description : les acheteurs étrangers la verront dans leur langue. Sinon, la version française sera affichée.': 'If you speak these languages, enter your description: foreign buyers will see it in their language. Otherwise, the French version is shown.',
+
   'Référence du virement (optionnel) :': 'Bank transfer reference (optional):',
 
   // --- Circuit de commande B2B ---
@@ -317,6 +320,9 @@ const en: Dict = {
 };
 
 const es: Dict = {
+  'Description dans d\'autres langues (optionnel)': 'Descripción en otros idiomas (opcional)',
+  'Si vous parlez ces langues, saisissez votre description : les acheteurs étrangers la verront dans leur langue. Sinon, la version française sera affichée.': 'Si habla estos idiomas, escriba su descripción: los compradores extranjeros la verán en su idioma. Si no, se mostrará la versión francesa.',
+
   'Référence du virement (optionnel) :': 'Referencia de la transferencia (opcional):',
 
   // --- Circuit de commande B2B ---
@@ -612,6 +618,9 @@ const es: Dict = {
 };
 
 const pt: Dict = {
+  'Description dans d\'autres langues (optionnel)': 'Descrição noutras línguas (opcional)',
+  'Si vous parlez ces langues, saisissez votre description : les acheteurs étrangers la verront dans leur langue. Sinon, la version française sera affichée.': 'Se fala estas línguas, escreva a sua descrição: os compradores estrangeiros vê-la-ão na sua língua. Caso contrário, é mostrada a versão francesa.',
+
   'Référence du virement (optionnel) :': 'Referência da transferência (opcional):',
 
   // --- Circuit de commande B2B ---
@@ -907,6 +916,9 @@ const pt: Dict = {
 };
 
 const ar: Dict = {
+  'Description dans d\'autres langues (optionnel)': 'الوصف بلغات أخرى (اختياري)',
+  'Si vous parlez ces langues, saisissez votre description : les acheteurs étrangers la verront dans leur langue. Sinon, la version française sera affichée.': 'إذا كنت تتحدث هذه اللغات، أدخل وصفك: سيراه المشترون الأجانب بلغتهم. وإلا، تُعرض النسخة الفرنسية.',
+
   'Référence du virement (optionnel) :': 'مرجع التحويل البنكي (اختياري):',
 
   // --- Circuit de commande B2B ---
