@@ -4,30 +4,33 @@ import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import { COUNTRIES, getCountryFlag } from '../../lib/countries';
 import { toIntOrNull, toFloatOrNull, toStringOrNull, sanitizeProducerPayload, saveProducerFields } from '../../lib/dbHelpers';
+import { useI18n } from '../../lib/i18n';
 
 export function Orders() {
+  const { t } = useI18n();
   return (
     <div>
-      <h1 className="text-2xl font-black text-gray-900 mb-1">Commandes</h1>
-      <p className="text-gray-500 text-sm mb-6">Gérez vos commandes reçues</p>
+      <h1 className="text-2xl font-black text-gray-900 mb-1">{t('dash.ordersTitle')}</h1>
+      <p className="text-gray-500 text-sm mb-6">{t('dash.ordersSubtitle')}</p>
       <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
         <ShoppingCart className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-        <h3 className="font-bold text-gray-900 mb-2">Aucune commande pour l'instant</h3>
-        <p className="text-gray-500 text-sm max-w-sm mx-auto">Vos commandes apparaîtront ici dès qu'un acheteur passera commande sur vos produits.</p>
+        <h3 className="font-bold text-gray-900 mb-2">{t('dash.noOrders')}</h3>
+        <p className="text-gray-500 text-sm max-w-sm mx-auto">{t('dash.noOrdersDesc')}</p>
       </div>
     </div>
   );
 }
 
 export function Messages() {
+  const { t } = useI18n();
   return (
     <div>
-      <h1 className="text-2xl font-black text-gray-900 mb-1">Messages</h1>
-      <p className="text-gray-500 text-sm mb-6">Vos conversations avec les acheteurs</p>
+      <h1 className="text-2xl font-black text-gray-900 mb-1">{t('dash.messages')}</h1>
+      <p className="text-gray-500 text-sm mb-6">{t('dash.noMessagesDesc')}</p>
       <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
         <MessageSquare className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-        <h3 className="font-bold text-gray-900 mb-2">Aucun message</h3>
-        <p className="text-gray-500 text-sm max-w-sm mx-auto">Les messages des acheteurs intéressés par vos produits s'afficheront ici.</p>
+        <h3 className="font-bold text-gray-900 mb-2">{t('dash.noMessages')}</h3>
+        <p className="text-gray-500 text-sm max-w-sm mx-auto">{t('dash.noMessagesDesc')}</p>
       </div>
     </div>
   );

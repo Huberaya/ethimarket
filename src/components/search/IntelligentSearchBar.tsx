@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, X, SlidersHorizontal, CornerDownLeft } from 'lucide-react';
+import { useI18n } from '../../lib/i18n';
 import { VoiceSearchButton } from './VoiceSearchButton';
 import { SearchAutocompleteDropdown } from './SearchAutocompleteDropdown';
 import { parseNaturalLanguageQuery, ParsedSearchQuery } from '../../lib/naturalLanguageSearchService';
@@ -41,6 +42,7 @@ export const IntelligentSearchBar: React.FC<IntelligentSearchBarProps> = ({
   catalogProducts = [],
   className = ''
 }) => {
+  const { t } = useI18n();
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [debouncedQuery, setDebouncedQuery] = useState(query);
@@ -214,7 +216,7 @@ export const IntelligentSearchBar: React.FC<IntelligentSearchBarProps> = ({
             type="submit"
             className="hidden sm:flex items-center gap-1.5 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-medium text-sm transition shadow-sm"
           >
-            <span>Rechercher</span>
+            <span>{t('cat.searchBtn')}</span>
             <CornerDownLeft className="w-3.5 h-3.5 opacity-75" />
           </button>
 
@@ -230,7 +232,7 @@ export const IntelligentSearchBar: React.FC<IntelligentSearchBarProps> = ({
             }`}
           >
             <SlidersHorizontal className="w-4 h-4" />
-            <span className="hidden md:inline">Filtres</span>
+            <span className="hidden md:inline">{t('cat.filters')}</span>
             {activeFiltersCount > 0 && (
               <span className="w-5 h-5 rounded-full bg-emerald-700 text-white text-xs flex items-center justify-center font-bold">
                 {activeFiltersCount}

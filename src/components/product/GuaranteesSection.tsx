@@ -5,6 +5,8 @@ import {
 } from 'lucide-react';
 import type { Product, Producer } from '../../lib/supabase';
 import { LeafletMap } from '../LeafletMap';
+import { useI18n } from '../../lib/i18n';
+import { PRODUCT_PAGE_CONTENT } from '../../lib/i18n/content/productPage';
 
 type Props = { product: Product; producer: Producer | null };
 
@@ -17,16 +19,18 @@ const CERT_COLORS: Record<string, string> = {
 };
 
 export default function GuaranteesSection({ product }: Props) {
+  const { locale } = useI18n();
+  const c = PRODUCT_PAGE_CONTENT[locale].guarantees;
   const [showAllCerts, setShowAllCerts] = useState(false);
 
   return (
     <section className="py-12 border-t border-gray-100">
-      <SectionTitle icon={ShieldCheck} title="Nos garanties pour ce produit" />
+      <SectionTitle icon={ShieldCheck} title={c.sectionTitle} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">
         {/* Card 1: Certifications vérifiées */}
-        <GuaranteeCard icon={Award} title="Certifications vérifiées"
-          text="Toutes les certifications sont vérifiées auprès des organismes émetteurs.">
+        <GuaranteeCard icon={Award} title={c.certsTitle}
+          text={c.certsText}>
           <div className="space-y-2 mt-3">
             {product.certifications.map(cert => (
               <div key={cert} className="flex items-center justify-between gap-2 bg-white rounded-xl p-2.5 border border-gray-100">
@@ -38,55 +42,54 @@ export default function GuaranteesSection({ product }: Props) {
                     <FileText className="w-3 h-3" /> PDF
                   </button>
                   <button className="text-[11px] font-semibold text-brand-600 hover:underline inline-flex items-center gap-1">
-                    Vérifier <ExternalLink className="w-3 h-3" />
+                    {c.verify} <ExternalLink className="w-3 h-3" />
                   </button>
                 </div>
               </div>
             ))}
             {product.certifications.length === 0 && (
-              <p className="text-xs text-gray-500">Aucune certification enregistrée.</p>
+              <p className="text-xs text-gray-500">{c.noCerts}</p>
             )}
           </div>
         </GuaranteeCard>
 
         {/* Card 2: Traçabilité complète */}
-        <GuaranteeCard icon={MapPin} title="Traçabilité complète"
-          text="Vous savez exactement d'où vient votre produit.">
+        <GuaranteeCard icon={MapPin} title={c.traceTitle}
+          text={c.traceText}>
           <div className="space-y-1.5 mt-3 text-sm">
-            <Row label="GPS parcelle" value={product.gps_coordinates ?? 'Non renseigné'} icon={MapPin} />
-            <Row label="Plantation" value={product.planting_date ? formatDate(product.planting_date) : '—'} icon={Leaf} />
-            <Row label="Récolte" value={product.harvest_date ? formatDate(product.harvest_date) : '—'} icon={Leaf} />
-            <Row label="Emballage" value={product.packaging_date ? formatDate(product.packaging_date) : '—'} icon={Package} />
-            <Row label="N° de lot" value={`ETH-${product.id.slice(0, 8).toUpperCase()}`} icon={Package} mono />
+            <Row label={c.gpsParcel} value={product.gps_coordinates ?? c.notProvided} icon={MapPin} />
+            <Row label={c.planting} value={product.planting_date ? formatDate(product.planting_date) : '—'} icon={Leaf} />
+            <Row label={c.harvest} value={product.harvest_date ? formatDate(product.harvest_date) : '—'} icon={Leaf} />
+            <Row label={c.packaging} value={product.packaging_date ? formatDate(product.packaging_date) : '—'} icon={Package} />
+            <Row label={c.batchNo} value={`ETH-${product.id.slice(0, 8).toUpperCase()}`} icon={Package} mono />
           </div>
           {product.gps_coordinates && <MiniMap gps={product.gps_coordinates} />}
         </GuaranteeCard>
 
         {/* Card 3: Qualité contrôlée */}
-        <GuaranteeCard icon={FlaskConical} title="Qualité contrôlée"
-          text="Analyses laboratoire indépendantes.">
+        <GuaranteeCard icon={FlaskConical} title={c.qualityTitle}
+          text={c.qualityText}>
           <div className="mt-3 space-y-1.5 text-sm">
-            <Row label="Laboratoire" value="Bureau Veritas" icon={FlaskConical} />
-            <Row label="Date analyse" value={product.harvest_date ? formatDate(product.harvest_date) : '—'} icon={FlaskConical} />
+            <Row label={c.lab} value="Bureau Veritas" icon={FlaskConical} />
+            <Row label={c.analysisDate} value={product.harvest_date ? formatDate(product.harvest_date) : '—'} icon={FlaskConical} />
             <div className="pt-2 space-y-1">
-              {['Absence de pesticides', 'Absence de métaux lourds', 'Absence de mycotoxines', 'Tests microbiologiques OK'].map(r => (
+              {c.qualityChecks.map(r => (
                 <div key={r} className="flex items-center gap-2 text-xs text-gray-700">
                   <CheckCircle2 className="w-3.5 h-3.5 text-brand-500" /> {r}
                 </div>
               ))}
             </div>
             <button className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-brand-600 hover:underline">
-              <Download className="w-3.5 h-3.5" /> Télécharger le rapport complet
+              <Download className="w-3.5 h-3.5" /> {c.downloadReport}
             </button>
           </div>
         </GuaranteeCard>
 
         {/* Card 4: Conformité UE */}
-        <GuaranteeCard icon={ShieldCheck} title="Conformité UE"
-          text="Prêt pour importation en Europe.">
+        <GuaranteeCard icon={ShieldCheck} title={c.euTitle}
+          text={c.euText}>
           <div className="mt-3 grid grid-cols-1 gap-1.5">
-            {['Facture commerciale', 'Certificat d\'origine (ACP)', 'Certificat phytosanitaire',
-              'Liste de colisage', 'Certificat bio EU', 'Documents douaniers'].map(doc => (
+            {c.euDocs.map(doc => (
               <div key={doc} className="flex items-center gap-2 text-xs text-gray-700">
                 <CheckCircle2 className="w-3.5 h-3.5 text-brand-500 flex-shrink-0" /> {doc}
               </div>
@@ -99,11 +102,11 @@ export default function GuaranteesSection({ product }: Props) {
       <div className="mt-6 text-center">
         <button onClick={() => setShowAllCerts(true)}
           className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-50 text-brand-700 text-sm font-bold rounded-xl hover:bg-brand-100 transition-colors">
-          <ShieldCheck className="w-4 h-4" /> Vérification en 1 clic — voir tous les certificats
+          <ShieldCheck className="w-4 h-4" /> {c.oneClick}
         </button>
       </div>
 
-      {showAllCerts && <AllCertsModal product={product} onClose={() => setShowAllCerts(false)} />}
+      {showAllCerts && <AllCertsModal product={product} c={c} onClose={() => setShowAllCerts(false)} />}
     </section>
   );
 }
@@ -141,18 +144,18 @@ function MiniMap({ gps }: { gps: string }) {
   if (isNaN(lat) || isNaN(lng)) return null;
   return (
     <div className="mt-3 rounded-xl overflow-hidden border border-gray-100">
-      <LeafletMap markers={[{ lat, lng, label: 'Parcelle' }]} height="160px" zoom={10} />
+      <LeafletMap markers={[{ lat, lng, label: 'GPS' }]} height="160px" zoom={10} />
     </div>
   );
 }
 
-function AllCertsModal({ product, onClose }: { product: Product; onClose: () => void }) {
+function AllCertsModal({ product, c, onClose }: { product: Product; c: typeof PRODUCT_PAGE_CONTENT['fr']['guarantees']; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
       <div className="bg-white rounded-3xl max-w-lg w-full max-h-[80vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-5">
           <h3 className="font-black text-gray-900 flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-brand-600" /> Tous les certificats
+            <ShieldCheck className="w-5 h-5 text-brand-600" /> {c.allCertsTitle}
           </h3>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5" /></button>
         </div>
@@ -161,7 +164,7 @@ function AllCertsModal({ product, onClose }: { product: Product; onClose: () => 
             <div key={cert} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
               <div>
                 <p className="font-bold text-sm text-gray-900">{cert}</p>
-                <p className="text-xs text-gray-500">Vérifié auprès de l'organisme émetteur</p>
+                <p className="text-xs text-gray-500">{c.verifiedWithBody}</p>
               </div>
               <button className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-600 hover:underline">
                 <Download className="w-3.5 h-3.5" /> PDF
@@ -170,8 +173,8 @@ function AllCertsModal({ product, onClose }: { product: Product; onClose: () => 
           ))}
           <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
             <div>
-              <p className="font-bold text-sm text-gray-900">Analyse laboratoire</p>
-              <p className="text-xs text-gray-500">Bureau Veritas — rapport complet</p>
+              <p className="font-bold text-sm text-gray-900">{c.labAnalysis}</p>
+              <p className="text-xs text-gray-500">{c.labReport}</p>
             </div>
             <button className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-600 hover:underline">
               <Download className="w-3.5 h-3.5" /> PDF
@@ -179,8 +182,8 @@ function AllCertsModal({ product, onClose }: { product: Product; onClose: () => 
           </div>
           <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
             <div>
-              <p className="font-bold text-sm text-gray-900">Certificat phytosanitaire</p>
-              <p className="text-xs text-gray-500">Pour export UE</p>
+              <p className="font-bold text-sm text-gray-900">{c.phytoCert}</p>
+              <p className="text-xs text-gray-500">{c.forEuExport}</p>
             </div>
             <button className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-600 hover:underline">
               <Download className="w-3.5 h-3.5" /> PDF

@@ -2,15 +2,19 @@ import { useState } from 'react';
 import { Star, BadgeCheck, MessageSquare } from 'lucide-react';
 import type { Product, Review } from '../../lib/supabase';
 import { SectionTitle } from './GuaranteesSection';
+import { useI18n } from '../../lib/i18n';
+import { PRODUCT_PAGE_CONTENT } from '../../lib/i18n/content/productPage';
 
 export default function ReviewsSection({ product, reviews }: { product: Product; reviews: Review[] }) {
+  const { t, locale } = useI18n();
+  const c = PRODUCT_PAGE_CONTENT[locale].reviews;
   const [verifiedOnly, setVerifiedOnly] = useState(false);
 
   const filtered = verifiedOnly ? reviews.filter(r => r.author_company) : reviews;
 
   return (
     <section className="py-12 border-t border-gray-100">
-      <SectionTitle icon={Star} title="Avis d'acheteurs professionnels" />
+      <SectionTitle icon={Star} title={c.sectionTitle} />
 
       {/* Summary */}
       <div className="mt-8 flex flex-col sm:flex-row items-start gap-6 mb-8">
@@ -21,7 +25,7 @@ export default function ReviewsSection({ product, reviews }: { product: Product;
               <Star key={s} className={`w-4 h-4 ${s <= Math.round(product.rating) ? 'text-amber-400 fill-amber-400' : 'text-gray-200 fill-gray-200'}`} />
             ))}
           </div>
-          <p className="text-xs text-gray-500">{product.review_count} avis</p>
+          <p className="text-xs text-gray-500">{product.review_count} {t('common.reviews')}</p>
         </div>
 
         <div className="flex-1">
@@ -34,14 +38,14 @@ export default function ReviewsSection({ product, reviews }: { product: Product;
               className="w-4 h-4 rounded accent-brand-500"
             />
             <BadgeCheck className="w-4 h-4 text-brand-500" />
-            Vérifiés seulement <span className="text-xs text-gray-500">(recommandé)</span>
+            <span className="text-xs text-gray-500">{c.recommended}</span>
           </label>
 
           {filtered.length === 0 ? (
             <div className="text-center py-8">
               <MessageSquare className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-              <p className="font-semibold text-gray-700 text-sm">Aucun avis pour l'instant</p>
-              <p className="text-gray-500 text-xs">Soyez le premier à évaluer ce produit.</p>
+              <p className="font-semibold text-gray-700 text-sm">{c.noReviews}</p>
+              <p className="text-gray-500 text-xs">{c.beFirst}</p>
             </div>
           ) : (
             <div className="space-y-4">

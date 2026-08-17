@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, Circle, X, Rocket } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { useI18n } from '../../lib/i18n';
 
 interface OnboardingStep {
   id: string;
@@ -22,6 +23,7 @@ interface OnboardingStep {
 const DISMISS_KEY = 'ethimarket_onboarding_dismissed';
 
 export default function BuyerOnboarding({ userId }: { userId: string }) {
+  const { t } = useI18n();
   const [steps, setSteps] = useState<OnboardingStep[] | null>(null);
   const [dismissed, setDismissed] = useState(() => localStorage.getItem(DISMISS_KEY) === '1');
 
@@ -40,33 +42,33 @@ export default function BuyerOnboarding({ userId }: { userId: string }) {
 
       const list: OnboardingStep[] = [
         {
-          id: 'search', emoji: '🔎', title: 'Faire une première recherche',
-          desc: 'Essayez « café bio » ou une demande en langage naturel dans le catalogue.',
+          id: 'search', emoji: '🔎', title: t('onboard.step1'),
+          desc: t('onboard.step1Desc'),
           to: '/catalogue', done: (products.count ?? 0) > 0 || (quotes.count ?? 0) > 0 || (suppliers.count ?? 0) > 0,
         },
         {
-          id: 'supplier', emoji: '🏭', title: 'Suivre un fournisseur',
-          desc: 'Classez vos fournisseurs : actif, en évaluation, à risque, suspendu.',
+          id: 'supplier', emoji: '🏭', title: t('onboard.step2'),
+          desc: t('onboard.step2Desc'),
           to: '/dashboard/mes-achats?tab=suppliers', done: (suppliers.count ?? 0) > 0,
         },
         {
-          id: 'product', emoji: '📦', title: 'Suivre un produit',
-          desc: 'Ajoutez un produit à votre pipeline : approuvé, en analyse ou rejeté.',
+          id: 'product', emoji: '📦', title: t('onboard.step3'),
+          desc: t('onboard.step3Desc'),
           to: '/dashboard/mes-achats?tab=products', done: (products.count ?? 0) > 0,
         },
         {
-          id: 'compare', emoji: '⚖️', title: 'Comparer des produits',
-          desc: 'Cochez 2-3 produits du catalogue et obtenez la matrice + recommandation.',
+          id: 'compare', emoji: '⚖️', title: t('onboard.step4'),
+          desc: t('onboard.step4Desc'),
           to: '/catalogue', done: (events.count ?? 0) > 0,
         },
         {
-          id: 'rules', emoji: '⚖️', title: 'Définir vos règles de décision',
-          desc: 'Pondérez prix, environnement, social, traçabilité et certifications.',
+          id: 'rules', emoji: '⚖️', title: t('onboard.step5'),
+          desc: t('onboard.step5Desc'),
           to: '/dashboard/mes-achats?tab=rules', done: !!prefs.data,
         },
         {
-          id: 'quote', emoji: '📤', title: 'Envoyer une demande de devis',
-          desc: 'Depuis une fiche produit, cliquez « Commander » — le producteur répond avec son offre.',
+          id: 'quote', emoji: '📤', title: t('onboard.step6'),
+          desc: t('onboard.step6Desc'),
           to: '/catalogue', done: (quotes.count ?? 0) > 0,
         },
       ];
@@ -84,7 +86,7 @@ export default function BuyerOnboarding({ userId }: { userId: string }) {
       <button
         onClick={() => { localStorage.setItem(DISMISS_KEY, '1'); setDismissed(true); }}
         className="absolute top-3 right-3 p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
-        aria-label="Masquer le guide de démarrage"
+        aria-label={t('onboard.hide')}
       >
         <X className="w-4 h-4" />
       </button>
@@ -94,7 +96,7 @@ export default function BuyerOnboarding({ userId }: { userId: string }) {
           <Rocket className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h3 className="font-black text-gray-900">Bien démarrer sur EthiMarket</h3>
+          <h3 className="font-black text-gray-900">{t('onboard.title')}</h3>
           <p className="text-xs text-gray-500">{doneCount}/{steps.length} étapes accomplies — chaque étape se coche automatiquement.</p>
         </div>
       </div>

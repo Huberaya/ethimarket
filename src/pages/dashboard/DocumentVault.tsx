@@ -7,6 +7,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Vault, Upload, Loader2, FileWarning, CheckCircle2, ChevronDown } from 'lucide-react';
+import { useI18n } from '../../lib/i18n';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import {
@@ -14,6 +15,7 @@ import {
 } from '../../lib/documentVault';
 
 export default function DocumentVault() {
+  const { t } = useI18n();
   const { user } = useAuth();
   const [docs, setDocs] = useState<VaultDocument[]>([]);
   const [loading, setLoading] = useState(true);
@@ -85,7 +87,7 @@ export default function DocumentVault() {
         ) : (
           <>
             <Upload className="w-8 h-8 text-brand-400 mx-auto mb-2" />
-            <p className="text-sm font-bold text-gray-700">Déposer des documents</p>
+            <p className="text-sm font-bold text-gray-700">{t('dv.title')}</p>
             <p className="text-xs text-gray-500 mt-1">Certificats · Audits · Factures · Fiches techniques · Rapports ESG · Questionnaires · Analyses · Réglementaire</p>
           </>
         )}
@@ -96,7 +98,7 @@ export default function DocumentVault() {
       {loading ? (
         <div className="flex justify-center py-10"><Loader2 className="w-5 h-5 animate-spin text-brand-500" /></div>
       ) : docs.length === 0 ? (
-        <p className="text-sm text-gray-400 italic text-center py-6">Aucun document déposé pour l'instant.</p>
+        <p className="text-sm text-gray-400 italic text-center py-6">{t('dv.empty')}</p>
       ) : (
         <div className="space-y-3">
           {docs.map(doc => {

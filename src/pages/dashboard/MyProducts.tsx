@@ -2,9 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { PlusCircle, Package, Pencil, Trash2, CheckCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
+import { useI18n } from '../../lib/i18n';
 import { supabase, type Product } from '../../lib/supabase';
 
 export default function MyProducts() {
+  const { t } = useI18n();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -24,7 +26,7 @@ export default function MyProducts() {
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Supprimer ce produit ? Cette action est irréversible.')) return;
+    if (!confirm(t('dash.deleteConfirm'))) return;
     setDeleting(id);
     await supabase.from('products').delete().eq('id', id);
     setDeleting(null);
@@ -35,7 +37,7 @@ export default function MyProducts() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-black text-gray-900">Mes produits</h1>
+          <h1 className="text-2xl font-black text-gray-900">{t('dash.myProducts')}</h1>
           <p className="text-gray-500 text-sm mt-1">{products.length} produit{products.length > 1 ? 's' : ''}</p>
         </div>
         <Link to="/dashboard/ajouter-produit" className="btn-primary px-5 py-2.5 text-sm inline-flex items-center gap-2">
@@ -90,8 +92,8 @@ export default function MyProducts() {
       ) : (
         <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
           <Package className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-          <h3 className="font-bold text-gray-900 mb-2">Aucun produit</h3>
-          <p className="text-gray-500 text-sm mb-5 max-w-sm mx-auto">Vous n'avez pas encore ajouté de produits. Commencez dès maintenant !</p>
+          <h3 className="font-bold text-gray-900 mb-2">{t('dash.noProducts')}</h3>
+          <p className="text-gray-500 text-sm mb-5 max-w-sm mx-auto">{t('dash.noProductsDesc')}</p>
           <Link to="/dashboard/ajouter-produit" className="btn-primary px-5 py-2.5 text-sm inline-flex items-center gap-2">
             <PlusCircle className="w-4 h-4" /> Ajouter mon premier produit
           </Link>

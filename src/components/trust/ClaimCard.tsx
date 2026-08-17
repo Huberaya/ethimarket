@@ -21,39 +21,40 @@ import {
 } from 'lucide-react';
 import { ProductClaim, ClaimEvaluation, ClaimVerificationStatus, EVIDENCE_TYPE_LABELS, EVIDENCE_LEVEL } from '../../lib/trust/types';
 import { formatDateFr, DECLARED_ONLY_MESSAGE } from '../../lib/trust/evaluateClaim';
+import { useI18n } from '../../lib/i18n';
 
 const STATUS_CONFIG: Record<ClaimVerificationStatus, {
-  label: string;
+  labelKey: string;
   icon: typeof ShieldCheck;
   chipClass: string;
   borderClass: string;
 }> = {
   verified: {
-    label: 'Certifié',
+    labelKey: 'trust.certified',
     icon: ShieldCheck,
     chipClass: 'bg-emerald-100 text-emerald-800',
     borderClass: 'border-emerald-200',
   },
   pending_verification: {
-    label: 'Vérification en cours',
+    labelKey: 'trust.pending',
     icon: Clock,
     chipClass: 'bg-blue-100 text-blue-800',
     borderClass: 'border-blue-200',
   },
   declared_only: {
-    label: 'Déclaration fournisseur',
+    labelKey: 'trust.declaredOnly',
     icon: AlertTriangle,
     chipClass: 'bg-amber-100 text-amber-800',
     borderClass: 'border-amber-300',
   },
   expired: {
-    label: 'Certification expirée',
+    labelKey: 'trust.expired',
     icon: CalendarX,
     chipClass: 'bg-orange-100 text-orange-800',
     borderClass: 'border-orange-300',
   },
   contradicted: {
-    label: 'Non confirmé',
+    labelKey: 'trust.contradicted',
     icon: XCircle,
     chipClass: 'bg-red-100 text-red-800',
     borderClass: 'border-red-300',
@@ -65,6 +66,7 @@ interface ClaimCardProps {
 }
 
 export default function ClaimCard({ claim }: ClaimCardProps) {
+  const { t } = useI18n();
   const [showAllEvidence, setShowAllEvidence] = useState(false);
   const cfg = STATUS_CONFIG[claim.verification_status];
   const Icon = cfg.icon;
@@ -84,7 +86,7 @@ export default function ClaimCard({ claim }: ClaimCardProps) {
         </div>
         <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${cfg.chipClass}`}>
           <Icon className="h-3.5 w-3.5" aria-hidden />
-          {cfg.label}
+          {t(cfg.labelKey)}
         </span>
       </div>
 
@@ -93,34 +95,34 @@ export default function ClaimCard({ claim }: ClaimCardProps) {
         <dl className="mt-4 space-y-2 text-sm">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-emerald-600" aria-hidden />
-            <dt className="sr-only">Statut</dt>
-            <dd className="font-medium text-emerald-800">Certifié</dd>
+            <dt className="sr-only">{t('trust.status')}</dt>
+            <dd className="font-medium text-emerald-800">{t('trust.certified')}</dd>
           </div>
           {deciding.reference_number && (
             <div className="flex items-center gap-2">
               <FileText className="h-4 w-4 text-gray-500" aria-hidden />
-              <dt className="text-gray-600">Certification :</dt>
+              <dt className="text-gray-600">{t('trust.certification')}</dt>
               <dd className="font-medium text-gray-900">{deciding.reference_number}</dd>
             </div>
           )}
           {deciding.valid_until && (
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-gray-500" aria-hidden />
-              <dt className="text-gray-600">Valide jusqu'au :</dt>
+              <dt className="text-gray-600">{t('trust.validUntil')}</dt>
               <dd className="font-medium text-gray-900">{formatDateFr(deciding.valid_until)}</dd>
             </div>
           )}
           {deciding.issuing_body_name && (
             <div className="flex items-center gap-2">
               <Building2 className="h-4 w-4 text-gray-500" aria-hidden />
-              <dt className="text-gray-600">Organisme :</dt>
+              <dt className="text-gray-600">{t('trust.body')}</dt>
               <dd className="font-medium text-gray-900">{deciding.issuing_body_name}</dd>
             </div>
           )}
           {(deciding.source_url || deciding.document_path) && (
             <div className="flex items-center gap-2">
               <LinkIcon className="h-4 w-4 text-gray-500" aria-hidden />
-              <dt className="text-gray-600">Source :</dt>
+              <dt className="text-gray-600">{t('trust.source')}</dt>
               <dd>
                 {deciding.source_url && (
                   <a
@@ -129,7 +131,7 @@ export default function ClaimCard({ claim }: ClaimCardProps) {
                     rel="noopener noreferrer"
                     className="font-medium text-emerald-700 underline underline-offset-2 hover:text-emerald-900"
                   >
-                    document officiel
+                    {t('trust.officialDoc')}
                   </a>
                 )}
                 {deciding.source_url && deciding.document_path && <span className="text-gray-400"> · </span>}
@@ -140,7 +142,7 @@ export default function ClaimCard({ claim }: ClaimCardProps) {
                     rel="noopener noreferrer"
                     className="font-medium text-emerald-700 underline underline-offset-2 hover:text-emerald-900"
                   >
-                    certificat déposé (PDF)
+                    {t('trust.filedCert')}
                   </a>
                 )}
               </dd>
@@ -159,9 +161,7 @@ export default function ClaimCard({ claim }: ClaimCardProps) {
           </p>
           <p className="mt-2 flex items-start gap-2 text-xs text-amber-800">
             <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
-            Cette information provient uniquement du fournisseur. EthiMarket n'a trouvé
-            aucun certificat, audit ou registre public permettant de la confirmer.
-            Le fournisseur peut la faire vérifier en déposant un certificat officiel.
+            {t('trust.declaredInfo')}
           </p>
         </div>
       )}
@@ -172,7 +172,7 @@ export default function ClaimCard({ claim }: ClaimCardProps) {
           <p className="text-sm text-gray-800">{claim.evaluation.publicExplanation}</p>
           {claim.verification_status === 'expired' && deciding?.reference_number && (
             <p className="mt-1 text-xs text-gray-500">
-              Ancien certificat : {deciding.reference_number}
+              {t('trust.oldCert')} {deciding.reference_number}
               {deciding.issuing_body_name ? ` (${deciding.issuing_body_name})` : ''}
             </p>
           )}
@@ -189,7 +189,7 @@ export default function ClaimCard({ claim }: ClaimCardProps) {
             aria-expanded={showAllEvidence}
           >
             <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showAllEvidence ? 'rotate-180' : ''}`} aria-hidden />
-            {claim.evidence.length} preuve{claim.evidence.length > 1 ? 's' : ''} au dossier
+            {claim.evidence.length} {t('trust.evidenceOnFile')}
           </button>
           {showAllEvidence && (
             <ul className="mt-2 space-y-1.5">

@@ -18,6 +18,7 @@ import {
   MapPin
 } from 'lucide-react';
 import { StructuredFilters } from '../../lib/productSearchEngine';
+import { useI18n } from '../../lib/i18n';
 import { Product } from '../../lib/supabase';
 import { PackagingType } from '../../lib/naturalLanguageSearchService';
 
@@ -76,6 +77,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
   isOpenMobile,
   onCloseMobile
 }) => {
+  const { t } = useI18n();
   // Collapsible section states
   const [openSections, setOpenSections] = useState({
     certs: true,
@@ -136,7 +138,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
       <div className="flex items-center justify-between pb-4 border-b border-neutral-100">
         <div>
           <h2 className="font-bold text-neutral-900 text-base flex items-center gap-2">
-            <span>Filtres multicritères</span>
+            <span>{t('filters.title')}</span>
             <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold">
               {totalResultsCount} produits
             </span>
@@ -148,7 +150,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
             type="button"
             onClick={onResetFilters}
             className="text-xs text-neutral-500 hover:text-rose-600 flex items-center gap-1 font-medium p-1 transition"
-            title="Réinitialiser tous les filtres"
+            title={t('filters.reset')}
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Effacer</span>
@@ -185,7 +187,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
         >
           <span className="flex items-center gap-2">
             <Award className="w-4 h-4 text-emerald-600" />
-            Certifications & Labels
+            {t('filters.certs')}
           </span>
           {openSections.certs ? <ChevronUp className="w-4 h-4 text-neutral-400" /> : <ChevronDown className="w-4 h-4 text-neutral-400" />}
         </button>
@@ -228,7 +230,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
         >
           <span className="flex items-center gap-2">
             <Globe className="w-4 h-4 text-blue-600" />
-            Origine & Fabrication
+            {t('filters.origin')}
           </span>
           {openSections.origin ? <ChevronUp className="w-4 h-4 text-neutral-400" /> : <ChevronDown className="w-4 h-4 text-neutral-400" />}
         </button>
@@ -334,7 +336,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
 
             {/* Toggles */}
             <label className="flex items-center justify-between cursor-pointer select-none">
-              <span className="text-neutral-700">100% Végane</span>
+              <span className="text-neutral-700">{t('filters.vegan')}</span>
               <input
                 type="checkbox"
                 checked={filters.isVegan || false}
@@ -344,7 +346,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
             </label>
 
             <label className="flex items-center justify-between cursor-pointer select-none">
-              <span className="text-neutral-700">Matières recyclées</span>
+              <span className="text-neutral-700">{t('filters.recycled')}</span>
               <input
                 type="checkbox"
                 checked={filters.isRecycled || false}
@@ -407,7 +409,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
         {openSections.social && (
           <div className="space-y-2.5 text-xs">
             <label className="flex items-center justify-between cursor-pointer select-none">
-              <span className="text-neutral-700">Salaire décent garanti</span>
+              <span className="text-neutral-700">{t('filters.livingWage')}</span>
               <input
                 type="checkbox"
                 checked={filters.livingWageRequired || false}
@@ -448,7 +450,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
             {/* Max Price Slider */}
             <div>
               <div className="flex justify-between text-neutral-700 mb-1">
-                <span>Prix max :</span>
+                <span>{t('filters.maxPrice')}</span>
                 <span className="font-bold text-neutral-900">
                   {filters.maxPrice !== undefined ? `${filters.maxPrice} €` : 'Illimité'}
                 </span>
@@ -467,7 +469,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
             {/* Max MOQ */}
             <div>
               <div className="flex justify-between text-neutral-700 mb-1">
-                <span>MOQ max (Qté min) :</span>
+                <span>{t('filters.maxMoq')}</span>
                 <span className="font-bold text-neutral-900">
                   {filters.maxMoq !== undefined ? `${filters.maxMoq} unités` : 'Toutes'}
                 </span>
@@ -537,7 +539,7 @@ export const AdvancedFiltersSidebar: React.FC<AdvancedFiltersSidebarProps> = ({
           <div className="space-y-3 text-xs">
             <div>
               <div className="flex justify-between text-neutral-700 mb-1">
-                <span>Score éthique min :</span>
+                <span>{t('filters.minScore')}</span>
                 <span className="font-bold text-emerald-700">
                   {filters.minConfidenceScore || 0}/100
                 </span>

@@ -4,6 +4,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, Scale, ArrowUpRight, Leaf } from 'lucide-react';
+import { useI18n } from '../../lib/i18n';
 import { SearchResultItem } from '../../lib/productSearchEngine';
 import { Product } from '../../lib/supabase';
 
@@ -18,6 +19,7 @@ export const SearchResultsTable: React.FC<SearchResultsTableProps> = ({
   selectedComparisonIds,
   onToggleCompare
 }) => {
+  const { t } = useI18n();
   if (results.length === 0) return null;
 
   return (
@@ -29,13 +31,13 @@ export const SearchResultsTable: React.FC<SearchResultsTableProps> = ({
         <thead className="bg-neutral-50 border-b border-neutral-200 text-xs font-bold text-neutral-500 uppercase tracking-wider">
           <tr>
             <th className="p-3 text-center w-10">Comp.</th>
-            <th className="p-3">Produit & Producteur</th>
+            <th className="p-3">{t('cat.productProducer')}</th>
             <th className="p-3">Origine</th>
             <th className="p-3">Certifications</th>
             <th className="p-3 text-center">Score EthiMarket</th>
-            <th className="p-3 text-center">CO2 / Unité</th>
+            <th className="p-3 text-center">{t('cat.co2PerUnit')}</th>
             <th className="p-3 text-center">MOQ</th>
-            <th className="p-3 text-right">Prix Unitaire</th>
+            <th className="p-3 text-right">{t('pd.unitPrice')}</th>
             <th className="p-3 text-center">Action</th>
           </tr>
         </thead>
@@ -85,7 +87,7 @@ export const SearchResultsTable: React.FC<SearchResultsTableProps> = ({
                         {prod.name}
                       </Link>
                       <div className="text-xs text-neutral-500">
-                        {prod.producers?.name || 'Producteur certifié'}
+                        {prod.producers?.name || t('cat.certifiedProducer')}
                       </div>
                     </div>
                   </div>

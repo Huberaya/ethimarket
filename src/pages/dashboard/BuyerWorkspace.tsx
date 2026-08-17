@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { supabase, Product } from '../../lib/supabase';
+import { useI18n } from '../../lib/i18n';
 import {
   getTrackedSuppliers, setSupplierStatus, getTrackedProducts, setProductStatus,
   getPurchases, addPurchase, computePurchaseAnalytics, getBuyerPreferences,
@@ -27,28 +28,29 @@ import { getMyOrganization, Organization } from '../../lib/organizationService';
 
 type Tab = 'suppliers' | 'products' | 'purchases' | 'rules';
 
-const SUPPLIER_STATUS_META: Record<SupplierTrackStatus, { label: string; icon: typeof CheckCircle2; cls: string }> = {
-  active: { label: 'Actifs', icon: CheckCircle2, cls: 'bg-emerald-100 text-emerald-800 border-emerald-200' },
-  evaluating: { label: 'En évaluation', icon: Clock, cls: 'bg-blue-100 text-blue-800 border-blue-200' },
-  at_risk: { label: 'À risque', icon: AlertTriangle, cls: 'bg-amber-100 text-amber-800 border-amber-200' },
-  suspended: { label: 'Suspendus', icon: Ban, cls: 'bg-red-100 text-red-800 border-red-200' },
+const SUPPLIER_STATUS_META: Record<SupplierTrackStatus, { labelKey: string; icon: typeof CheckCircle2; cls: string }> = {
+  active: { labelKey: 'bw.active', icon: CheckCircle2, cls: 'bg-emerald-100 text-emerald-800 border-emerald-200' },
+  evaluating: { labelKey: 'bw.evaluating', icon: Clock, cls: 'bg-blue-100 text-blue-800 border-blue-200' },
+  at_risk: { labelKey: 'bw.atRisk', icon: AlertTriangle, cls: 'bg-amber-100 text-amber-800 border-amber-200' },
+  suspended: { labelKey: 'bw.suspended', icon: Ban, cls: 'bg-red-100 text-red-800 border-red-200' },
 };
 
-const PRODUCT_STATUS_META: Record<ProductTrackStatus, { label: string; icon: typeof CheckCircle2; cls: string }> = {
-  approved: { label: 'Approuvés', icon: CheckCircle2, cls: 'bg-emerald-100 text-emerald-800 border-emerald-200' },
-  analyzing: { label: 'En analyse', icon: Search, cls: 'bg-blue-100 text-blue-800 border-blue-200' },
-  rejected: { label: 'Rejetés', icon: XCircle, cls: 'bg-red-100 text-red-800 border-red-200' },
+const PRODUCT_STATUS_META: Record<ProductTrackStatus, { labelKey: string; icon: typeof CheckCircle2; cls: string }> = {
+  approved: { labelKey: 'bw.approved', icon: CheckCircle2, cls: 'bg-emerald-100 text-emerald-800 border-emerald-200' },
+  analyzing: { labelKey: 'bw.analyzing', icon: Search, cls: 'bg-blue-100 text-blue-800 border-blue-200' },
+  rejected: { labelKey: 'bw.rejected', icon: XCircle, cls: 'bg-red-100 text-red-800 border-red-200' },
 };
 
-const WEIGHT_LABELS: Record<keyof BuyerWeights, { label: string; emoji: string }> = {
-  price: { label: 'Prix', emoji: '💶' },
-  environment: { label: 'Environnement', emoji: '🌍' },
-  social: { label: 'Social', emoji: '🤝' },
-  traceability: { label: 'Traçabilité', emoji: '🔍' },
-  certifications: { label: 'Certifications', emoji: '🏅' },
+const WEIGHT_LABELS: Record<keyof BuyerWeights, { labelKey: string; emoji: string }> = {
+  price: { labelKey: 'bw.price', emoji: '💶' },
+  environment: { labelKey: 'bw.environment', emoji: '🌍' },
+  social: { labelKey: 'bw.social', emoji: '🤝' },
+  traceability: { labelKey: 'bw.traceability', emoji: '🔍' },
+  certifications: { labelKey: 'bw.certifications', emoji: '🏅' },
 };
 
 export default function BuyerWorkspace() {
+  const { t } = useI18n();
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const initialTab = (['suppliers', 'products', 'purchases', 'rules'] as Tab[]).includes(searchParams.get('tab') as Tab)
@@ -123,16 +125,16 @@ export default function BuyerWorkspace() {
   }
 
   const TABS: { id: Tab; label: string; icon: typeof Factory }[] = [
-    { id: 'purchases', label: 'Mes achats', icon: TrendingUp },
-    { id: 'suppliers', label: 'Fournisseurs', icon: Factory },
-    { id: 'products', label: 'Produits suivis', icon: PackageSearch },
-    { id: 'rules', label: 'Mes règles', icon: SlidersHorizontal },
+    { id: 'purchases', label: t('bw.tabPurchases'), icon: TrendingUp },
+    { id: 'suppliers', label: t('bw.tabSuppliers'), icon: Factory },
+    { id: 'products', label: t('bw.tabProducts'), icon: PackageSearch },
+    { id: 'rules', label: t('bw.tabRules'), icon: SlidersHorizontal },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-black text-gray-900">Espace acheteur</h1>
+        <h1 className="text-2xl font-black text-gray-900">{t('bw.title')}</h1>
         <p className="text-sm text-gray-500 mt-1">
           Pilotez vos fournisseurs, vos produits et vos achats responsables — la plateforme apprend de vos décisions.
         </p>
@@ -154,17 +156,17 @@ export default function BuyerWorkspace() {
 
       {/* Onglets */}
       <div className="flex gap-2 flex-wrap">
-        {TABS.map(t => {
-          const Icon = t.icon;
+        {TABS.map(tb => {
+          const Icon = tb.icon;
           return (
             <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
+              key={tb.id}
+              onClick={() => setTab(tb.id)}
               className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold border-2 transition-all cursor-pointer ${
-                tab === t.id ? 'border-brand-500 bg-brand-50 text-brand-800' : 'border-gray-200 text-gray-600 hover:border-gray-300 bg-white'
+                tab === tb.id ? 'border-brand-500 bg-brand-50 text-brand-800' : 'border-gray-200 text-gray-600 hover:border-gray-300 bg-white'
               }`}
             >
-              <Icon className="w-4 h-4" /> {t.label}
+              <Icon className="w-4 h-4" /> {tb.label}
             </button>
           );
         })}
@@ -182,15 +184,15 @@ export default function BuyerWorkspace() {
             <div className="bg-white rounded-2xl border border-gray-100 p-5">
               <div className="flex items-center gap-2 text-emerald-600"><Leaf className="w-4 h-4" /><span className="text-xs font-bold uppercase">Impact</span></div>
               <p className="text-2xl font-black text-gray-900 mt-2">{analytics.totalCarbonKg} kg</p>
-              <p className="text-[11px] text-gray-500 mt-1">CO2e total de vos achats tracés</p>
+              <p className="text-[11px] text-gray-500 mt-1">{t('bw.co2Total')}</p>
             </div>
             <div className="bg-white rounded-2xl border border-gray-100 p-5">
-              <div className="flex items-center gap-2 text-emerald-600"><BarChart3 className="w-4 h-4" /><span className="text-xs font-bold uppercase">Score éthique moyen</span></div>
+              <div className="flex items-center gap-2 text-emerald-600"><BarChart3 className="w-4 h-4" /><span className="text-xs font-bold uppercase">{t('bw.avgScore')}</span></div>
               <p className="text-2xl font-black text-gray-900 mt-2">{analytics.avgEthicalScore}<span className="text-sm text-gray-400">/100</span></p>
               <p className="text-[11px] text-gray-500 mt-1">{analytics.purchaseCount} achat{analytics.purchaseCount > 1 ? 's' : ''} enregistré{analytics.purchaseCount > 1 ? 's' : ''}</p>
             </div>
             <div className="bg-white rounded-2xl border border-gray-100 p-5">
-              <div className="flex items-center gap-2 text-emerald-600"><Wallet className="w-4 h-4" /><span className="text-xs font-bold uppercase">Dépenses responsables</span></div>
+              <div className="flex items-center gap-2 text-emerald-600"><Wallet className="w-4 h-4" /><span className="text-xs font-bold uppercase">{t('bw.spending')}</span></div>
               <p className="text-2xl font-black text-gray-900 mt-2">{analytics.responsibleSharePct}%</p>
               <p className="text-[11px] text-gray-500 mt-1">{analytics.responsibleSpent.toLocaleString('fr-FR')} € sur {analytics.totalSpent.toLocaleString('fr-FR')} €</p>
             </div>
@@ -200,7 +202,7 @@ export default function BuyerWorkspace() {
           <div className="bg-white rounded-2xl border border-gray-100 p-5">
             <h3 className="text-sm font-bold text-gray-900 mb-4">📈 Évolution du score éthique de vos achats</h3>
             {analytics.scoreTrend.length === 0 ? (
-              <p className="text-sm text-gray-400 italic">Enregistrez vos achats pour suivre votre progression.</p>
+              <p className="text-sm text-gray-400 italic">{t('bw.recordPurchases')}</p>
             ) : (
               <div className="flex items-end gap-2 h-32">
                 {analytics.scoreTrend.slice(-12).map(pt => (
@@ -247,7 +249,7 @@ export default function BuyerWorkspace() {
               const Icon = meta.icon;
               return (
                 <div key={st} className={`rounded-2xl border-2 p-4 ${meta.cls}`}>
-                  <div className="flex items-center gap-2"><Icon className="w-4 h-4" /><span className="text-xs font-black uppercase">{meta.label}</span></div>
+                  <div className="flex items-center gap-2"><Icon className="w-4 h-4" /><span className="text-xs font-black uppercase">{t(meta.labelKey)}</span></div>
                   <p className="text-2xl font-black mt-1">{supplierGroups[st].length}</p>
                 </div>
               );
@@ -265,7 +267,7 @@ export default function BuyerWorkspace() {
           {(Object.keys(SUPPLIER_STATUS_META) as SupplierTrackStatus[]).map(st =>
             supplierGroups[st].length > 0 && (
               <div key={st} className="bg-white rounded-2xl border border-gray-100 p-5">
-                <h3 className="text-sm font-bold text-gray-900 mb-3">{SUPPLIER_STATUS_META[st].label}</h3>
+                <h3 className="text-sm font-bold text-gray-900 mb-3">{t(SUPPLIER_STATUS_META[st].labelKey)}</h3>
                 <ul className="divide-y divide-gray-50">
                   {supplierGroups[st].map(s => (
                     <li key={s.id} className="py-3 flex items-center justify-between gap-3 flex-wrap">
@@ -304,7 +306,7 @@ export default function BuyerWorkspace() {
               const Icon = meta.icon;
               return (
                 <div key={st} className={`rounded-2xl border-2 p-4 ${meta.cls}`}>
-                  <div className="flex items-center gap-2"><Icon className="w-4 h-4" /><span className="text-xs font-black uppercase">{meta.label}</span></div>
+                  <div className="flex items-center gap-2"><Icon className="w-4 h-4" /><span className="text-xs font-black uppercase">{t(meta.labelKey)}</span></div>
                   <p className="text-2xl font-black mt-1">{productGroups[st].length}</p>
                 </div>
               );
@@ -314,7 +316,7 @@ export default function BuyerWorkspace() {
           {products.length === 0 && (
             <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
               <PackageSearch className="w-8 h-8 text-gray-300 mx-auto mb-3" />
-              <p className="text-sm text-gray-500">Aucun produit suivi. Ajoutez des produits à votre pipeline depuis le catalogue.</p>
+              <p className="text-sm text-gray-500">{t('bw.noTracked')}</p>
               <Link to="/catalogue" className="inline-block mt-3 text-sm font-bold text-brand-700 hover:underline">Parcourir le catalogue →</Link>
             </div>
           )}
@@ -322,7 +324,7 @@ export default function BuyerWorkspace() {
           {(Object.keys(PRODUCT_STATUS_META) as ProductTrackStatus[]).map(st =>
             productGroups[st].length > 0 && (
               <div key={st} className="bg-white rounded-2xl border border-gray-100 p-5">
-                <h3 className="text-sm font-bold text-gray-900 mb-3">{PRODUCT_STATUS_META[st].label}</h3>
+                <h3 className="text-sm font-bold text-gray-900 mb-3">{t(PRODUCT_STATUS_META[st].labelKey)}</h3>
                 <ul className="divide-y divide-gray-50">
                   {productGroups[st].map(tp => (
                     <li key={tp.id} className="py-3">
@@ -391,7 +393,7 @@ export default function BuyerWorkspace() {
               {(Object.keys(WEIGHT_LABELS) as (keyof BuyerWeights)[]).map(k => (
                 <div key={k}>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-sm font-semibold text-gray-700">{WEIGHT_LABELS[k].emoji} {WEIGHT_LABELS[k].label}</label>
+                    <label className="text-sm font-semibold text-gray-700">{WEIGHT_LABELS[k].emoji} {t(WEIGHT_LABELS[k].labelKey)}</label>
                     <span className="text-sm font-black text-gray-900 tabular-nums">{draftWeights[k]}%</span>
                   </div>
                   <input
@@ -431,13 +433,13 @@ export default function BuyerWorkspace() {
                 onClick={async () => {
                   setSavingRules(true);
                   const err = await saveBuyerWeights(user.id, draftWeights, useLearned);
-                  setRulesMsg(err ?? '✓ Règles enregistrées');
+                  setRulesMsg(err ?? t('bw.rulesSaved'));
                   setSavingRules(false);
                 }}
                 disabled={savingRules || weightsSum !== 100}
                 className="btn-primary px-5 py-2.5 text-sm font-bold rounded-xl disabled:opacity-50 cursor-pointer"
               >
-                {savingRules ? 'Enregistrement…' : 'Enregistrer mes règles'}
+                {savingRules ? t('bw.savingRules') : t('bw.saveRules')}
               </button>
               <button
                 onClick={async () => {
@@ -461,6 +463,7 @@ export default function BuyerWorkspace() {
 
 // ---------- Formulaire d'achat rapide ----------
 function QuickPurchaseForm({ userId, catalog, onAdded }: { userId: string; catalog: Product[]; onAdded: () => void }) {
+  const { t } = useI18n();
   const [productId, setProductId] = useState('');
   const [qty, setQty] = useState('1');
   const [baseline, setBaseline] = useState('');
@@ -497,7 +500,7 @@ function QuickPurchaseForm({ userId, catalog, onAdded }: { userId: string; catal
         disabled={!selected || saving}
         className="mt-3 btn-primary px-4 py-2 text-xs font-bold rounded-xl disabled:opacity-50 cursor-pointer"
       >
-        {saving ? 'Enregistrement…' : 'Ajouter à mes achats'}
+        {saving ? t('bw.savingRules') : t('bw.addPurchase')}
       </button>
     </div>
   );

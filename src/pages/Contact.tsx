@@ -16,12 +16,6 @@ const SOCIAL_ICONS = [
   { icon: Facebook,  href: '#', label: 'Facebook' },
 ];
 
-const OTHER_METHODS = [
-  { icon: MessageSquare, title: 'Chat en direct', desc: 'Support instantané 9h-18h', action: 'Ouvrir le chat' },
-  { icon: BookOpen,      title: 'Centre d\'aide',   desc: 'Trouvez vos réponses',     action: 'Consulter' },
-  { icon: HelpCircle,    title: 'FAQ',              desc: 'Questions fréquentes',     action: 'Voir les FAQ' },
-];
-
 export default function Contact() {
   const { t } = useI18n();
   const [sent, setSent] = useState(false);
@@ -176,9 +170,8 @@ export default function Contact() {
                     </div>
                     <div>
                       <p className="font-semibold text-gray-900 text-sm mb-0.5">{t('contact.infoSupport')}</p>
-                      <p className="text-sm text-gray-500">Lun-Ven : 9h00 - 18h00</p>
-                      <p className="text-sm text-gray-500">Sam : 10h00 - 15h00</p>
-                      <p className="text-sm text-gray-500">Dim : Fermé</p>
+                      <p className="text-sm text-gray-500">{t('contact.infoHours')}</p>
+                      <p className="text-sm text-gray-500">{t('contact.sundayClosed')}</p>
                     </div>
                   </div>
                 </div>
@@ -204,7 +197,11 @@ export default function Contact() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {OTHER_METHODS.map(({ icon: Icon, title, desc, action }) => (
+            {[
+              { icon: MessageSquare, title: t('contact.chatTitle'), desc: t('contact.chatDesc'), action: t('contact.chatAction') },
+              { icon: BookOpen, title: t('contact.helpTitle'), desc: t('contact.helpDesc'), action: t('contact.helpAction') },
+              { icon: HelpCircle, title: t('contact.faqTitle'), desc: t('contact.faqDesc'), action: t('contact.faqAction') },
+            ].map(({ icon: Icon, title, desc, action }) => (
               <div key={title} className="bg-white rounded-2xl p-6 border border-gray-100 text-center hover:shadow-md transition-all">
                 <div className="w-12 h-12 bg-brand-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <Icon className="w-5 h-5 text-brand-600" />

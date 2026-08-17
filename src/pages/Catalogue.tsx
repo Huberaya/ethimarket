@@ -31,13 +31,13 @@ import {
 import { findAlternativeProducts, AlternativeRecommendation } from '../lib/alternativeProductsEngine';
 
 const SORT_OPTIONS = [
-  { value: 'relevance', label: 'Pertinence & Score éthique' },
-  { value: 'price_asc', label: 'Prix : Moins cher au plus cher' },
-  { value: 'price_desc', label: 'Prix : Plus cher au moins cher' },
-  { value: 'confidence', label: 'Score de confiance maximal' },
-  { value: 'carbon', label: 'Empreinte carbone minimale' },
-  { value: 'rating', label: 'Meilleures notes clients' },
-  { value: 'newest', label: 'Nouveaux arrivages' }
+  { value: 'relevance', labelKey: 'cat.sortRelevance' },
+  { value: 'price_asc', labelKey: 'cat.sortPriceAsc' },
+  { value: 'price_desc', labelKey: 'cat.sortPriceDesc' },
+  { value: 'confidence', labelKey: 'cat.sortConfidence' },
+  { value: 'carbon', labelKey: 'cat.sortCarbon' },
+  { value: 'rating', labelKey: 'cat.sortRating' },
+  { value: 'newest', labelKey: 'cat.sortNew' }
 ];
 
 export default function Catalogue() {
@@ -316,7 +316,7 @@ export default function Catalogue() {
               {/* Left: Execution stats */}
               <div className="flex items-center gap-3 text-xs text-neutral-600">
                 <span className="font-bold text-neutral-900 text-sm">
-                  {searchResults.length} résultat{searchResults.length > 1 ? 's' : ''}
+                  {searchResults.length} {searchResults.length > 1 ? t('cat.results') : t('cat.result')}
                 </span>
                 <span>•</span>
                 <span className="text-neutral-400">
@@ -344,7 +344,7 @@ export default function Catalogue() {
                   >
                     {SORT_OPTIONS.map(opt => (
                       <option key={opt.value} value={opt.value}>
-                        {opt.label}
+                        {t(opt.labelKey)}
                       </option>
                     ))}
                   </select>
@@ -358,7 +358,7 @@ export default function Catalogue() {
                     className={`p-1.5 rounded-lg transition ${
                       viewMode === 'grid' ? 'bg-white shadow-sm text-emerald-700 font-bold' : 'text-neutral-500 hover:text-neutral-800'
                     }`}
-                    title="Vue grille"
+                    title={t('cat.gridView')}
                   >
                     <LayoutGrid className="w-4 h-4" />
                   </button>
@@ -368,7 +368,7 @@ export default function Catalogue() {
                     className={`p-1.5 rounded-lg transition ${
                       viewMode === 'table' ? 'bg-white shadow-sm text-emerald-700 font-bold' : 'text-neutral-500 hover:text-neutral-800'
                     }`}
-                    title="Vue liste condensée B2B"
+                    title={t('cat.listView')}
                   >
                     <LayoutList className="w-4 h-4" />
                   </button>
@@ -378,7 +378,7 @@ export default function Catalogue() {
                     className={`p-1.5 rounded-lg transition ${
                       viewMode === 'map' ? 'bg-white shadow-sm text-emerald-700 font-bold' : 'text-neutral-500 hover:text-neutral-800'
                     }`}
-                    title="Vue carte géographique"
+                    title={t('cat.mapView')}
                   >
                     <MapPin className="w-4 h-4" />
                   </button>
@@ -423,8 +423,8 @@ export default function Catalogue() {
                 <div>
                   <h3 className="text-lg font-bold text-neutral-900">
                     {query.trim()
-                      ? `Aucun produit ne correspond à "${query}"`
-                      : 'Aucun produit ne correspond exactement à vos critères'}
+                      ? t('cat.noResultsFor', { query })
+                      : t('cat.noResults')}
                   </h3>
                   <p className="text-xs text-neutral-500 max-w-md mx-auto mt-1">
                     Notre moteur applique un filtrage strict pour ne jamais afficher de produits hors-sujet.

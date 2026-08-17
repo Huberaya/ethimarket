@@ -1,39 +1,20 @@
 import { useState } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 import { SectionTitle } from './GuaranteesSection';
-
-const FAQS = [
-  {
-    q: 'Comment vérifier l\'authenticité du certificat bio ?',
-    a: 'Notre équipe contacte directement Ecocert pour vérifier chaque certificat. Vous pouvez aussi vérifier vous-même sur ecocert.com avec le numéro fourni.',
-  },
-  {
-    q: 'Que se passe-t-il si le produit reçu n\'est pas conforme ?',
-    a: 'Vous avez 7 jours pour signaler un problème. Le paiement reste bloqué. Nous investiguons sous 48h. Vous êtes intégralement remboursé si non-conformité prouvée.',
-  },
-  {
-    q: 'Combien de temps entre la commande et la livraison ?',
-    a: 'Selon l\'option choisie : DHL Express (5-7 jours), UPS (10-14 jours), Maritime (30-45 jours).',
-  },
-  {
-    q: 'Puis-je commander un échantillon avant ?',
-    a: 'Oui, pour la plupart des producteurs. Contactez-les directement via la messagerie.',
-  },
-  {
-    q: 'Comment sont calculés les frais de douane ?',
-    a: 'Automatiquement selon le pays destination et le type de produit. Détails transparents avant paiement.',
-  },
-];
+import { useI18n } from '../../lib/i18n';
+import { PRODUCT_PAGE_CONTENT } from '../../lib/i18n/content/productPage';
 
 export default function FAQSection() {
+  const { locale } = useI18n();
+  const c = PRODUCT_PAGE_CONTENT[locale].faq;
   const [open, setOpen] = useState<number | null>(0);
 
   return (
     <section className="py-12 border-t border-gray-100">
-      <SectionTitle icon={HelpCircle} title="Questions fréquentes" />
+      <SectionTitle icon={HelpCircle} title={c.sectionTitle} />
 
       <div className="mt-8 space-y-3">
-        {FAQS.map((faq, i) => {
+        {c.items.map((faq, i) => {
           const isOpen = open === i;
           return (
             <div key={i} className="bg-white rounded-2xl border border-gray-100 overflow-hidden">

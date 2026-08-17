@@ -3,8 +3,12 @@ import { Truck, Plane, Ship, Calculator, FileCheck, Leaf, ShieldCheck } from 'lu
 import type { Product } from '../../lib/supabase';
 import { SectionTitle } from './GuaranteesSection';
 import { calculateShipping, calculateCustomsAndVAT, calculateOrderTotal } from '../../lib/calculations';
+import { useI18n } from '../../lib/i18n';
+import { PRODUCT_PAGE_CONTENT } from '../../lib/i18n/content/productPage';
 
 export default function DeliverySection({ product, quantity }: { product: Product; quantity: number }) {
+  const { locale } = useI18n();
+  const c = PRODUCT_PAGE_CONTENT[locale].delivery;
   const [address, setAddress] = useState('');
   const [destinationCountry, setDestinationCountry] = useState('France');
   const [selectedMode, setSelectedMode] = useState<'maritime' | 'dhl' | 'ups'>('maritime');
@@ -40,23 +44,23 @@ export default function DeliverySection({ product, quantity }: { product: Produc
 
   return (
     <section className="py-12 border-t border-gray-100">
-      <SectionTitle icon={Truck} title="Livraison & Transparence Tarifaire" />
+      <SectionTitle icon={Truck} title={c.sectionTitle} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
         {/* Calculator */}
         <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-card">
           <h3 className="font-bold text-gray-900 text-sm flex items-center gap-2 mb-4">
-            <Calculator className="w-4 h-4 text-brand-600" /> Calculateur Fret & Bilan Carbone Transport
+            <Calculator className="w-4 h-4 text-brand-600" /> {c.calculatorTitle}
           </h3>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-1">Destination de livraison (UE)</label>
+              <label className="block text-xs font-bold text-gray-700 mb-1">{c.destLabel}</label>
               <div className="flex gap-2">
                 <input
                   value={address}
                   onChange={e => setAddress(e.target.value)}
-                  placeholder="Adresse ou code postal..."
+                  placeholder={c.destPlaceholder}
                   className="flex-1 px-3.5 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none bg-white"
                 />
                 <select
@@ -75,13 +79,13 @@ export default function DeliverySection({ product, quantity }: { product: Produc
             </div>
 
             <div className="bg-gray-50 p-3.5 rounded-xl border border-gray-100 flex items-center justify-between text-xs">
-              <span className="font-bold text-gray-600">Volume calculé :</span>
+              <span className="font-bold text-gray-600">{c.volumeLabel}</span>
               <span className="font-black text-gray-900 bg-white px-2.5 py-1 rounded-lg border border-gray-200">{qtyKg.toLocaleString('fr-FR')} {product.price_unit} (~{qtyKg} kg)</span>
             </div>
 
             {/* Mode selection with CO2e footprint */}
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-2">Mode de transport au choix :</label>
+              <label className="block text-xs font-bold text-gray-700 mb-2">{c.modeLabel}</label>
               <div className="space-y-2.5">
                 {(['maritime', 'dhl', 'ups'] as const).map(optKey => {
                   const opt = shippingResult.options[optKey];
@@ -124,45 +128,45 @@ export default function DeliverySection({ product, quantity }: { product: Produc
         <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-card flex flex-col justify-between">
           <div>
             <h3 className="font-bold text-gray-900 text-sm flex items-center gap-2 mb-4">
-              <FileCheck className="w-4 h-4 text-brand-600" /> Récapitulatif transparent
+              <FileCheck className="w-4 h-4 text-brand-600" /> {c.summaryTitle}
             </h3>
 
             <div className="space-y-3">
               <SummaryRow
-                label={`Prix produit (${qtyKg} ${product.price_unit})`}
+                label={`${c.productPrice} (${qtyKg} ${product.price_unit})`}
                 value={`${orderTotal.productPrice.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`}
               />
               <SummaryRow
-                label={`Fret transport (${orderTotal.shippingName})`}
+                label={`${c.freight} (${orderTotal.shippingName})`}
                 value={`${orderTotal.shippingCost.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`}
-                subtext={`Empreinte CO2 transport : ${shippingResult.options[selectedMode].co2eTransport} kg CO2e`}
+                subtext={`${c.co2Footprint} : ${shippingResult.options[selectedMode].co2eTransport} kg CO2e`}
               />
               <SummaryRow
-                label="Commission EthiMarket (5%)"
+                label={c.commission}
                 value={`${orderTotal.ethimarketCommission.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`}
-                subtext="Frais de fonctionnement de la plateforme directe"
+                subtext={c.commissionSub}
               />
               <SummaryRow
-                label={`Droits de douane UE (${customsAndVAT.customsRate}%)`}
+                label={`${c.customs} (${customsAndVAT.customsRate}%)`}
                 value={`${customsAndVAT.customsDuty.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`}
                 subtext={customsAndVAT.exemptionReason}
                 highlight={customsAndVAT.isExempt}
               />
               <SummaryRow
-                label={`TVA à l'importation (${destinationCountry} - ${customsAndVAT.vatRate}%)`}
+                label={`${c.vat} (${destinationCountry} - ${customsAndVAT.vatRate}%)`}
                 value={`${customsAndVAT.vatAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`}
-                subtext={`Taux réduit sur les denrées alimentaires bio en ${destinationCountry}`}
+                subtext={`${c.vatSub} ${destinationCountry}`}
               />
 
               <div className="border-t border-gray-200 pt-3 mt-3">
                 <div className="flex items-center justify-between">
-                  <span className="font-black text-gray-900 text-base">TOTAL TTC TOUT INCLUS</span>
+                  <span className="font-black text-gray-900 text-base">{c.total}</span>
                   <span className="text-2xl font-black text-brand-700">
                     {orderTotal.totalAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
                   </span>
                 </div>
                 <p className="text-xs text-brand-600 font-semibold mt-1">
-                  ✓ Tarification certifiée sans frais cachés ni intermédiaire secondaire
+                  {c.noHiddenFees}
                 </p>
               </div>
             </div>
@@ -171,10 +175,10 @@ export default function DeliverySection({ product, quantity }: { product: Produc
           {/* EU Customs & ACP Box */}
           <div className="mt-6 bg-blue-50/80 rounded-xl p-4 border border-blue-100">
             <h4 className="font-bold text-xs text-blue-900 flex items-center gap-1.5 mb-1.5">
-              <ShieldCheck className="w-4 h-4 text-blue-600" /> Confort douanier & Accord UE-ACP
+              <ShieldCheck className="w-4 h-4 text-blue-600" /> {c.acpTitle}
             </h4>
             <p className="text-xs text-blue-800 leading-relaxed">
-              En vertu des accords UE-ACP (Cotonou / EBA), les produits certifiés originaires de pays partenaires bénéficient de <span className="font-bold">0% de droits de douane</span>. Tous les documents Phytosanitaires (EUR.1, Certificat Bio UE) sont automatiquement générés.
+              {c.acpText1} <span className="font-bold">{c.acpBold}</span>{c.acpText2}
             </p>
           </div>
         </div>
@@ -182,9 +186,7 @@ export default function DeliverySection({ product, quantity }: { product: Produc
 
       {/* Methodological notice */}
       <div className="mt-8 bg-gray-50 rounded-2xl p-4 border border-gray-200 text-center text-xs text-gray-500 font-medium">
-        <p>
-          Calculs basés sur <span className="font-semibold text-gray-800">GHG Protocol</span>, <span className="font-semibold text-gray-800">ADEME</span>, <span className="font-semibold text-gray-800">Water Footprint Network</span>, <span className="font-semibold text-gray-800">FAO</span>, et <span className="font-semibold text-gray-800">UN SDG Framework</span>.
-        </p>
+        <p>{c.methodNote}</p>
       </div>
     </section>
   );

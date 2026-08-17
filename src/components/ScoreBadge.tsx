@@ -5,11 +5,11 @@ import type { ScoreDetails } from '../lib/supabase';
 type BadgeLevel = 'gold' | 'silver' | 'verified' | 'not_eligible' | 'bronze' | null;
 
 const BADGE_STYLES: Record<string, { bg: string; text: string; ring: string; label: string }> = {
-  gold: { bg: 'bg-amber-50', text: 'text-amber-700', ring: 'ring-amber-200', label: '🏆 Or (EthiMarket Certified Gold)' },
-  silver: { bg: 'bg-slate-100', text: 'text-slate-700', ring: 'ring-slate-300', label: '🥇 Argent (EthiMarket Certified Silver)' },
-  verified: { bg: 'bg-emerald-50', text: 'text-emerald-700', ring: 'ring-emerald-200', label: '🥈 Vérifié (EthiMarket Verified)' },
-  bronze: { bg: 'bg-emerald-50', text: 'text-emerald-700', ring: 'ring-emerald-200', label: '🥈 Vérifié' },
-  not_eligible: { bg: 'bg-gray-100', text: 'text-gray-500', ring: 'ring-gray-200', label: 'Non éligible' },
+  gold: { bg: 'bg-amber-50', text: 'text-amber-700', ring: 'ring-amber-200', label: '🏆 EthiMarket Certified Gold' },
+  silver: { bg: 'bg-slate-100', text: 'text-slate-700', ring: 'ring-slate-300', label: '🥇 EthiMarket Certified Silver' },
+  verified: { bg: 'bg-emerald-50', text: 'text-emerald-700', ring: 'ring-emerald-200', label: '🥈 EthiMarket Verified' },
+  bronze: { bg: 'bg-emerald-50', text: 'text-emerald-700', ring: 'ring-emerald-200', label: '🥈 EthiMarket Verified' },
+  not_eligible: { bg: 'bg-gray-100', text: 'text-gray-500', ring: 'ring-gray-200', label: '—' },
 };
 
 export function badgeInfo(score: number, badge?: string | null): { level: string; label: string; bg: string; text: string; ring: string } {

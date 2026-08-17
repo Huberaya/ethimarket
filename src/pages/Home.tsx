@@ -22,13 +22,6 @@ const STATS = [
   { icon: TrendingUp, value: '8',  unitKey: 'home.statClaims',    labelKey: 'home.statClaimsLabel' },
 ];
 
-const TRUST_FEATURES = [
-  { icon: Shield,     title: 'Certifications vérifiées',    desc: 'Chaque producteur est audité physiquement. Bio, Fairtrade, Ecocert — tout est contrôlé.', tag: 'Sécurité' },
-  { icon: DollarSign, title: 'Prix directs producteurs',    desc: 'Éliminez les 3 à 5 intermédiaires habituels. Économisez jusqu\'à 40% sur vos achats.', tag: 'Économies' },
-  { icon: Globe,      title: 'Sourcing direct 4 continents', desc: 'Producteurs en Afrique, Asie, Amérique latine et Europe. Coordonnées GPS et lots documentés.', tag: 'Global' },
-  { icon: Handshake,  title: 'Commerce équitable garanti',  desc: 'Charte éthique contraignante. Rémunération juste des producteurs, conditions de travail dignes.', tag: 'Éthique' },
-];
-
 
 const HERO_IMG = 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80';
 const VIDEO_POSTER = 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80';
@@ -91,8 +84,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
       <SEOHead
-        title="EthiMarket - Marketplace B2B Équitable & Traçable Afrique-Europe"
-        description="Achetez en direct auprès de coopératives vérifiées. Café, cacao, épices, huiles avec traçabilité documentée, certifications contrôlées et score éthique transparent."
+        title={hc.seoTitle}
+        description={hc.seoDesc}
         jsonLd={{
           '@context': 'https://schema.org',
           '@type': 'Organization',
@@ -529,7 +522,9 @@ export default function Home() {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {TRUST_FEATURES.map(({ icon: Icon, title, desc, tag }) => (
+            {hc.trustFeatures.map(({ title, desc, tag }, ti) => {
+              const Icon = [Shield, DollarSign, Globe, Handshake][ti] ?? Shield;
+              return (
               <div key={title} className="group relative p-7 rounded-3xl border border-gray-100 bg-white hover:border-brand-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-400 to-brand-600 opacity-0 group-hover:opacity-100 transition-opacity rounded-t-3xl" />
                 <div className="inline-flex items-center gap-1.5 text-[10px] font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full mb-5">{tag}</div>
@@ -539,7 +534,8 @@ export default function Home() {
                 <h3 className="font-bold text-gray-900 mb-2.5 leading-tight">{title}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

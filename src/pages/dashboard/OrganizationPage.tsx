@@ -9,6 +9,7 @@ import {
   Building2, Users, Copy, RefreshCw, Loader2, Check, Crown,
   Shield, User as UserIcon, LogOut, SlidersHorizontal,
 } from 'lucide-react';
+import { useI18n } from '../../lib/i18n';
 import { useAuth } from '../../lib/auth';
 import {
   getMyOrganization, createOrganization, joinOrganization, rotateInviteCode,
@@ -25,6 +26,7 @@ const WEIGHT_LABELS: Record<keyof BuyerWeights, string> = {
 };
 
 export default function OrganizationPage() {
+  const { t } = useI18n();
   const { user } = useAuth();
   const [org, setOrg] = useState<Organization | null>(null);
   const [members, setMembers] = useState<OrgMember[]>([]);
@@ -49,7 +51,7 @@ export default function OrganizationPage() {
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-2xl font-black text-gray-900">Mon organisation</h1>
+        <h1 className="text-2xl font-black text-gray-900">{t('org.title')}</h1>
         <p className="text-sm text-gray-500 mt-1">
           Travaillez en équipe : membres, rôles et règles de décision communes à toute l'entreprise.
         </p>
@@ -74,6 +76,7 @@ export default function OrganizationPage() {
 
 /* ---------- Créer ou rejoindre ---------- */
 function CreateOrJoin({ onDone }: { onDone: () => void }) {
+  const { t } = useI18n();
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState<'create' | 'join' | null>(null);
@@ -83,8 +86,8 @@ function CreateOrJoin({ onDone }: { onDone: () => void }) {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
       <div className="bg-white rounded-2xl border-2 border-brand-200 p-6">
         <Building2 className="w-6 h-6 text-brand-600 mb-3" aria-hidden="true" />
-        <h2 className="font-black text-gray-900">Créer une organisation</h2>
-        <p className="text-xs text-gray-500 mt-1 mb-4">Vous devenez propriétaire et invitez vos collègues avec un code.</p>
+        <h2 className="font-black text-gray-900">{t('org.create')}</h2>
+        <p className="text-xs text-gray-500 mt-1 mb-4">{t('org.createDesc')}</p>
         <label htmlFor="org-name" className="block text-sm font-semibold text-gray-700 mb-1.5">Nom de l'entreprise</label>
         <input
           id="org-name" type="text" value={name} onChange={e => setName(e.target.value)}
@@ -190,6 +193,7 @@ function OrgHeader({ org, myRole, onRotated }: { org: Organization; myRole: OrgR
 function MembersList({ members, myRole, myUserId, onChanged }: {
   members: OrgMember[]; myRole: OrgRole; myUserId: string; onChanged: () => void;
 }) {
+  const { t } = useI18n();
   const [busy, setBusy] = useState<string | null>(null);
   const canManage = myRole === 'owner' || myRole === 'admin';
 
@@ -233,7 +237,7 @@ function MembersList({ members, myRole, myUserId, onChanged }: {
                     className="text-xs font-bold border border-gray-200 rounded-lg px-2 py-1.5 bg-white"
                     aria-label={`Rôle de ${m.profile?.full_name ?? 'ce membre'}`}
                   >
-                    <option value="owner">👑 Propriétaire</option>
+                    <option value="owner">{t('org.owner')}</option>
                     <option value="admin">🛡️ Administrateur</option>
                     <option value="member">👤 Membre</option>
                   </select>

@@ -2,47 +2,54 @@ import { useState } from 'react';
 import { ClipboardList, Package, FlaskConical, Thermometer } from 'lucide-react';
 import type { Product } from '../../lib/supabase';
 import { SectionTitle } from './GuaranteesSection';
+import { useI18n } from '../../lib/i18n';
+import { PRODUCT_PAGE_CONTENT } from '../../lib/i18n/content/productPage';
 
-const TABS = [
-  { id: 'specs', label: 'Caractéristiques', icon: ClipboardList },
-  { id: 'packaging', label: 'Emballage', icon: Package },
-  { id: 'nutrition', label: 'Analyse nutritionnelle', icon: FlaskConical },
-  { id: 'storage', label: 'Conservation', icon: Thermometer },
-] as const;
+const TAB_IDS = ['specs', 'packaging', 'nutrition', 'storage'] as const;
+const TAB_ICONS = { specs: ClipboardList, packaging: Package, nutrition: FlaskConical, storage: Thermometer } as const;
 
 export default function TechnicalDetailsSection({ product }: { product: Product }) {
-  const [active, setActive] = useState<typeof TABS[number]['id']>('specs');
+  const { locale } = useI18n();
+  const c = PRODUCT_PAGE_CONTENT[locale].technical;
+  const [active, setActive] = useState<typeof TAB_IDS[number]>('specs');
+
+  const TABS = [
+    { id: 'specs', label: c.characteristics, icon: TAB_ICONS.specs },
+    { id: 'packaging', label: c.tabPackaging, icon: TAB_ICONS.packaging },
+    { id: 'nutrition', label: c.tabNutrition, icon: TAB_ICONS.nutrition },
+    { id: 'storage', label: c.tabStorage, icon: TAB_ICONS.storage },
+  ] as const;
 
   const specs: [string, string][] = [
-    ['Pays d\'origine', `${product.country_flag} ${product.country}`],
-    ['Méthode de culture', product.farming_method ?? 'Non renseigné'],
-    ['Prix de base', `${product.price} €/${product.price_unit}`],
-    ['Quantité minimale', `${product.moq_value} ${product.moq_unit}`],
-    ['Stock disponible', `${product.stock_value.toLocaleString('fr-FR')} ${product.stock_unit}`],
-    ['Capacité mensuelle', `${product.monthly_capacity.toLocaleString('fr-FR')} ${product.stock_unit}/mois`],
-    ['Délai de livraison', `${product.delivery_days} jours ouvrés`],
-    ['Certifications', product.certifications.length > 0 ? product.certifications.join(', ') : 'Aucune'],
+    [c.country, `${product.country_flag} ${product.country}`],
+    [c.farmingMethod, product.farming_method ?? c.notProvided],
+    [c.basePrice, `${product.price} €/${product.price_unit}`],
+    [c.minQty, `${product.moq_value} ${product.moq_unit}`],
+    [c.stockAvailable, `${product.stock_value.toLocaleString('fr-FR')} ${product.stock_unit}`],
+    [c.monthlyCapacity, `${product.monthly_capacity.toLocaleString('fr-FR')} ${product.stock_unit}`],
+    [c.deliveryTime, `${product.delivery_days} ${c.days}`],
+    [c.certifications, product.certifications.length > 0 ? product.certifications.join(', ') : c.none],
   ];
 
   const packaging: [string, string][] = [
-    ['Type', 'Sacs jute 60 kg'],
-    ['Emballage', 'Recyclable et biodégradable'],
-    ['Étiquetage', 'Multilingue (FR, EN, AR)'],
-    ['Poids unitaire', `${product.moq_value} ${product.moq_unit}`],
+    [c.pkgType, c.pkgTypeVal],
+    [c.pkgMaterial, c.pkgMaterialVal],
+    [c.pkgLabeling, c.pkgLabelingVal],
+    [c.pkgUnitWeight, `${product.moq_value} ${product.moq_unit}`],
   ];
 
   const nutrition: [string, string][] = [
-    ['Humidité', '10.5%'],
-    ['Densité', '720 g/L'],
-    ['Score SCA', '87 points'],
-    ['Rapport complet', 'Télécharger PDF'],
+    [c.humidity, '10.5%'],
+    [c.density, '720 g/L'],
+    [c.scaScore, '87'],
+    [c.fullReport, c.downloadPdf],
   ];
 
   const storage: [string, string][] = [
-    ['Température', '15-25°C'],
-    ['Humidité', '< 65%'],
-    ['Durée de conservation', '12 mois'],
-    ['À l\'abri de', 'Lumière directe, chaleur'],
+    [c.temperature, '15-25°C'],
+    [c.humidity, '< 65%'],
+    [c.shelfLife, `12 ${c.months}`],
+    [c.awayFrom, c.awayFromVal],
   ];
 
   const content: Record<string, [string, string][]> = {
@@ -51,7 +58,7 @@ export default function TechnicalDetailsSection({ product }: { product: Product 
 
   return (
     <section className="py-12 border-t border-gray-100">
-      <SectionTitle icon={ClipboardList} title="Détails techniques" />
+      <SectionTitle icon={ClipboardList} title={c.sectionTitle} />
 
       <div className="mt-8 bg-white rounded-2xl border border-gray-100 overflow-hidden">
         {/* Tabs */}

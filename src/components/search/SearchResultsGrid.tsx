@@ -4,6 +4,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, Scale, Leaf, ArrowUpRight, Sparkles } from 'lucide-react';
+import { useI18n } from '../../lib/i18n';
 import { SearchResultItem } from '../../lib/productSearchEngine';
 import { Product } from '../../lib/supabase';
 
@@ -20,6 +21,7 @@ export const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
   onToggleCompare,
   onSearchAlternative
 }) => {
+  const { t } = useI18n();
   if (results.length === 0) return null;
 
   return (
@@ -70,7 +72,7 @@ export const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
               <button
                 type="button"
                 onClick={() => onToggleCompare(prod)}
-                title={isCompared ? 'Retirer du comparateur' : 'Ajouter au comparateur'}
+                title={isCompared ? t('cat.addCompare') : t('cat.addCompare')}
                 className={`absolute top-3 right-3 p-2 rounded-xl backdrop-blur-md transition-all shadow-md ${
                   isCompared
                     ? 'bg-emerald-600 text-white ring-2 ring-white'
@@ -86,7 +88,7 @@ export const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
               {/* Producer & Origin */}
               <div className="flex items-center justify-between text-xs text-neutral-500 mb-1.5">
                 <span className="truncate max-w-[180px]">
-                  {prod.producers?.name || 'Producteur certifié'}
+                  {prod.producers?.name || t('cat.certifiedProducer')}
                 </span>
                 <span className="flex items-center gap-1 font-medium text-neutral-700 shrink-0">
                   <span>{prod.country_flag}</span>
@@ -156,7 +158,7 @@ export const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
                     <button
                       type="button"
                       onClick={() => onSearchAlternative(prod)}
-                      title="Chercher des alternatives à ce produit"
+                      title={t('cat.findAlternatives')}
                       className="p-2 text-xs bg-neutral-100 hover:bg-emerald-50 hover:text-emerald-700 text-neutral-600 rounded-xl transition font-medium"
                     >
                       Alternatives

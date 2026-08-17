@@ -6,45 +6,50 @@ import {
 import type { Product } from '../../lib/supabase';
 import { LeafletMap } from '../LeafletMap';
 import { SectionTitle, formatDate } from './GuaranteesSection';
+import { useI18n } from '../../lib/i18n';
+import { PRODUCT_PAGE_CONTENT } from '../../lib/i18n/content/productPage';
 
 export default function TraceabilitySection({ product }: { product: Product }) {
+  const { locale } = useI18n();
+  const c = PRODUCT_PAGE_CONTENT[locale].traceability;
   const [openStep, setOpenStep] = useState<number | null>(0);
 
+  const stepIcons = [Sprout, Leaf, Calendar, Coffee, Package, Truck];
   const steps = [
     {
-      icon: Sprout, title: 'Plantation',
-      date: product.planting_date ? formatDate(product.planting_date) : 'Non renseigné',
-      detail: `Lieu: ${product.country}. Méthode: ${product.farming_method ?? 'Non renseigné'}.`,
+      icon: stepIcons[0], title: c.steps[0].title,
+      date: product.planting_date ? formatDate(product.planting_date) : '—',
+      detail: `${c.locationWord}: ${product.country}. ${c.methodWord}: ${product.farming_method ?? '—'}.`,
       photo: product.image_url ?? null,
     },
     {
-      icon: Leaf, title: 'Croissance',
-      date: '30 mois',
-      detail: 'Méthode bio, ombragé. Sans pesticides ni engrais chimiques.',
+      icon: stepIcons[1], title: c.steps[1].title,
+      date: c.growthDuration,
+      detail: c.steps[1].detail,
       photo: null,
     },
     {
-      icon: Calendar, title: 'Récolte',
-      date: product.harvest_date ? formatDate(product.harvest_date) : 'Non renseigné',
-      detail: 'Cueillette manuelle. Photos de la récolte disponibles.',
-      photo: product.image_url ?? null,
-    },
-    {
-      icon: Coffee, title: 'Traitement',
+      icon: stepIcons[2], title: c.steps[2].title,
       date: product.harvest_date ? formatDate(product.harvest_date) : '—',
-      detail: 'Méthode lavée. Séchage solaire. Durée 12 jours.',
+      detail: c.steps[2].detail,
+      photo: product.image_url ?? null,
+    },
+    {
+      icon: stepIcons[3], title: c.steps[3].title,
+      date: product.harvest_date ? formatDate(product.harvest_date) : '—',
+      detail: c.steps[3].detail,
       photo: null,
     },
     {
-      icon: Package, title: 'Emballage',
-      date: product.packaging_date ? formatDate(product.packaging_date) : 'Non renseigné',
-      detail: `${product.batch_number ? `N° de lot : ${product.batch_number}. ` : ''}${product.packaging_types?.length ? `Emballage : ${product.packaging_types.map((pk: string) => ({ plastic_free: 'sans plastique', compostable: 'compostable', recyclable: 'recyclable', bulk: 'vrac disponible', deposit: 'consigné' } as Record<string, string>)[pk] ?? pk).join(', ')}. ` : 'Étiquetage conforme UE. '}`,
+      icon: stepIcons[4], title: c.steps[4].title,
+      date: product.packaging_date ? formatDate(product.packaging_date) : '—',
+      detail: `${product.batch_number ? `${c.lotNo} : ${product.batch_number}. ` : ''}${product.packaging_types?.length ? `${c.packagingWord} : ${product.packaging_types.map((pk: string) => c.packagingLabels[pk] ?? pk).join(', ')}. ` : c.euLabeling + ' '}`,
       photo: null,
     },
     {
-      icon: Truck, title: 'Prêt pour expédition',
-      date: 'Disponible maintenant',
-      detail: `Volume disponible: ${product.stock_value.toLocaleString('fr-FR')} ${product.stock_unit}.`,
+      icon: stepIcons[5], title: c.steps[5].title,
+      date: c.availableNow,
+      detail: `${c.volumeAvailable}: ${product.stock_value.toLocaleString('fr-FR')} ${product.stock_unit}.`,
       photo: null,
     },
   ];
@@ -55,7 +60,7 @@ export default function TraceabilitySection({ product }: { product: Product }) {
 
   return (
     <section className="py-12 border-t border-gray-100">
-      <SectionTitle icon={MapPin} title="Voyage de votre produit" />
+      <SectionTitle icon={MapPin} title={c.sectionTitle} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
         {/* Timeline */}
@@ -105,32 +110,32 @@ export default function TraceabilitySection({ product }: { product: Product }) {
           <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden sticky top-24">
             <div className="p-4 border-b border-gray-50">
               <h3 className="font-bold text-sm text-gray-900 flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-brand-500" /> Trajet du produit
+                <MapPin className="w-4 h-4 text-brand-500" /> {c.journeyTitle}
               </h3>
-              <p className="text-xs text-gray-500 mt-0.5">De l'exploitation à votre destination</p>
+              <p className="text-xs text-gray-500 mt-0.5">{c.journeySubtitle}</p>
             </div>
             {!isNaN(lat) && !isNaN(lng) ? (
               <LeafletMap
                 markers={[
-                  { lat, lng, label: `Origine — ${product.country}` },
-                  { lat: 48.8566, lng: 2.3522, label: 'Votre destination (Paris)' },
+                  { lat, lng, label: `${c.origin} — ${product.country}` },
+                  { lat: 48.8566, lng: 2.3522, label: c.yourDestination },
                 ]}
                 height="280px"
                 zoom={2}
               />
             ) : (
               <div className="h-[280px] bg-gray-50 flex items-center justify-center text-sm text-gray-400">
-                Coordonnées GPS non renseignées
+                {c.noGps}
               </div>
             )}
             <div className="p-4 space-y-2">
               <div className="flex items-center gap-2 text-xs">
                 <div className="w-2.5 h-2.5 rounded-full bg-brand-500" />
-                <span className="text-gray-600">Origine: {product.country_flag} {product.country}</span>
+                <span className="text-gray-600">{c.origin}: {product.country_flag} {product.country}</span>
               </div>
               <div className="flex items-center gap-2 text-xs">
                 <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-                <span className="text-gray-600">Destination: Votre adresse</span>
+                <span className="text-gray-600">{c.destination}: {c.yourAddress}</span>
               </div>
             </div>
           </div>

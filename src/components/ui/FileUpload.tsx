@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Upload, FileText, Trash2, Download, Eye, Loader2, AlertCircle, CheckCircle, X, RefreshCw } from 'lucide-react';
+import { useI18n } from '../../lib/i18n';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import { ensureBucketsExist } from '../../lib/storage';
@@ -31,6 +32,7 @@ export function FileUpload({
   multiple = false,
   preview = true,
 }: FileUploadProps) {
+  const { t } = useI18n();
   const { user } = useAuth();
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -390,10 +392,10 @@ export function FileUpload({
                 <Upload className="w-6 h-6" />
               </div>
               <p className="text-sm font-semibold text-gray-800">
-                {dragActive ? 'Déposez le fichier ici' : '📎 Glissez un fichier ici'}
+                {dragActive ? t('upload.dropHere') : '📎 ' + t('upload.clickToSelect')}
               </p>
               <p className="text-xs text-gray-500">
-                ou <span className="text-emerald-600 font-bold underline">cliquez pour sélectionner</span>
+                ou <span className="text-emerald-600 font-bold underline">{t('upload.clickToSelect')}</span>
               </p>
               {description && <p className="text-xs text-gray-500 font-medium">{description}</p>}
               <p className="text-[11px] text-gray-500">

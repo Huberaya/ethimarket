@@ -5,11 +5,6 @@ import SEOHead from '../components/SEOHead';
 import { supabase } from '../lib/supabase';
 import { useI18n } from '../lib/i18n';
 
-const HERO_TESTIMONIALS = [
-  { quote: "EthiMarket a transformé notre approvisionnement.", name: "M. Dubois", role: "Directeur achats, Naturalia" },
-  { quote: "Qualité exceptionnelle, producteurs transparents.", name: "S. Martin",  role: "Chef cuisinière, étoilée" },
-];
-
 export default function Login() {
   const [email,    setEmail]    = useState('');
   const [password, setPassword] = useState('');
@@ -86,14 +81,14 @@ export default function Login() {
 
             {/* Testimonial */}
             <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-5">
-              <p className="text-white/80 italic text-sm leading-relaxed mb-3">"{HERO_TESTIMONIALS[0].quote}"</p>
+              <p className="text-white/80 italic text-sm leading-relaxed mb-3">"{t('login.testimonialQuote')}"</p>
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 bg-brand-400/30 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                  {HERO_TESTIMONIALS[0].name.charAt(0)}
+                  {t('login.testimonialName').charAt(0)}
                 </div>
                 <div>
-                  <p className="text-white text-xs font-semibold">{HERO_TESTIMONIALS[0].name}</p>
-                  <p className="text-white/40 text-[10px]">{HERO_TESTIMONIALS[0].role}</p>
+                  <p className="text-white text-xs font-semibold">{t('login.testimonialName')}</p>
+                  <p className="text-white/40 text-[10px]">{t('login.testimonialRole')}</p>
                 </div>
               </div>
             </div>

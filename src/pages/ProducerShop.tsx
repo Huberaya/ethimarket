@@ -10,6 +10,7 @@ import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import { LeafletMap } from '../components/LeafletMap';
 import { supabase, type Producer, type Product } from '../lib/supabase';
+import { useI18n } from '../lib/i18n';
 import ScoreBadge from '../components/ScoreBadge';
 
 function Skeleton() {
@@ -37,6 +38,7 @@ function Skeleton() {
 }
 
 export default function ProducerShop() {
+  const { t } = useI18n();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -121,8 +123,8 @@ export default function ProducerShop() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">🏪</div>
-          <h2 className="text-xl font-bold text-gray-900 mb-3">Boutique introuvable</h2>
-          <Link to="/catalogue" className="btn-primary px-6 py-2.5">Retour au catalogue</Link>
+          <h2 className="text-xl font-bold text-gray-900 mb-3">{t('shop.notFound')}</h2>
+          <Link to="/catalogue" className="btn-primary px-6 py-2.5">{t('shop.backToCatalogue')}</Link>
         </div>
       </div>
     );
@@ -140,7 +142,7 @@ export default function ProducerShop() {
           <div className="w-20 h-20 bg-amber-100 text-amber-700 rounded-3xl flex items-center justify-center mx-auto mb-6 text-3xl font-bold shadow-sm">
             ⏳
           </div>
-          <h1 className="text-2xl font-black text-gray-900 mb-3">Boutique en cours d'accréditation</h1>
+          <h1 className="text-2xl font-black text-gray-900 mb-3">{t('shop.accrediting')}</h1>
           <p className="text-gray-600 text-sm mb-6 leading-relaxed">
             Le dossier de <span className="font-bold text-gray-900">{producer.name}</span> est actuellement en cours d'audit et de vérification par l'équipe Bureau Veritas & EthiMarket. Ses produits seront visibles dès validation officielle de son dossier.
           </p>
@@ -338,8 +340,8 @@ export default function ProducerShop() {
               ) : (
                 <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-2xl border border-gray-100">
                   <Package className="w-12 h-12 text-gray-200 mb-4" />
-                  <h3 className="font-bold text-gray-700 mb-2">Aucun produit publié</h3>
-                  <p className="text-gray-400 text-sm max-w-xs">Ce producteur n'a pas encore ajouté de produits à son catalogue.</p>
+                  <h3 className="font-bold text-gray-700 mb-2">{t('shop.noProducts')}</h3>
+                  <p className="text-gray-400 text-sm max-w-xs">{t('shop.noProductsDesc')}</p>
                 </div>
               )}
             </div>

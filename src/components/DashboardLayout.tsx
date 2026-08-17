@@ -56,7 +56,7 @@ function VerificationBadge({ producerId }: { producerId: string }) {
   }, [producerId]);
 
   if (vStatus === 'approved') {
-    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-100 text-brand-700">✓ Validé</span>;
+    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-100 text-brand-700">✓</span>;
   }
   if (vStatus === 'submitted') {
     return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Soumis</span>;
@@ -168,7 +168,7 @@ export default function DashboardLayout() {
             </div>
             <div className="min-w-0">
               <p className="font-bold text-gray-900 text-sm truncate">{displayName}</p>
-              <p className="text-xs text-gray-500 truncate">{producer?.name ?? 'Boutique non configurée'}</p>
+              <p className="text-xs text-gray-500 truncate">{producer?.name ?? '—'}</p>
             </div>
           </div>
         </div>

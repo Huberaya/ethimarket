@@ -18,6 +18,9 @@ export type HomeContent = {
   testimonialName: string;
   testimonialRole: string;
   popular: string[];
+  trustFeatures: { title: string; desc: string; tag: string }[];
+  seoTitle: string;
+  seoDesc: string;
 };
 
 const fr: HomeContent = {
@@ -66,6 +69,14 @@ const fr: HomeContent = {
   testimonialName: 'Marie Valentin',
   testimonialRole: 'Directrice achats, Bio Planet (500 magasins)',
   popular: ["Huile d'argan", 'Café éthiopien', 'Safran', 'Vanille', 'Quinoa', 'Spiruline'],
+  trustFeatures: [
+    { title: 'Certifications vérifiées', desc: 'Chaque producteur est audité physiquement. Bio, Fairtrade, Ecocert — tout est contrôlé.', tag: 'Sécurité' },
+    { title: 'Prix directs producteurs', desc: "Éliminez les 3 à 5 intermédiaires habituels. Économisez jusqu'à 40% sur vos achats.", tag: 'Économies' },
+    { title: 'Sourcing direct 4 continents', desc: 'Producteurs en Afrique, Asie, Amérique latine et Europe. Coordonnées GPS et lots documentés.', tag: 'Global' },
+    { title: 'Commerce équitable garanti', desc: 'Charte éthique contraignante. Rémunération juste des producteurs, conditions de travail dignes.', tag: 'Éthique' },
+  ],
+  seoTitle: 'EthiMarket - Marketplace B2B Équitable & Traçable Afrique-Europe',
+  seoDesc: 'Achetez en direct auprès de coopératives vérifiées. Café, cacao, épices, huiles avec traçabilité documentée, certifications contrôlées et score éthique transparent.',
 };
 
 const en: HomeContent = {
@@ -114,6 +125,14 @@ const en: HomeContent = {
   testimonialName: 'Marie Valentin',
   testimonialRole: 'Head of Purchasing, Bio Planet (500 stores)',
   popular: ['Argan oil', 'Ethiopian coffee', 'Saffron', 'Vanilla', 'Quinoa', 'Spirulina'],
+  trustFeatures: [
+    { title: 'Verified certifications', desc: 'Every producer is physically audited. Organic, Fairtrade, Ecocert — everything is checked.', tag: 'Security' },
+    { title: 'Direct producer prices', desc: 'Eliminate the usual 3 to 5 middlemen. Save up to 40% on your purchases.', tag: 'Savings' },
+    { title: 'Direct sourcing 4 continents', desc: 'Producers in Africa, Asia, Latin America and Europe. GPS coordinates and documented batches.', tag: 'Global' },
+    { title: 'Guaranteed fair trade', desc: 'Binding ethical charter. Fair pay for producers, decent working conditions.', tag: 'Ethics' },
+  ],
+  seoTitle: 'EthiMarket - Fair & Traceable B2B Marketplace Africa-Europe',
+  seoDesc: 'Buy directly from verified cooperatives. Coffee, cocoa, spices, oils with documented traceability, checked certifications and a transparent ethical score.',
 };
 
 const es: HomeContent = {
@@ -162,6 +181,14 @@ const es: HomeContent = {
   testimonialName: 'Marie Valentin',
   testimonialRole: 'Directora de compras, Bio Planet (500 tiendas)',
   popular: ['Aceite de argán', 'Café etíope', 'Azafrán', 'Vainilla', 'Quinua', 'Espirulina'],
+  trustFeatures: [
+    { title: 'Certificaciones verificadas', desc: 'Cada productor es auditado físicamente. Orgánico, Fairtrade, Ecocert — todo está controlado.', tag: 'Seguridad' },
+    { title: 'Precios directos de productores', desc: 'Elimine los 3 a 5 intermediarios habituales. Ahorre hasta un 40% en sus compras.', tag: 'Ahorros' },
+    { title: 'Sourcing directo 4 continentes', desc: 'Productores en África, Asia, América Latina y Europa. Coordenadas GPS y lotes documentados.', tag: 'Global' },
+    { title: 'Comercio justo garantizado', desc: 'Carta ética vinculante. Remuneración justa de los productores, condiciones de trabajo dignas.', tag: 'Ética' },
+  ],
+  seoTitle: 'EthiMarket - Marketplace B2B Justo y Trazable África-Europa',
+  seoDesc: 'Compre directamente de cooperativas verificadas. Café, cacao, especias, aceites con trazabilidad documentada, certificaciones controladas y puntuación ética transparente.',
 };
 
 const pt: HomeContent = {
@@ -210,6 +237,14 @@ const pt: HomeContent = {
   testimonialName: 'Marie Valentin',
   testimonialRole: 'Diretora de compras, Bio Planet (500 lojas)',
   popular: ['Óleo de argan', 'Café etíope', 'Açafrão', 'Baunilha', 'Quinoa', 'Espirulina'],
+  trustFeatures: [
+    { title: 'Certificações verificadas', desc: 'Cada produtor é auditado fisicamente. Orgânico, Fairtrade, Ecocert — tudo é controlado.', tag: 'Segurança' },
+    { title: 'Preços diretos dos produtores', desc: 'Elimine os 3 a 5 intermediários habituais. Economize até 40% nas suas compras.', tag: 'Economia' },
+    { title: 'Sourcing direto 4 continentes', desc: 'Produtores na África, Ásia, América Latina e Europa. Coordenadas GPS e lotes documentados.', tag: 'Global' },
+    { title: 'Comércio justo garantido', desc: 'Carta ética vinculante. Remuneração justa dos produtores, condições de trabalho dignas.', tag: 'Ética' },
+  ],
+  seoTitle: 'EthiMarket - Marketplace B2B Justo e Rastreável África-Europa',
+  seoDesc: 'Compre diretamente de cooperativas verificadas. Café, cacau, especiarias, óleos com rastreabilidade documentada, certificações controladas e pontuação ética transparente.',
 };
 
 const ar: HomeContent = {
@@ -258,6 +293,14 @@ const ar: HomeContent = {
   testimonialName: 'ماري فالنتين',
   testimonialRole: 'مديرة المشتريات، Bio Planet (500 متجر)',
   popular: ['زيت الأركان', 'قهوة إثيوبية', 'زعفران', 'فانيليا', 'كينوا', 'سبيرولينا'],
+  trustFeatures: [
+    { title: 'شهادات موثّقة', desc: 'كل منتج يُدقق ميدانياً. عضوي، تجارة عادلة، Ecocert — كل شيء مراقب.', tag: 'الأمان' },
+    { title: 'أسعار مباشرة من المنتجين', desc: 'تخلص من 3 إلى 5 وسطاء معتادين. وفّر حتى 40% على مشترياتك.', tag: 'توفير' },
+    { title: 'توريد مباشر من 4 قارات', desc: 'منتجون في إفريقيا وآسيا وأمريكا اللاتينية وأوروبا. إحداثيات GPS ودفعات موثقة.', tag: 'عالمي' },
+    { title: 'تجارة عادلة مضمونة', desc: 'ميثاق أخلاقي ملزم. أجر عادل للمنتجين، ظروف عمل كريمة.', tag: 'أخلاقيات' },
+  ],
+  seoTitle: 'EthiMarket - سوق B2B عادلة وقابلة للتتبع إفريقيا-أوروبا',
+  seoDesc: 'اشترِ مباشرة من تعاونيات موثّقة. قهوة، كاكاو، توابل، زيوت مع تتبع موثق وشهادات مراقبة ونقاط أخلاقية شفافة.',
 };
 
 export const HOME_CONTENT: PerLocale<HomeContent> = { fr, en, es, pt, ar };

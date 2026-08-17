@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import {
   FileText, Loader2, Send, CheckCircle2, XCircle, Ban, Clock, Inbox,
 } from 'lucide-react';
+import { useI18n } from '../../lib/i18n';
 import { useAuth } from '../../lib/auth';
 import {
   getBuyerQuotes, getProducerQuotes, respondToQuote, declineQuoteAsProducer,
@@ -18,6 +19,7 @@ import {
 } from '../../lib/quoteService';
 
 export default function QuotesPage() {
+  const { t } = useI18n();
   const { user, profile, producer } = useAuth();
   const isProducer = profile?.role === 'producer' || !!producer;
   const [quotes, setQuotes] = useState<QuoteRequest[]>([]);
@@ -42,7 +44,7 @@ export default function QuotesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-black text-gray-900">Devis & commandes</h1>
+        <h1 className="text-2xl font-black text-gray-900">{t('q.title')}</h1>
         <p className="text-sm text-gray-500 mt-1">
           {isProducer
             ? 'Répondez aux demandes des acheteurs : votre prix, votre délai, la validité de votre offre.'
@@ -52,7 +54,7 @@ export default function QuotesPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatTile emoji="📤" value={stats.awaitingResponse} label={isProducer ? 'à traiter' : 'en attente de réponse'} highlight={isProducer && stats.awaitingResponse > 0} />
+        <StatTile emoji="📤" value={stats.awaitingResponse} label={isProducer ? t('q.toProcess') : t('q.awaiting')} highlight={isProducer && stats.awaitingResponse > 0} />
         <StatTile emoji="📩" value={stats.offersToDecide} label={isProducer ? 'offres envoyées' : 'offres à décider'} highlight={!isProducer && stats.offersToDecide > 0} />
         <StatTile emoji="✅" value={stats.accepted} label={`acceptée${stats.accepted > 1 ? 's' : ''} · taux ${stats.acceptanceRatePct}%`} />
         <StatTile emoji="💰" value={`${stats.totalAcceptedValue.toLocaleString('fr-FR')} €`} label="valeur acceptée" />
@@ -64,10 +66,10 @@ export default function QuotesPage() {
           <h3 className="font-bold text-gray-900 mb-2">{isProducer ? 'Aucune demande reçue' : 'Aucune demande de devis'}</h3>
           <p className="text-gray-500 text-sm max-w-sm mx-auto">
             {isProducer
-              ? 'Les demandes de devis des acheteurs apparaîtront ici.'
+              ? t('q.emptyProducer')
               : 'Depuis une fiche produit, cliquez « Commander » pour envoyer votre première demande.'}
           </p>
-          {!isProducer && <Link to="/catalogue" className="inline-block mt-4 text-sm font-bold text-brand-700 hover:underline">Parcourir le catalogue →</Link>}
+          {!isProducer && <Link to="/catalogue" className="inline-block mt-4 text-sm font-bold text-brand-700 hover:underline">{t('q.browseCatalogue')}</Link>}
         </div>
       )}
 
@@ -105,6 +107,7 @@ function StatTile({ emoji, value, label, highlight }: { emoji: string; value: nu
 function QuoteCard({ quote: q, isProducer, onRespond, onAction }: {
   quote: QuoteRequest; isProducer: boolean; onRespond: () => void; onAction: () => void;
 }) {
+  const { t } = useI18n();
   const meta = QUOTE_STATUS_META[q.status];
   const [busy, setBusy] = useState(false);
   const act = async (fn: () => Promise<string | null>) => {
@@ -156,7 +159,7 @@ function QuoteCard({ quote: q, isProducer, onRespond, onAction }: {
               <p className="text-[11px] text-gray-500">prix indicatif à la demande</p>
             </>
           ) : (
-            <p className="text-sm font-bold text-gray-400">Sur devis</p>
+            <p className="text-sm font-bold text-gray-400">{t('q.onQuote')}</p>
           )}
         </div>
       </div>
