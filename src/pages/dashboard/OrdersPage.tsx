@@ -17,7 +17,7 @@ import { useAuth } from '../../lib/auth';
 import {
   getBuyerOrders, getProducerOrders, confirmOrder, shipOrder, markDelivered,
   cancelOrder, disputeOrder, computeOrderStats, B2BOrder, ORDER_STATUS_META,
-  PAYMENT_STATUS_META, markOrderPaid, markOrderInvoiced,
+  PAYMENT_STATUS_META, markOrderPaid, markOrderInvoiced, ONLINE_PAYMENT_ENABLED,
 } from '../../lib/orderService';
 import { printPurchaseOrder } from '../../lib/purchaseOrderGenerator';
 import { addPurchase } from '../../lib/buyerWorkspace';
@@ -236,7 +236,7 @@ function OrderCard({ order: o, isProducer, onAction, buyerId }: {
           </button>
         )}
 
-        {!isProducer && o.payment_method === 'stripe' && o.payment_status !== 'paid' && ['processing', 'shipped', 'delivered'].includes(o.status) && (
+        {!isProducer && ONLINE_PAYMENT_ENABLED && o.payment_status !== 'paid' && o.payment_status !== 'refunded' && ['processing', 'shipped', 'delivered'].includes(o.status) && (
           <button onClick={async () => {
             setBusy(true);
             try {

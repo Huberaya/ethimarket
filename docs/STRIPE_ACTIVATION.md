@@ -1,10 +1,19 @@
 # Activer Stripe Connect sur EthiMarket — guide d'activation
 
-> État actuel : le schéma est **Stripe-ready** (colonnes `payment_method`,
-> `payment_status`, `payment_reference`, `paid_at` sur `orders`) et le
-> circuit virement fonctionne (suivi non payée → facturée → payée).
-> Ce guide décrit les étapes pour activer le paiement en ligne quand
-> le volume le justifiera.
+> ✅ **ACTIVÉ EN MODE TEST** (2026-08-17) : Edge Functions déployées,
+> secrets posés (STRIPE_SECRET_KEY test, STRIPE_WEBHOOK_SECRET,
+> SITE_URL), webhook créé (we_1U5X9FAGDn4bArVweBOQoUIV,
+> checkout.session.completed). Circuit vérifié de bout en bout :
+> session Checkout → carte test 4242 → webhook signé → commande
+> 'paid' + PaymentIntent + paid_at automatique.
+>
+> ## Passage en mode LIVE (quand le KYC Stripe sera finalisé)
+> 1. Dashboard Stripe → basculer en mode live → copier `sk_live_...`
+> 2. Mettre à jour le secret : API management ou
+>    `supabase secrets set STRIPE_SECRET_KEY=sk_live_...`
+> 3. Recréer le webhook en mode live (même URL) et mettre à jour
+>    `STRIPE_WEBHOOK_SECRET` avec le nouveau `whsec_...`
+> 4. Aucun changement de code.
 
 ## Prérequis (côté fondateur — bloquants)
 

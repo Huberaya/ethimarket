@@ -73,6 +73,14 @@ export const ORDER_STATUS_META: Record<B2BOrderStatus, { labelKey: string; emoji
 /** Commission plateforme (5 % — alignée sur calculations.ts commissionRate). */
 export const PLATFORM_COMMISSION_RATE = 0.05;
 
+/**
+ * Paiement en ligne Stripe actif sur la plateforme.
+ * Les Edge Functions stripe-checkout/stripe-webhook sont déployées
+ * et les secrets posés (mode test Stripe : cartes 4242…).
+ * Le virement reste toujours proposé en parallèle.
+ */
+export const ONLINE_PAYMENT_ENABLED = true;
+
 export const PAYMENT_STATUS_META: Record<PaymentStatus, { labelKey: string; emoji: string; cls: string }> = {
   unpaid:   { labelKey: 'pay.unpaid',   emoji: '⏳', cls: 'bg-gray-100 text-gray-600 border-gray-200' },
   invoiced: { labelKey: 'pay.invoiced', emoji: '🧾', cls: 'bg-blue-100 text-blue-800 border-blue-200' },
