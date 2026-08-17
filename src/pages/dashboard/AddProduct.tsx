@@ -9,6 +9,7 @@ import { cleanPayload, toFloatOrNull, toIntOrNull, toStringOrNull, toDateOrNull 
 import { useI18n } from '../../lib/i18n';
 import ImpactAssistant from '../../components/dashboard/ImpactAssistant';
 import { estimateFootprints } from '../../lib/impactEstimator';
+import { buildProductTranslations } from '../../lib/i18n/productAutoTranslate';
 
 const CERT_OPTIONS = ['Bio', 'Fairtrade', 'Ecocert', 'Rainforest Alliance', 'GlobalGAP'];
 const CURRENCIES = ['EUR', 'USD', 'MAD', 'XOF'];
@@ -409,6 +410,9 @@ export default function AddProduct() {
         is_cooperative: form.is_cooperative,
         packaging_types: form.packaging_types.length > 0 ? form.packaging_types : [],
         keywords: [form.product_type, form.name].filter(Boolean).map(k => String(k).toLowerCase()),
+        // Traduction automatique du nom (dictionnaire local, zéro API).
+        // Couverture < 50% → pas de traduction (fallback fr propre).
+        translations: buildProductTranslations(form.name),
       };
 
       const payloadToInsert: Record<string, unknown> = cleanPayload(rawProductData);

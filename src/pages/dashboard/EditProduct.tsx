@@ -7,6 +7,7 @@ import ProductClaimsEditor, { DraftClaim, saveDraftClaims } from '../../componen
 import { useI18n } from '../../lib/i18n';
 import ImpactAssistant from '../../components/dashboard/ImpactAssistant';
 import { estimateFootprints } from '../../lib/impactEstimator';
+import { buildProductTranslations } from '../../lib/i18n/productAutoTranslate';
 
 const COUNTRIES = [
   'France', 'Belgique', 'Suisse', 'Canada', 'Maroc', 'Éthiopie', 'Iran', 'Madagascar',
@@ -189,6 +190,17 @@ export default function EditProduct() {
       stock_unit: form.stock_unit,
       country: form.country,
       country_flag: COUNTRY_FLAGS[form.country] ?? '🌍',
+      // Nom modifié → retraduit automatiquement, en préservant les champs
+      // déjà traduits manuellement (description…) langue par langue.
+      ...(product && form.name !== product.name ? (() => {
+        const auto = buildProductTranslations(form.name);
+        const existing = (product.translations ?? {}) as Record<string, Record<string, string>>;
+        const merged: Record<string, Record<string, string>> = {};
+        for (const loc of ['en', 'es', 'pt', 'ar'] as const) {
+          merged[loc] = { ...existing[loc], ...(auto[loc] ?? {}) };
+        }
+        return { translations: merged };
+      })() : {}),
       region: form.region || null,
       certifications: form.certifications,
       status: form.status,
