@@ -711,6 +711,7 @@ const en: Record<string, string> = {
   'pay.refunded': 'Refunded',
   'pay.markInvoiced': 'Invoice sent',
   'pay.markPaid': 'Payment received',
+  'pay.payOnline': 'Pay online',
 };
 
 export default en;

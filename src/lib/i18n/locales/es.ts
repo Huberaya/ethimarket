@@ -711,6 +711,7 @@ const es: Record<string, string> = {
   'pay.refunded': 'Reembolsada',
   'pay.markInvoiced': 'Factura emitida',
   'pay.markPaid': 'Pago recibido',
+  'pay.payOnline': 'Pagar en línea',
 };
 
 export default es;

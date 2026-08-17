@@ -711,6 +711,7 @@ const ar: Record<string, string> = {
   'pay.refunded': 'مستردة',
   'pay.markInvoiced': 'صدرت الفاتورة',
   'pay.markPaid': 'استُلم التحويل',
+  'pay.payOnline': 'الدفع عبر الإنترنت',
 };
 
 export default ar;

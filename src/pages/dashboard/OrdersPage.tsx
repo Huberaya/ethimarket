@@ -236,6 +236,26 @@ function OrderCard({ order: o, isProducer, onAction, buyerId }: {
           </button>
         )}
 
+        {!isProducer && o.payment_method === 'stripe' && o.payment_status !== 'paid' && ['processing', 'shipped', 'delivered'].includes(o.status) && (
+          <button onClick={async () => {
+            setBusy(true);
+            try {
+              const { data: sess } = await supabase.auth.getSession();
+              const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-checkout`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sess.session?.access_token ?? ''}` },
+                body: JSON.stringify({ orderId: o.id }),
+              });
+              const data = await resp.json();
+              if (data.url) { window.location.href = data.url; return; }
+              alert(data.error ?? 'Paiement indisponible');
+            } catch { alert('Paiement indisponible'); }
+            setBusy(false);
+          }} disabled={busy}
+            className="px-4 py-2 text-xs font-black rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer disabled:opacity-60">
+            💳 {t('pay.payOnline')}
+          </button>
+        )}
         {!isProducer && o.status === 'new' && (
           <button onClick={cancelWithReason} disabled={busy}
             className="px-4 py-2 text-xs font-bold rounded-xl text-gray-500 hover:text-red-600 cursor-pointer">

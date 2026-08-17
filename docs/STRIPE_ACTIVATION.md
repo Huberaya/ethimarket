@@ -30,14 +30,33 @@
 - Clés à stocker dans **Supabase Vault** (comme `resend_api_key`) :
   `stripe_secret_key`, `stripe_webhook_secret`.
 
-## Ce qu'il restera à coder (≈ 1 chantier)
+## Ce qui est DÉJÀ codé (ce repo)
 
-- [ ] Edge Function `create-checkout` + `stripe-webhook` (Deno).
-- [ ] Bouton « Payer en ligne » côté acheteur sur les commandes
-      `processing` (visible si `payment_method='stripe'`).
-- [ ] Onboarding Express des producteurs (lien généré depuis leur dashboard).
-- [ ] Page de retour succès/annulation.
-- [ ] Tests + bascule progressive (le virement reste disponible).
+- [x] Edge Function `supabase/functions/stripe-checkout` (session
+      Checkout via API REST, vérif. propriétaire/statuts, trace la
+      référence de session, 503 propre sans clé).
+- [x] Edge Function `supabase/functions/stripe-webhook`
+      (signature HMAC vérifiée manuellement, anti-rejeu 5 min,
+      `checkout.session.completed` → payment_status='paid').
+- [x] Bouton « Payer en ligne » (OrdersPage, visible seulement si
+      `payment_method='stripe'` et non payée) + URLs de retour
+      succès/annulation sur /dashboard/commandes.
+
+## Il ne reste à faire QUE (une fois le compte Stripe créé)
+
+```bash
+supabase secrets set STRIPE_SECRET_KEY=sk_live_...
+supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...
+supabase functions deploy stripe-checkout
+supabase functions deploy stripe-webhook --no-verify-jwt
+```
+puis déclarer l'endpoint webhook dans le Dashboard Stripe
+(événement `checkout.session.completed`) et passer les commandes
+concernées en `payment_method='stripe'`.
+
+- [ ] (plus tard) Onboarding Connect Express des producteurs pour
+      le versement direct — le circuit actuel encaisse sur le compte
+      plateforme.
 
 ## Ce qu'il ne faudra PAS refaire
 
