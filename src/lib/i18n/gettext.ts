@@ -9,6 +9,8 @@ import type { Locale } from './index';
 type Dict = Record<string, string>;
 
 const en: Dict = {
+  'Référence du virement (optionnel) :': 'Bank transfer reference (optional):',
+
   // --- Circuit de commande B2B ---
   'Le règlement se fait par virement entre l\'acheteur et le producteur, à réception de facture. EthiMarket n\'encaisse aucun paiement.': 'Payment is made by bank transfer between the buyer and the producer, upon receipt of invoice. EthiMarket does not collect any payment.',
   'Motif de l\'annulation ?': 'Reason for cancellation?',
@@ -315,6 +317,8 @@ const en: Dict = {
 };
 
 const es: Dict = {
+  'Référence du virement (optionnel) :': 'Referencia de la transferencia (opcional):',
+
   // --- Circuit de commande B2B ---
   'Le règlement se fait par virement entre l\'acheteur et le producteur, à réception de facture. EthiMarket n\'encaisse aucun paiement.': 'El pago se realiza por transferencia entre el comprador y el productor, a la recepción de la factura. EthiMarket no cobra ningún pago.',
   'Motif de l\'annulation ?': '¿Motivo de la anulación?',
@@ -608,6 +612,8 @@ const es: Dict = {
 };
 
 const pt: Dict = {
+  'Référence du virement (optionnel) :': 'Referência da transferência (opcional):',
+
   // --- Circuit de commande B2B ---
   'Le règlement se fait par virement entre l\'acheteur et le producteur, à réception de facture. EthiMarket n\'encaisse aucun paiement.': 'O pagamento é feito por transferência entre o comprador e o produtor, após receção da fatura. A EthiMarket não recebe qualquer pagamento.',
   'Motif de l\'annulation ?': 'Motivo da anulação?',
@@ -901,6 +907,8 @@ const pt: Dict = {
 };
 
 const ar: Dict = {
+  'Référence du virement (optionnel) :': 'مرجع التحويل البنكي (اختياري):',
+
   // --- Circuit de commande B2B ---
   'Le règlement se fait par virement entre l\'acheteur et le producteur, à réception de facture. EthiMarket n\'encaisse aucun paiement.': 'يتم الدفع بالتحويل البنكي بين المشتري والمنتِج عند استلام الفاتورة. لا تحصّل EthiMarket أي مدفوعات.',
   'Motif de l\'annulation ?': 'ما سبب الإلغاء؟',

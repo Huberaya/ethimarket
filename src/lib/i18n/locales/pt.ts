@@ -703,6 +703,14 @@ const pt: Record<string, string> = {
   'privacy.confirmPrompt': 'Ação irreversível. Escreva SUPPRIMER para confirmar.',
   'privacy.confirmBtn': 'Eliminar definitivamente',
   'privacy.note': 'Em conformidade com o RGPD, pode exercer os seus direitos de acesso, retificação e apagamento a qualquer momento.',
+
+  // --- Statut de paiement ---
+  'pay.unpaid': 'Não paga',
+  'pay.invoiced': 'Faturada',
+  'pay.paid': 'Paga',
+  'pay.refunded': 'Reembolsada',
+  'pay.markInvoiced': 'Fatura emitida',
+  'pay.markPaid': 'Pagamento recebido',
 };
 
 export default pt;

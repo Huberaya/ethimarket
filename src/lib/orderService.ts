@@ -20,6 +20,8 @@ export type B2BOrderStatus =
   | 'new' | 'processing' | 'shipped' | 'delivered'
   | 'disputed' | 'cancelled' | 'refunded';
 
+export type PaymentStatus = 'unpaid' | 'invoiced' | 'paid' | 'refunded';
+
 export interface B2BOrder {
   id: string;
   order_number: string;
@@ -42,6 +44,10 @@ export interface B2BOrder {
   expected_delivery_days: string | null;
   tracking_number: string | null;
   notes: string | null;
+  payment_method?: 'bank_transfer' | 'stripe';
+  payment_status?: PaymentStatus;
+  payment_reference?: string | null;
+  paid_at?: string | null;
   confirmed_at?: string | null;
   shipped_at?: string | null;
   delivered_at?: string | null;
@@ -66,6 +72,29 @@ export const ORDER_STATUS_META: Record<B2BOrderStatus, { labelKey: string; emoji
 
 /** Commission plateforme (5 % — alignée sur calculations.ts commissionRate). */
 export const PLATFORM_COMMISSION_RATE = 0.05;
+
+export const PAYMENT_STATUS_META: Record<PaymentStatus, { labelKey: string; emoji: string; cls: string }> = {
+  unpaid:   { labelKey: 'pay.unpaid',   emoji: '⏳', cls: 'bg-gray-100 text-gray-600 border-gray-200' },
+  invoiced: { labelKey: 'pay.invoiced', emoji: '🧾', cls: 'bg-blue-100 text-blue-800 border-blue-200' },
+  paid:     { labelKey: 'pay.paid',     emoji: '💶', cls: 'bg-emerald-100 text-emerald-800 border-emerald-200' },
+  refunded: { labelKey: 'pay.refunded', emoji: '↩️', cls: 'bg-orange-100 text-orange-700 border-orange-200' },
+};
+
+/** Producteur : marque le virement reçu (référence facultative). */
+export async function markOrderPaid(orderId: string, reference?: string): Promise<string | null> {
+  const { error } = await supabase.from('orders').update({
+    payment_status: 'paid',
+    payment_reference: reference?.trim() || null,
+  }).eq('id', orderId).in('payment_status', ['unpaid', 'invoiced']);
+  return error?.message ?? null;
+}
+
+/** Producteur : indique que la facture a été émise. */
+export async function markOrderInvoiced(orderId: string): Promise<string | null> {
+  const { error } = await supabase.from('orders').update({ payment_status: 'invoiced' })
+    .eq('id', orderId).eq('payment_status', 'unpaid');
+  return error?.message ?? null;
+}
 
 // -------------------- Fonctions PURES (testables) --------------------
 

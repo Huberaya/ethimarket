@@ -703,6 +703,14 @@ const en: Record<string, string> = {
   'privacy.confirmPrompt': 'Irreversible action. Type SUPPRIMER to confirm.',
   'privacy.confirmBtn': 'Delete permanently',
   'privacy.note': 'In accordance with GDPR, you can exercise your rights of access, rectification and erasure at any time.',
+
+  // --- Statut de paiement ---
+  'pay.unpaid': 'Unpaid',
+  'pay.invoiced': 'Invoiced',
+  'pay.paid': 'Paid',
+  'pay.refunded': 'Refunded',
+  'pay.markInvoiced': 'Invoice sent',
+  'pay.markPaid': 'Payment received',
 };
 
 export default en;

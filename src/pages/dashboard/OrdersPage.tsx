@@ -17,6 +17,7 @@ import { useAuth } from '../../lib/auth';
 import {
   getBuyerOrders, getProducerOrders, confirmOrder, shipOrder, markDelivered,
   cancelOrder, disputeOrder, computeOrderStats, B2BOrder, ORDER_STATUS_META,
+  PAYMENT_STATUS_META, markOrderPaid, markOrderInvoiced,
 } from '../../lib/orderService';
 import { printPurchaseOrder } from '../../lib/purchaseOrderGenerator';
 import { addPurchase } from '../../lib/buyerWorkspace';
@@ -163,6 +164,11 @@ function OrderCard({ order: o, isProducer, onAction, buyerId }: {
               : <span className="font-black text-gray-900">{o.product_name}</span>}
             <span className="text-[11px] font-bold text-gray-400">{o.order_number}</span>
             <span className={`text-[11px] font-black px-2.5 py-0.5 rounded-full border ${meta.cls}`}>{meta.emoji} {t(meta.labelKey)}</span>
+            {o.payment_status && (
+              <span className={`text-[11px] font-black px-2.5 py-0.5 rounded-full border ${PAYMENT_STATUS_META[o.payment_status].cls}`}>
+                {PAYMENT_STATUS_META[o.payment_status].emoji} {t(PAYMENT_STATUS_META[o.payment_status].labelKey)}
+              </span>
+            )}
           </div>
           <p className="text-xs text-gray-500 mt-1">
             {o.quantity.toLocaleString('fr-FR')} {o.unit}
@@ -206,6 +212,20 @@ function OrderCard({ order: o, isProducer, onAction, buyerId }: {
             <button onClick={cancelWithReason} disabled={busy}
               className="px-4 py-2 text-xs font-bold rounded-xl text-gray-500 hover:text-red-600 cursor-pointer">
               <Ban className="w-3.5 h-3.5 inline mr-1" /> {t('ord.decline')}
+            </button>
+          </>
+        )}
+        {isProducer && (o.payment_status === 'unpaid' || o.payment_status === 'invoiced') && ['processing', 'shipped', 'delivered'].includes(o.status) && (
+          <>
+            {o.payment_status === 'unpaid' && (
+              <button onClick={() => act(() => markOrderInvoiced(o.id))} disabled={busy}
+                className="px-4 py-2 text-xs font-bold rounded-xl border border-blue-200 text-blue-700 hover:bg-blue-50 cursor-pointer">
+                🧾 {t('pay.markInvoiced')}
+              </button>
+            )}
+            <button onClick={() => { const ref = prompt(tx('Référence du virement (optionnel) :')); if (ref !== null) void act(() => markOrderPaid(o.id, ref)); }} disabled={busy}
+              className="px-4 py-2 text-xs font-bold rounded-xl border border-emerald-200 text-emerald-700 hover:bg-emerald-50 cursor-pointer">
+              💶 {t('pay.markPaid')}
             </button>
           </>
         )}

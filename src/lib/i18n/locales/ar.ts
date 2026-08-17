@@ -703,6 +703,14 @@ const ar: Record<string, string> = {
   'privacy.confirmPrompt': 'إجراء لا رجعة فيه. اكتب SUPPRIMER للتأكيد.',
   'privacy.confirmBtn': 'حذف نهائيًا',
   'privacy.note': 'وفقًا للائحة العامة لحماية البيانات، يمكنك ممارسة حقوقك في الوصول والتصحيح والمحو في أي وقت.',
+
+  // --- Statut de paiement ---
+  'pay.unpaid': 'غير مدفوعة',
+  'pay.invoiced': 'مفوترة',
+  'pay.paid': 'مدفوعة',
+  'pay.refunded': 'مستردة',
+  'pay.markInvoiced': 'صدرت الفاتورة',
+  'pay.markPaid': 'استُلم التحويل',
 };
 
 export default ar;
