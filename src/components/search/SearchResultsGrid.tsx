@@ -5,6 +5,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, Scale, Leaf, ArrowUpRight, Sparkles } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
+import { productName } from '../../lib/i18n/dbLocalized';
 import { SearchResultItem } from '../../lib/productSearchEngine';
 import { Product } from '../../lib/supabase';
 
@@ -21,7 +22,7 @@ export const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
   onToggleCompare,
   onSearchAlternative
 }) => {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   if (results.length === 0) return null;
 
   return (
@@ -45,7 +46,7 @@ export const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
               {prod.image_url ? (
                 <img
                   src={prod.image_url}
-                  alt={prod.name}
+                  alt={productName(prod, locale)}
                   className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                 />
               ) : (
@@ -102,7 +103,7 @@ export const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
               {/* Title */}
               <Link to={`/produits/${prod.slug}`} className="group-hover:text-emerald-700 transition">
                 <h3 className="font-bold text-neutral-900 text-base leading-snug line-clamp-2 mb-2">
-                  {prod.name}
+                  {productName(prod, locale)}
                 </h3>
               </Link>
 

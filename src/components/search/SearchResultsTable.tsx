@@ -5,6 +5,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, Scale, ArrowUpRight, Leaf } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
+import { productName } from '../../lib/i18n/dbLocalized';
 import { SearchResultItem } from '../../lib/productSearchEngine';
 import { Product } from '../../lib/supabase';
 
@@ -19,7 +20,7 @@ export const SearchResultsTable: React.FC<SearchResultsTableProps> = ({
   selectedComparisonIds,
   onToggleCompare
 }) => {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   if (results.length === 0) return null;
 
   return (
@@ -71,7 +72,7 @@ export const SearchResultsTable: React.FC<SearchResultsTableProps> = ({
                     {prod.image_url ? (
                       <img
                         src={prod.image_url}
-                        alt={prod.name}
+                        alt={productName(prod, locale)}
                         className="w-10 h-10 rounded-lg object-cover bg-neutral-100 shrink-0 border border-neutral-200"
                       />
                     ) : (
@@ -84,7 +85,7 @@ export const SearchResultsTable: React.FC<SearchResultsTableProps> = ({
                         to={`/produits/${prod.slug}`}
                         className="font-bold text-neutral-900 hover:text-emerald-700 transition"
                       >
-                        {prod.name}
+                        {productName(prod, locale)}
                       </Link>
                       <div className="text-xs text-neutral-500">
                         {prod.producers?.name || t('cat.certifiedProducer')}

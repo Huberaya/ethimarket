@@ -1,0 +1,80 @@
+{
+  "agave-azul-jalisco": {
+    "en": { "description": "Jalisco agave growers' cooperative, blue agave syrup extracted at low temperature." },
+    "es": { "description": "Cooperativa de agaveros de Jalisco, sirope de agave azul extraído a baja temperatura." },
+    "pt": { "description": "Cooperativa de produtores de agave de Jalisco, xarope de agave azul extraído a baixa temperatura." },
+    "ar": { "description": "تعاونية مزارعي الأغاف في خاليسكو، شراب أغاف أزرق مستخلص على حرارة منخفضة." }
+  },
+  "argan-atlas": {
+    "en": { "description": "Women's cooperative specialising in pure argan oil from Morocco." },
+    "es": { "description": "Cooperativa femenina especializada en aceite de argán puro de Marruecos." },
+    "pt": { "description": "Cooperativa feminina especializada em óleo de argão puro de Marrocos." },
+    "ar": { "description": "تعاونية نسائية متخصصة في زيت الأركان النقي من المغرب." }
+  },
+  "cacao-ghana": {
+    "en": { "description": "Cocoa bean cooperative from central Ghana." },
+    "es": { "description": "Cooperativa de habas de cacao del centro de Ghana." },
+    "pt": { "description": "Cooperativa de favas de cacau do centro do Gana." },
+    "ar": { "description": "تعاونية حبوب الكاكاو من وسط غانا." }
+  },
+  "ceylon-coconut": {
+    "en": { "description": "Collective of family coconut groves on Sri Lanka's west coast, virgin cold extraction." },
+    "es": { "description": "Colectivo de cocotales familiares de la costa oeste de Sri Lanka, extracción virgen en frío." },
+    "pt": { "description": "Coletivo de coqueirais familiares da costa oeste do Sri Lanka, extração virgem a frio." },
+    "ar": { "description": "تجمع مزارع جوز الهند العائلية على الساحل الغربي لسريلانكا، استخلاص بكر على البارد." }
+  },
+  "ethimarket-hub-aya": {
+    "en": { "description": "EthiMarket shop - Producer of organic and fair trade products" },
+    "es": { "description": "Tienda EthiMarket - Productor de productos ecológicos y de comercio justo" },
+    "pt": { "description": "Loja EthiMarket - Produtor de produtos biológicos e de comércio justo" },
+    "ar": { "description": "متجر إيثي ماركت - منتج للمنتجات العضوية والتجارة العادلة" }
+  },
+  "kerala-spice-gardens": {
+    "en": { "description": "Organic spice gardens of Kerala: turmeric, pepper and cardamom grown in agroforestry." },
+    "es": { "description": "Jardines de especias ecológicas de Kerala: cúrcuma, pimienta y cardamomo en agroforestería." },
+    "pt": { "description": "Jardins de especiarias biológicas de Kerala: curcuma, pimenta e cardamomo em agrofloresta." },
+    "ar": { "description": "حدائق التوابل العضوية في كيرالا: كركم وفلفل وهيل في نظام زراعي حرجي." }
+  },
+  "miel-psiloritis": {
+    "en": { "description": "Cretan mountain beekeepers, wild thyme honey harvested from extensive apiaries." },
+    "es": { "description": "Apicultores de montaña cretenses, miel de tomillo silvestre recolectada en colmenares extensivos." },
+    "pt": { "description": "Apicultores de montanha cretenses, mel de tomilho selvagem colhido em apiários extensivos." },
+    "ar": { "description": "نحّالو جبال كريت، عسل زعتر برّي يُجنى من مناحل ممتدة." }
+  },
+  "quinoa-andes": {
+    "en": { "description": "Quinoa cooperative from the Andean highlands." },
+    "es": { "description": "Cooperativa de quinua del altiplano andino." },
+    "pt": { "description": "Cooperativa de quinoa do altiplano andino." },
+    "ar": { "description": "تعاونية كينوا من هضاب الأنديز العالية." }
+  },
+  "saffron-fields": {
+    "en": { "description": "Family farm producing premium saffron from Khorasan." },
+    "es": { "description": "Explotación familiar de azafrán premium de Jorasán." },
+    "pt": { "description": "Exploração familiar de açafrão premium do Coração." },
+    "ar": { "description": "مزرعة عائلية لإنتاج الزعفران الفاخر من خراسان." }
+  },
+  "shizuoka-tea": {
+    "en": { "description": "Family tea house in Shizuoka, first-harvest steamed sencha." },
+    "es": { "description": "Casa de té familiar de Shizuoka, sencha de primera cosecha cocido al vapor." },
+    "pt": { "description": "Casa de chá familiar de Shizuoka, sencha de primeira colheita cozido a vapor." },
+    "ar": { "description": "بيت شاي عائلي في شيزوكا، سينشا من الحصاد الأول معالج بالبخار." }
+  },
+  "spiruline-cevennes": {
+    "en": { "description": "French aquaculture farm: spirulina grown in ponds, dried at low temperature." },
+    "es": { "description": "Granja acuícola francesa: espirulina cultivada en estanques, secada a baja temperatura." },
+    "pt": { "description": "Quinta aquícola francesa: espirulina cultivada em tanques, seca a baixa temperatura." },
+    "ar": { "description": "مزرعة مائية فرنسية: سبيرولينا مزروعة في أحواض، مجففة على حرارة منخفضة." }
+  },
+  "vanille-bourbon-mg": {
+    "en": { "description": "Bourbon vanilla producers' cooperative from the east coast." },
+    "es": { "description": "Cooperativa de productores de vainilla Bourbon de la costa este." },
+    "pt": { "description": "Cooperativa de produtores de baunilha Bourbon da costa leste." },
+    "ar": { "description": "تعاونية منتجي فانيليا بوربون من الساحل الشرقي." }
+  },
+  "yirgacheffe-union": {
+    "en": { "description": "Coffee producers' union from the Yirgacheffe region." },
+    "es": { "description": "Unión de productores de café de la región de Yirgacheffe." },
+    "pt": { "description": "União de produtores de café da região de Yirgacheffe." },
+    "ar": { "description": "اتحاد منتجي القهوة من منطقة يرغاتشيف." }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "cafe-the-cacao": {
+    "en": { "name": "Coffee, Tea & Cacao" },
+    "es": { "name": "Café, Té y Cacao" },
+    "pt": { "name": "Café, Chá e Cacau" },
+    "ar": { "name": "قهوة وشاي وكاكاو" }
+  },
+  "cereales-graines": {
+    "en": { "name": "Cereals & Seeds" },
+    "es": { "name": "Cereales y Semillas" },
+    "pt": { "name": "Cereais e Sementes" },
+    "ar": { "name": "حبوب وبذور" }
+  },
+  "cosmetiques": {
+    "en": { "name": "Natural Cosmetics" },
+    "es": { "name": "Cosmética Natural" },
+    "pt": { "name": "Cosmética Natural" },
+    "ar": { "name": "مستحضرات تجميل طبيعية" }
+  },
+  "epices-herbes": {
+    "en": { "name": "Spices & Herbs" },
+    "es": { "name": "Especias y Hierbas" },
+    "pt": { "name": "Especiarias e Ervas" },
+    "ar": { "name": "توابل وأعشاب" }
+  },
+  "fruits-legumes": {
+    "en": { "name": "Fruits & Vegetables" },
+    "es": { "name": "Frutas y Verduras" },
+    "pt": { "name": "Frutas e Legumes" },
+    "ar": { "name": "فواكه وخضروات" }
+  },
+  "huiles-graisses": {
+    "en": { "name": "Oils & Fats" },
+    "es": { "name": "Aceites y Grasas" },
+    "pt": { "name": "Óleos e Gorduras" },
+    "ar": { "name": "زيوت ودهون" }
+  },
+  "miel-sucres": {
+    "en": { "name": "Honey & Natural Sugars" },
+    "es": { "name": "Miel y Azúcares naturales" },
+    "pt": { "name": "Mel e Açúcares naturais" },
+    "ar": { "name": "عسل وسكريات طبيعية" }
+  },
+  "textile": {
+    "en": { "name": "Ethical Textiles" },
+    "es": { "name": "Textil ético" },
+    "pt": { "name": "Têxtil ético" },
+    "ar": { "name": "منسوجات أخلاقية" }
+  }
+}

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Star, MapPin, ArrowRight, Award } from 'lucide-react';
 import type { Product } from '../lib/supabase';
 import { useI18n } from '../lib/i18n';
+import { productName } from '../lib/i18n/dbLocalized';
 import { badgeInfo } from './ScoreBadge';
 
 const CERT_BADGE: Record<string, string> = {
@@ -15,8 +16,9 @@ const CERT_BADGE: Record<string, string> = {
 type Props = { product: Product };
 
 export default function ProductCard({ product }: Props) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const imageUrl = product.image_url ?? null;
+  const localizedName = productName(product, locale);
 
   return (
     <article className="card flex flex-col overflow-hidden group">
@@ -25,7 +27,7 @@ export default function ProductCard({ product }: Props) {
         {imageUrl ? (
           <img
             src={imageUrl}
-            alt={product.name}
+            alt={localizedName}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
           />
@@ -78,7 +80,7 @@ export default function ProductCard({ product }: Props) {
         {/* Name */}
         <Link to={`/produit/${product.id}`}>
           <h3 className="font-semibold text-gray-900 text-sm leading-tight mb-2 hover:text-brand-600 transition-colors line-clamp-2">
-            {product.name}
+            {localizedName}
           </h3>
         </Link>
 

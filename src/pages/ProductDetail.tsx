@@ -13,6 +13,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { supabase, type Product, type Producer, type Review, type ScoreDetails } from '../lib/supabase';
 import { useI18n } from '../lib/i18n';
+import { productName, productDescription, categoryName } from '../lib/i18n/dbLocalized';
 import GuaranteesSection from '../components/product/GuaranteesSection';
 import TraceabilitySection from '../components/product/TraceabilitySection';
 import ProducerProfileSection from '../components/product/ProducerProfileSection';
@@ -56,7 +57,7 @@ function Skeleton() {
 }
 
 export default function ProductDetail() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -115,6 +116,10 @@ export default function ProductDetail() {
   }
 
   const producer = (product as Product & { producers?: Producer }).producers ?? null;
+
+  // Contenus localisés depuis la base (fallback fr automatique)
+  const locName = productName(product, locale);
+  const locDescription = productDescription(product, locale);
 
   // Build gallery (reuse image if only one available)
   const baseImage = product.image_url && !imgError ? product.image_url : null;
@@ -221,16 +226,16 @@ export default function ProductDetail() {
   return (
     <div className="min-h-screen bg-white pb-20 lg:pb-0">
       <SEOHead
-        title={`${product.name} - En direct de ${product.country} | EthiMarket`}
-        description={(product.description || '').slice(0, 160)}
+        title={`${locName} - En direct de ${product.country} | EthiMarket`}
+        description={(locDescription || '').slice(0, 160)}
         image={gallery ? gallery[0] : undefined}
         type="product"
         jsonLd={{
           '@context': 'https://schema.org/',
           '@type': 'Product',
-          name: product.name,
+          name: locName,
           image: gallery || [],
-          description: product.description,
+          description: locDescription,
           offers: {
             '@type': 'Offer',
             priceCurrency: 'EUR',
@@ -261,12 +266,12 @@ export default function ProductDetail() {
               <>
                 <ChevronRight className="w-3 h-3 flex-shrink-0" />
                 <Link to={`/catalogue?category=${product.categories.slug}`} className="hover:text-brand-600 transition-colors whitespace-nowrap">
-                  {product.categories.name}
+                  {categoryName(product.categories, locale)}
                 </Link>
               </>
             )}
             <ChevronRight className="w-3 h-3 flex-shrink-0" />
-            <span className="text-gray-700 font-medium truncate">{product.name}</span>
+            <span className="text-gray-700 font-medium truncate">{locName}</span>
           </nav>
         </div>
       </div>
@@ -282,7 +287,7 @@ export default function ProductDetail() {
               onClick={() => setZoom(true)}
             >
               {gallery ? (
-                <img src={gallery[activeImg]} alt={product.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" onError={() => setImgError(true)} />
+                <img src={gallery[activeImg]} alt={locName} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" onError={() => setImgError(true)} />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-9xl" style={{ backgroundColor: product.bg_color }}>{product.emoji}</div>
               )}
@@ -339,7 +344,7 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3 leading-tight">{product.name}</h1>
+            <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3 leading-tight">{locName}</h1>
 
             {/* Origin + Rating */}
             <div className="flex flex-wrap items-center gap-4 mb-4">
@@ -535,7 +540,7 @@ export default function ProductDetail() {
       {zoom && gallery && (
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={() => setZoom(false)}>
           <button className="absolute top-4 right-4 text-white/80 hover:text-white text-2xl">✕</button>
-          <img src={gallery[activeImg]} alt={product.name} className="max-w-full max-h-full object-contain rounded-xl" />
+          <img src={gallery[activeImg]} alt={locName} className="max-w-full max-h-full object-contain rounded-xl" />
         </div>
       )}
     </div>

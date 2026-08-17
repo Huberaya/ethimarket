@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { supabase, type Article } from '../lib/supabase';
 import { useI18n } from '../lib/i18n';
+import { articleField } from '../lib/i18n/dbLocalized';
 
 const ALL_CAT = '__ALL__';
 const CATEGORIES = [ALL_CAT, 'Agriculture', 'Commerce équitable', 'Environnement', 'Portraits', 'Guides pratiques'];
@@ -20,7 +21,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 const DATE_LOCALES: Record<string, string> = { fr: 'fr-FR', en: 'en-GB', es: 'es-ES', pt: 'pt-PT', ar: 'ar' };
 
 export default function Blog() {
-  const { t, locale } = useI18n();
+  const { t, tx, locale } = useI18n();
   const [articles, setArticles] = useState<Article[]>([]);
   const [activeCategory, setActiveCategory] = useState(ALL_CAT);
   const [email, setEmail] = useState('');
@@ -65,7 +66,7 @@ export default function Blog() {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                {cat === ALL_CAT ? t('blog.all') : cat}
+                {cat === ALL_CAT ? t('blog.all') : tx(cat)}
               </button>
             ))}
           </div>
@@ -80,18 +81,18 @@ export default function Blog() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                 <div className="relative overflow-hidden" style={{ minHeight: '320px' }}>
                   {featured.image_url && (
-                    <img src={featured.image_url} alt={featured.title}
+                    <img src={featured.image_url} alt={articleField(featured, 'title', locale)}
                       className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   )}
                 </div>
                 <div className="p-8 lg:p-12 flex flex-col justify-center">
                   <span className={`inline-block self-start text-xs font-bold px-3 py-1.5 rounded-full border mb-4 ${CATEGORY_COLORS[featured.category] ?? 'bg-gray-100 text-gray-700 border-gray-200'}`}>
-                    {featured.category.toUpperCase()}
+                    {articleField(featured, 'category', locale).toUpperCase()}
                   </span>
                   <h2 className="text-2xl lg:text-3xl font-black text-gray-900 mb-4 group-hover:text-brand-600 transition-colors leading-tight">
-                    {featured.title}
+                    {articleField(featured, 'title', locale)}
                   </h2>
-                  <p className="text-gray-500 leading-relaxed mb-6">{featured.excerpt}</p>
+                  <p className="text-gray-500 leading-relaxed mb-6">{articleField(featured, 'excerpt', locale)}</p>
                   <div className="flex items-center gap-4 text-xs text-gray-500 mb-6">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3.5 h-3.5" />
@@ -122,20 +123,20 @@ export default function Blog() {
                   className="group flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                   <div className="relative overflow-hidden" style={{ height: '200px' }}>
                     {article.image_url ? (
-                      <img src={article.image_url} alt={article.title}
+                      <img src={article.image_url} alt={articleField(article, 'title', locale)}
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                     ) : (
                       <div className="absolute inset-0 bg-brand-100 flex items-center justify-center text-4xl">📄</div>
                     )}
                     <span className={`absolute top-3 left-3 text-xs font-bold px-3 py-1.5 rounded-full border backdrop-blur-sm ${CATEGORY_COLORS[article.category] ?? 'bg-gray-100 text-gray-700 border-gray-200'}`}>
-                      {article.category.toUpperCase()}
+                      {articleField(article, 'category', locale).toUpperCase()}
                     </span>
                   </div>
                   <div className="flex flex-col flex-1 p-5">
                     <h3 className="font-bold text-gray-900 text-base leading-tight mb-2 group-hover:text-brand-600 transition-colors line-clamp-2">
-                      {article.title}
+                      {articleField(article, 'title', locale)}
                     </h3>
-                    <p className="text-sm text-gray-500 leading-relaxed line-clamp-2 mb-4">{article.excerpt}</p>
+                    <p className="text-sm text-gray-500 leading-relaxed line-clamp-2 mb-4">{articleField(article, 'excerpt', locale)}</p>
                     <div className="mt-auto flex items-center gap-3 text-xs text-gray-500 pt-3 border-t border-gray-100">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />

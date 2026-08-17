@@ -12,6 +12,7 @@ import Footer from '../components/Footer';
 import SEOHead from '../components/SEOHead';
 import { supabase } from '../lib/supabase';
 import { useI18n } from '../lib/i18n';
+import { articleField } from '../lib/i18n/dbLocalized';
 
 const DATE_LOCALES: Record<string, string> = { fr: 'fr-FR', en: 'en-GB', es: 'es-ES', pt: 'pt-PT', ar: 'ar' };
 
@@ -111,7 +112,7 @@ export default function BlogArticle() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <SEOHead title={article.title} description={article.excerpt ?? article.title} />
+      <SEOHead title={articleField(article, 'title', locale)} description={articleField(article, 'excerpt', locale) || articleField(article, 'title', locale)} />
       <Header />
       <main className="flex-1 pt-28 pb-20">
         <article className="max-w-3xl mx-auto px-4 sm:px-6">
@@ -121,10 +122,10 @@ export default function BlogArticle() {
 
           {article.category && (
             <span className="inline-block text-[11px] font-black uppercase tracking-wider text-brand-700 bg-brand-50 border border-brand-200 rounded-full px-3 py-1 mb-4">
-              {article.category}
+              {articleField(article, 'category', locale)}
             </span>
           )}
-          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight">{article.title}</h1>
+          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight">{articleField(article, 'title', locale)}</h1>
 
           <div className="flex items-center gap-3 mt-5 text-sm text-gray-500">
             {article.author_avatar
@@ -141,14 +142,14 @@ export default function BlogArticle() {
 
           {article.image_url && (
             <div className="rounded-2xl overflow-hidden my-8 border border-gray-100">
-              <img src={article.image_url} alt={article.title} className="w-full h-72 object-cover" loading="lazy" />
+              <img src={article.image_url} alt={articleField(article, 'title', locale)} className="w-full h-72 object-cover" loading="lazy" />
             </div>
           )}
 
-          {article.excerpt && <p className="text-lg text-gray-600 leading-relaxed font-medium border-l-4 border-brand-300 pl-4 my-6">{article.excerpt}</p>}
+          {articleField(article, 'excerpt', locale) && <p className="text-lg text-gray-600 leading-relaxed font-medium border-l-4 border-brand-300 pl-4 my-6">{articleField(article, 'excerpt', locale)}</p>}
 
           <div className="prose-sm">
-            {article.content ? renderContent(article.content) : <p className="text-gray-500 italic">{t('blog.notFoundDesc')}</p>}
+            {articleField(article, 'content', locale) ? renderContent(articleField(article, 'content', locale)) : <p className="text-gray-500 italic">{t('blog.notFoundDesc')}</p>}
           </div>
 
           {/* Articles liés */}
@@ -160,8 +161,8 @@ export default function BlogArticle() {
                   <Link key={r.id} to={`/blog/${r.slug}`}
                     className="rounded-2xl border border-gray-100 p-5 hover:shadow-md transition-shadow">
                     <span className="text-[10px] font-black uppercase text-brand-600">{r.category}</span>
-                    <h3 className="font-bold text-gray-900 text-sm mt-1 leading-snug">{r.title}</h3>
-                    <p className="text-xs text-gray-500 mt-2 line-clamp-2">{r.excerpt}</p>
+                    <h3 className="font-bold text-gray-900 text-sm mt-1 leading-snug">{articleField(r, 'title', locale)}</h3>
+                    <p className="text-xs text-gray-500 mt-2 line-clamp-2">{articleField(r, 'excerpt', locale)}</p>
                   </Link>
                 ))}
               </div>

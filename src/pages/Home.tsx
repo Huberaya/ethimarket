@@ -11,6 +11,7 @@ import ProductCard from '../components/ProductCard';
 import SEOHead from '../components/SEOHead';
 import { supabase, type Product, type Category, type Producer, type Article } from '../lib/supabase';
 import { useI18n } from '../lib/i18n';
+import { categoryName } from '../lib/i18n/dbLocalized';
 import { HOME_CONTENT } from '../lib/i18n/content/home';
 
 /* ─── Constants ────────────────────────────────────────── */
@@ -213,7 +214,7 @@ export default function Home() {
                   <Link key={cat.id} to={`/catalogue?category=${cat.slug}`}
                     className="group relative rounded-2xl overflow-hidden aspect-square shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300">
                     {cat.image_url ? (
-                      <img src={cat.image_url} alt={cat.name}
+                      <img src={cat.image_url} alt={categoryName(cat, locale)}
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     ) : (
                       <div className="absolute inset-0 bg-brand-100 flex items-center justify-center text-5xl">{cat.emoji}</div>
@@ -221,7 +222,7 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-4">
                       <div className="text-2xl mb-1">{cat.emoji}</div>
-                      <h3 className="font-bold text-white text-sm leading-tight">{cat.name}</h3>
+                      <h3 className="font-bold text-white text-sm leading-tight">{categoryName(cat, locale)}</h3>
                       <p className="text-white/60 text-xs mt-0.5">{cat.product_count.toLocaleString('fr-FR')} {t('common.products')}</p>
                     </div>
                     <div className="absolute top-3 right-3 w-7 h-7 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">

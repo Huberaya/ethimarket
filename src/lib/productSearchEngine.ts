@@ -757,10 +757,18 @@ export async function executeIntelligentSearch(
       // catégorie). On réapplique le filtrage strict sur ses résultats —
       // négligeable en coût (≤ 50 lignes), garanti en cohérence.
       const rpcRows = (data as Product[]).map(item => {
-        // La RPC ne renvoie pas la relation categories : on la réhydrate
-        // depuis le catalogue fallback quand disponible.
+        // La RPC ne renvoie ni la relation categories ni la colonne
+        // translations (liste de colonnes figée dans la fonction SQL) :
+        // on les réhydrate depuis le catalogue fallback quand disponible.
         const local = fallbackList.find(f => f.id === item.id);
-        return local ? { ...item, categories: local.categories, producers: item.producers ?? local.producers } : item;
+        return local
+          ? {
+              ...item,
+              categories: local.categories,
+              producers: item.producers ?? local.producers,
+              translations: item.translations ?? local.translations,
+            }
+          : item;
       });
       enrichedItems = rpcRows
         .filter(prod => passesStrictFilters(prod, mergedFilters))

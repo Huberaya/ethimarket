@@ -1,0 +1,224 @@
+{
+  "cacao-brut": {
+    "en": {
+      "name": "Raw Cacao",
+      "description": "100% natural, non-defatted cacao powder. Rich in flavonoids and magnesium."
+    },
+    "es": {
+      "name": "Cacao Crudo",
+      "description": "Cacao en polvo 100% natural, sin desgrasar. Rico en flavonoides y magnesio."
+    },
+    "pt": {
+      "name": "Cacau Cru",
+      "description": "Cacau em pó 100% natural, não desengordurado. Rico em flavonoides e magnésio."
+    },
+    "ar": {
+      "name": "كاكاو خام",
+      "description": "مسحوق كاكاو طبيعي 100%، غير منزوع الدسم. غني بالفلافونويدات والمغنيسيوم."
+    }
+  },
+  "cafe-ethiopien-yirgacheffe": {
+    "en": {
+      "name": "Ethiopian Yirgacheffe Coffee",
+      "description": "Exceptional coffee with floral and fruity notes. Light roast to preserve the natural aromas."
+    },
+    "es": {
+      "name": "Café Etíope Yirgacheffe",
+      "description": "Café excepcional con notas florales y afrutadas. Tueste ligero para preservar los aromas naturales."
+    },
+    "pt": {
+      "name": "Café Etíope Yirgacheffe",
+      "description": "Café excecional com notas florais e frutadas. Torra leve para preservar os aromas naturais."
+    },
+    "ar": {
+      "name": "قهوة يرغاتشيف الإثيوبية",
+      "description": "قهوة استثنائية بنكهات زهرية وفاكهية. تحميص خفيف للحفاظ على النكهات الطبيعية."
+    }
+  },
+  "curcuma-moulu": {
+    "en": {
+      "name": "Ground Turmeric",
+      "description": "Kerala turmeric with curcumin content above 5%. Powerful aroma and intense colour."
+    },
+    "es": {
+      "name": "Cúrcuma Molida",
+      "description": "Cúrcuma de Kerala, con un contenido de curcumina superior al 5%. Aroma potente y color intenso."
+    },
+    "pt": {
+      "name": "Curcuma Moída",
+      "description": "Curcuma de Kerala, com teor de curcumina superior a 5%. Aroma poderoso e cor intensa."
+    },
+    "ar": {
+      "name": "كركم مطحون",
+      "description": "كركم من كيرالا، بنسبة كركمين تفوق 5%. نكهة قوية ولون كثيف."
+    }
+  },
+  "huile-argan-bio": {
+    "en": {
+      "name": "Organic Argan Oil",
+      "description": "100% pure argan oil, cold-pressed by women from certified cooperatives. Ideal for cosmetics and food."
+    },
+    "es": {
+      "name": "Aceite de Argán Ecológico",
+      "description": "Aceite de argán 100% puro, extraído en frío por mujeres de cooperativas certificadas. Ideal para cosmética y alimentación."
+    },
+    "pt": {
+      "name": "Óleo de Argão Biológico",
+      "description": "Óleo de argão 100% puro, extraído a frio por mulheres de cooperativas certificadas. Ideal para cosmética e alimentação."
+    },
+    "ar": {
+      "name": "زيت أركان عضوي",
+      "description": "زيت أركان نقي 100%، معصور على البارد بأيدي نساء من تعاونيات معتمدة. مثالي للتجميل والغذاء."
+    }
+  },
+  "huile-coco-bio": {
+    "en": {
+      "name": "Organic Coconut Oil",
+      "description": "Virgin coconut oil, cold-pressed and unrefined. Ideal for cooking and cosmetics."
+    },
+    "es": {
+      "name": "Aceite de Coco Ecológico",
+      "description": "Aceite de coco virgen extraído en frío, sin refinar. Ideal para cocina y cosmética."
+    },
+    "pt": {
+      "name": "Óleo de Coco Biológico",
+      "description": "Óleo de coco virgem extraído a frio, não refinado. Ideal para cozinha e cosmética."
+    },
+    "ar": {
+      "name": "زيت جوز الهند العضوي",
+      "description": "زيت جوز هند بكر معصور على البارد وغير مكرر. مثالي للطبخ والتجميل."
+    }
+  },
+  "miel-thym": {
+    "en": {
+      "name": "Thyme Honey",
+      "description": "Thyme honey from Mount Hymettus, one of the most prized in the world for its medicinal properties."
+    },
+    "es": {
+      "name": "Miel de Tomillo",
+      "description": "Miel de tomillo del monte Himeto, una de las más apreciadas del mundo por sus virtudes medicinales."
+    },
+    "pt": {
+      "name": "Mel de Tomilho",
+      "description": "Mel de tomilho do monte Himeto, um dos mais apreciados do mundo pelas suas virtudes medicinais."
+    },
+    "ar": {
+      "name": "عسل الزعتر",
+      "description": "عسل زعتر من جبل هيميتوس، من أكثر أنواع العسل قيمةً في العالم لخصائصه العلاجية."
+    }
+  },
+  "quinoa-bio": {
+    "en": {
+      "name": "Organic Quinoa",
+      "description": "White quinoa from the Andean highlands, gluten-free and rich in protein."
+    },
+    "es": {
+      "name": "Quinua Ecológica",
+      "description": "Quinua blanca del altiplano andino, sin gluten y rica en proteínas."
+    },
+    "pt": {
+      "name": "Quinoa Biológica",
+      "description": "Quinoa branca do altiplano andino, sem glúten e rica em proteínas."
+    },
+    "ar": {
+      "name": "كينوا عضوية",
+      "description": "كينوا بيضاء من هضاب الأنديز العالية، خالية من الغلوتين وغنية بالبروتين."
+    }
+  },
+  "safran-premium": {
+    "en": {
+      "name": "Premium Saffron",
+      "description": "Grade 1 saffron from the Khorasan region, hand-harvested at sunrise. Exceptional safranal content."
+    },
+    "es": {
+      "name": "Azafrán Premium",
+      "description": "Azafrán de grado 1 de la región de Jorasán, recolectado a mano al amanecer. Contenido excepcional de safranal."
+    },
+    "pt": {
+      "name": "Açafrão Premium",
+      "description": "Açafrão de grau 1 da região do Coração, colhido à mão ao nascer do sol. Teor excecional de safranal."
+    },
+    "ar": {
+      "name": "زعفران فاخر",
+      "description": "زعفران من الدرجة الأولى من إقليم خراسان، يُقطف يدويًا عند شروق الشمس. نسبة سافرانال استثنائية."
+    }
+  },
+  "sirop-agave": {
+    "en": {
+      "name": "Agave Syrup",
+      "description": "Light blue agave syrup with a low glycaemic index, ideal for replacing refined sugar."
+    },
+    "es": {
+      "name": "Sirope de Agave",
+      "description": "Sirope de agave azul claro, de bajo índice glucémico, ideal para sustituir el azúcar refinado."
+    },
+    "pt": {
+      "name": "Xarope de Agave",
+      "description": "Xarope de agave azul claro, de baixo índice glicémico, ideal para substituir o açúcar refinado."
+    },
+    "ar": {
+      "name": "شراب الأغاف",
+      "description": "شراب أغاف أزرق فاتح بمؤشر غلايسيمي منخفض، مثالي لاستبدال السكر المكرر."
+    }
+  },
+  "spiruline-bio": {
+    "en": {
+      "name": "Organic Spirulina",
+      "description": "Spirulina grown in France in open ponds, dried at low temperature to preserve the nutrients."
+    },
+    "es": {
+      "name": "Espirulina Ecológica",
+      "description": "Espirulina cultivada en Francia en estanques abiertos, secada a baja temperatura para preservar los nutrientes."
+    },
+    "pt": {
+      "name": "Espirulina Biológica",
+      "description": "Espirulina cultivada em França em tanques abertos, seca a baixa temperatura para preservar os nutrientes."
+    },
+    "ar": {
+      "name": "سبيرولينا عضوية",
+      "description": "سبيرولينا مزروعة في فرنسا في أحواض مفتوحة، مجففة على حرارة منخفضة للحفاظ على العناصر الغذائية."
+    }
+  },
+  "ssame-7092": {
+    "en": { "name": "Sesame" },
+    "es": { "name": "Sésamo" },
+    "pt": { "name": "Sésamo" },
+    "ar": { "name": "سمسم" }
+  },
+  "the-vert-sencha": {
+    "en": {
+      "name": "Sencha Green Tea",
+      "description": "First-harvest Sencha green tea (Ichiban-cha). Grassy, slightly sweet notes."
+    },
+    "es": {
+      "name": "Té Verde Sencha",
+      "description": "Té verde Sencha de primera cosecha (Ichiban-cha). Notas herbáceas, ligeramente dulces."
+    },
+    "pt": {
+      "name": "Chá Verde Sencha",
+      "description": "Chá verde Sencha de primeira colheita (Ichiban-cha). Notas herbáceas, ligeiramente doces."
+    },
+    "ar": {
+      "name": "شاي سينشا الأخضر",
+      "description": "شاي أخضر سينشا من الحصاد الأول (إيتشيبان-تشا). نكهات عشبية بحلاوة خفيفة."
+    }
+  },
+  "vanille-bourbon": {
+    "en": {
+      "name": "Bourbon Vanilla",
+      "description": "Bourbon vanilla pods from Madagascar, long and fleshy, rich in natural vanillin."
+    },
+    "es": {
+      "name": "Vainilla Bourbon",
+      "description": "Vainas de vainilla Bourbon de Madagascar, largas y carnosas, ricas en vainillina natural."
+    },
+    "pt": {
+      "name": "Baunilha Bourbon",
+      "description": "Vagens de baunilha Bourbon de Madagáscar, longas e carnudas, ricas em vanilina natural."
+    },
+    "ar": {
+      "name": "فانيليا بوربون",
+      "description": "قرون فانيليا بوربون من مدغشقر، طويلة وممتلئة، غنية بالفانيلين الطبيعي."
+    }
+  }
+}

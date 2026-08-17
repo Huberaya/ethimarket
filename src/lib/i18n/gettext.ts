@@ -9,6 +9,13 @@ import type { Locale } from './index';
 type Dict = Record<string, string>;
 
 const en: Dict = {
+  // --- Catégories du blog ---
+  'Agriculture': 'Agriculture',
+  'Commerce équitable': 'Fair trade',
+  'Environnement': 'Environment',
+  'Portraits': 'Portraits',
+  'Guides pratiques': 'Practical guides',
+
   // --- Assistant d'impact (empreintes CO2/eau estimées) ---
   'Empreintes CO2 & eau — calculées pour vous': 'CO2 & water footprints — calculated for you',
   'Pas besoin de mesurer vous-même : EthiMarket estime vos empreintes à partir de références scientifiques (Agribalyse, Poore & Nemecek, Water Footprint Network) selon votre type de produit et votre méthode agricole.': 'No need to measure it yourself: EthiMarket estimates your footprints from scientific references (Agribalyse, Poore & Nemecek, Water Footprint Network) based on your product type and farming method.',
@@ -301,6 +308,13 @@ const en: Dict = {
 };
 
 const es: Dict = {
+  // --- Catégories du blog ---
+  'Agriculture': 'Agricultura',
+  'Commerce équitable': 'Comercio justo',
+  'Environnement': 'Medio ambiente',
+  'Portraits': 'Retratos',
+  'Guides pratiques': 'Guías prácticas',
+
   // --- Assistant d'impact (empreintes CO2/eau estimées) ---
   'Empreintes CO2 & eau — calculées pour vous': 'Huellas de CO2 y agua — calculadas por usted',
   'Pas besoin de mesurer vous-même : EthiMarket estime vos empreintes à partir de références scientifiques (Agribalyse, Poore & Nemecek, Water Footprint Network) selon votre type de produit et votre méthode agricole.': 'No necesita medirlas usted mismo: EthiMarket estima sus huellas a partir de referencias científicas (Agribalyse, Poore & Nemecek, Water Footprint Network) según su tipo de producto y método agrícola.',
@@ -580,6 +594,13 @@ const es: Dict = {
 };
 
 const pt: Dict = {
+  // --- Catégories du blog ---
+  'Agriculture': 'Agricultura',
+  'Commerce équitable': 'Comércio justo',
+  'Environnement': 'Ambiente',
+  'Portraits': 'Retratos',
+  'Guides pratiques': 'Guias práticos',
+
   // --- Assistant d'impact (empreintes CO2/eau estimées) ---
   'Empreintes CO2 & eau — calculées pour vous': 'Pegadas de CO2 e água — calculadas por si',
   'Pas besoin de mesurer vous-même : EthiMarket estime vos empreintes à partir de références scientifiques (Agribalyse, Poore & Nemecek, Water Footprint Network) selon votre type de produit et votre méthode agricole.': 'Não precisa de medir você mesmo: a EthiMarket estima as suas pegadas a partir de referências científicas (Agribalyse, Poore & Nemecek, Water Footprint Network) segundo o tipo de produto e o método agrícola.',
@@ -859,6 +880,13 @@ const pt: Dict = {
 };
 
 const ar: Dict = {
+  // --- Catégories du blog ---
+  'Agriculture': 'الزراعة',
+  'Commerce équitable': 'التجارة العادلة',
+  'Environnement': 'البيئة',
+  'Portraits': 'بورتريهات',
+  'Guides pratiques': 'أدلة عملية',
+
   // --- Assistant d'impact (empreintes CO2/eau estimées) ---
   'Empreintes CO2 & eau — calculées pour vous': 'بصمتا الكربون والماء — تُحسبان لك تلقائيًا',
   'Pas besoin de mesurer vous-même : EthiMarket estime vos empreintes à partir de références scientifiques (Agribalyse, Poore & Nemecek, Water Footprint Network) selon votre type de produit et votre méthode agricole.': 'لا حاجة للقياس بنفسك: تقدّر EthiMarket بصماتك استنادًا إلى مراجع علمية (Agribalyse وPoore & Nemecek وWater Footprint Network) حسب نوع منتجك وطريقتك الزراعية.',

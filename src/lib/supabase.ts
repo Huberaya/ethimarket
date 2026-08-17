@@ -22,6 +22,9 @@ export type Profile = {
   created_at: string;
 };
 
+/** Traductions JSONB des contenus en base : { locale: { champ: texte } } — fr = colonnes sources */
+export type DbTranslations = Partial<Record<'en' | 'es' | 'pt' | 'ar', Record<string, string>>> | null;
+
 export type Category = {
   id: string;
   name: string;
@@ -29,6 +32,7 @@ export type Category = {
   product_count: number;
   slug: string;
   image_url?: string | null;
+  translations?: DbTranslations;
 };
 
 export type Producer = {
@@ -147,6 +151,7 @@ export type Producer = {
   next_audit_date?: string | null;
   audit_count?: number | null;
   created_at?: string;
+  translations?: DbTranslations;
 };
 
 export type ScoreCategory = {
@@ -264,6 +269,7 @@ export type Product = {
   packaging_types?: string[];
   fair_trade?: boolean;
   social_audit_passed?: boolean;
+  translations?: DbTranslations;
 };
 
 export type ProductScoreCalc = {
@@ -295,6 +301,7 @@ export type Article = {
   published_at: string;
   read_time: number;
   featured: boolean;
+  translations?: DbTranslations;
 };
 
 export type VerificationStatus = 'pending' | 'submitted' | 'approved' | 'rejected';

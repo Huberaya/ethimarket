@@ -5,9 +5,13 @@ import {
 } from 'lucide-react';
 import type { Producer } from '../../lib/supabase';
 import { SectionTitle } from './GuaranteesSection';
+import { useI18n } from '../../lib/i18n';
+import { producerDescription } from '../../lib/i18n/dbLocalized';
 
 export default function ProducerProfileSection({ producer }: { producer: Producer | null }) {
+  const { locale } = useI18n();
   if (!producer) return null;
+  const locProducerDesc = producerDescription(producer, locale);
 
   return (
     <section className="py-12 border-t border-gray-100">
@@ -41,8 +45,8 @@ export default function ProducerProfileSection({ producer }: { producer: Produce
               {producer.story && (
                 <p className="text-sm text-gray-600 leading-relaxed mb-4">{producer.story}</p>
               )}
-              {producer.description && !producer.story && (
-                <p className="text-sm text-gray-600 leading-relaxed mb-4">{producer.description}</p>
+              {locProducerDesc && !producer.story && (
+                <p className="text-sm text-gray-600 leading-relaxed mb-4">{locProducerDesc}</p>
               )}
 
               {/* Certifications */}

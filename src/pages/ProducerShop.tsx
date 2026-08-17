@@ -11,6 +11,7 @@ import ProductCard from '../components/ProductCard';
 import { LeafletMap } from '../components/LeafletMap';
 import { supabase, type Producer, type Product } from '../lib/supabase';
 import { useI18n } from '../lib/i18n';
+import { producerDescription } from '../lib/i18n/dbLocalized';
 import ScoreBadge from '../components/ScoreBadge';
 
 function Skeleton() {
@@ -38,7 +39,7 @@ function Skeleton() {
 }
 
 export default function ProducerShop() {
-  const { t, tx } = useI18n();
+  const { t, tx, locale } = useI18n();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -367,7 +368,7 @@ export default function ProducerShop() {
 
                 <h2 className="font-black text-gray-900 text-xl mb-4">{tx('Notre histoire')}</h2>
                 <p className="text-gray-600 leading-relaxed mb-7">
-                  {producer.description ??
+                  {producerDescription(producer, locale) ||
                     `${producer.name} est une coopérative engagée dans la production durable et équitable${producer.founded_year ? ` depuis ${producer.founded_year}` : ''}. Nous travaillons en direct avec les communautés locales pour garantir une rémunération juste et des pratiques agricoles respectueuses de l'environnement et de la biodiversité.`
                   }
                 </p>
