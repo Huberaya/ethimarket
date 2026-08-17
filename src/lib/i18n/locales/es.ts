@@ -691,6 +691,18 @@ const es: Record<string, string> = {
   'fp.invalidTitle': 'Enlace no válido o caducado',
   'fp.invalidDesc': 'Este enlace de restablecimiento ya no es válido (caduca tras su uso o al cabo de una hora).',
   'fp.requestNew': 'Solicitar un nuevo enlace',
+
+  // --- RGPD : export + suppression de compte ---
+  'privacy.title': 'Privacidad y cuenta',
+  'privacy.exportTitle': 'Exportar mis datos',
+  'privacy.exportDesc': 'Descargue todos sus datos personales en formato JSON (derecho a la portabilidad, RGPD art. 20).',
+  'privacy.exportBtn': 'Exportar (JSON)',
+  'privacy.deleteTitle': 'Eliminar mi cuenta',
+  'privacy.deleteDesc': 'Eliminación definitiva de su cuenta y datos personales. Los registros comerciales (pedidos, presupuestos) se conservan anonimizados (obligación legal).',
+  'privacy.deleteBtn': 'Eliminar la cuenta',
+  'privacy.confirmPrompt': 'Acción irreversible. Escriba SUPPRIMER para confirmar.',
+  'privacy.confirmBtn': 'Eliminar definitivamente',
+  'privacy.note': 'De conformidad con el RGPD, puede ejercer sus derechos de acceso, rectificación y supresión en cualquier momento.',
 };
 
 export default es;

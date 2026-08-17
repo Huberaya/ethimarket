@@ -691,6 +691,18 @@ const pt: Record<string, string> = {
   'fp.invalidTitle': 'Link inválido ou expirado',
   'fp.invalidDesc': 'Este link de redefinição já não é válido (expira após utilização ou ao fim de uma hora).',
   'fp.requestNew': 'Pedir um novo link',
+
+  // --- RGPD : export + suppression de compte ---
+  'privacy.title': 'Privacidade e conta',
+  'privacy.exportTitle': 'Exportar os meus dados',
+  'privacy.exportDesc': 'Descarregue todos os seus dados pessoais em formato JSON (direito à portabilidade, RGPD art. 20).',
+  'privacy.exportBtn': 'Exportar (JSON)',
+  'privacy.deleteTitle': 'Eliminar a minha conta',
+  'privacy.deleteDesc': 'Eliminação definitiva da sua conta e dos dados pessoais. Os registos comerciais (encomendas, orçamentos) são conservados anonimizados (obrigação legal).',
+  'privacy.deleteBtn': 'Eliminar a conta',
+  'privacy.confirmPrompt': 'Ação irreversível. Escreva SUPPRIMER para confirmar.',
+  'privacy.confirmBtn': 'Eliminar definitivamente',
+  'privacy.note': 'Em conformidade com o RGPD, pode exercer os seus direitos de acesso, retificação e apagamento a qualquer momento.',
 };
 
 export default pt;

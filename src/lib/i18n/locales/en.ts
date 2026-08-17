@@ -691,6 +691,18 @@ const en: Record<string, string> = {
   'fp.invalidTitle': 'Invalid or expired link',
   'fp.invalidDesc': 'This reset link is no longer valid (it expires after use or after one hour).',
   'fp.requestNew': 'Request a new link',
+
+  // --- RGPD : export + suppression de compte ---
+  'privacy.title': 'Privacy & account',
+  'privacy.exportTitle': 'Export my data',
+  'privacy.exportDesc': 'Download all your personal data as JSON (right to portability, GDPR art. 20).',
+  'privacy.exportBtn': 'Export (JSON)',
+  'privacy.deleteTitle': 'Delete my account',
+  'privacy.deleteDesc': 'Permanent deletion of your account and personal data. Commercial records (orders, quotes) are kept anonymised (legal obligation).',
+  'privacy.deleteBtn': 'Delete account',
+  'privacy.confirmPrompt': 'Irreversible action. Type SUPPRIMER to confirm.',
+  'privacy.confirmBtn': 'Delete permanently',
+  'privacy.note': 'In accordance with GDPR, you can exercise your rights of access, rectification and erasure at any time.',
 };
 
 export default en;

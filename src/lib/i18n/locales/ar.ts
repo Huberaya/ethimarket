@@ -691,6 +691,18 @@ const ar: Record<string, string> = {
   'fp.invalidTitle': 'رابط غير صالح أو منتهي الصلاحية',
   'fp.invalidDesc': 'لم يعد رابط إعادة التعيين هذا صالحًا (تنتهي صلاحيته بعد الاستخدام أو بعد ساعة).',
   'fp.requestNew': 'طلب رابط جديد',
+
+  // --- RGPD : export + suppression de compte ---
+  'privacy.title': 'الخصوصية والحساب',
+  'privacy.exportTitle': 'تصدير بياناتي',
+  'privacy.exportDesc': 'نزّل جميع بياناتك الشخصية بصيغة JSON (حق نقل البيانات، المادة 20 من اللائحة العامة).',
+  'privacy.exportBtn': 'تصدير (JSON)',
+  'privacy.deleteTitle': 'حذف حسابي',
+  'privacy.deleteDesc': 'حذف نهائي لحسابك وبياناتك الشخصية. تُحفظ السجلات التجارية (طلبيات، عروض أسعار) مجهولة الهوية (التزام قانوني).',
+  'privacy.deleteBtn': 'حذف الحساب',
+  'privacy.confirmPrompt': 'إجراء لا رجعة فيه. اكتب SUPPRIMER للتأكيد.',
+  'privacy.confirmBtn': 'حذف نهائيًا',
+  'privacy.note': 'وفقًا للائحة العامة لحماية البيانات، يمكنك ممارسة حقوقك في الوصول والتصحيح والمحو في أي وقت.',
 };
 
 export default ar;
