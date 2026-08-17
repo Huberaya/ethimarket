@@ -17,6 +17,8 @@ import {
   acceptQuote, declineQuoteAsBuyer, cancelQuote, computeQuoteStats,
   QuoteRequest, QUOTE_STATUS_META,
 } from '../../lib/quoteService';
+import { createOrderFromQuote, getOrderForQuote, isQuoteConvertible } from '../../lib/orderService';
+import { useNavigate } from 'react-router-dom';
 
 export default function QuotesPage() {
   const { t } = useI18n();
@@ -206,11 +208,55 @@ function QuoteCard({ quote: q, isProducer, onRespond, onAction }: {
           </button>
         )}
         {q.status === 'accepted' && (
-          <p className="text-xs text-emerald-700 font-semibold flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4" /> Offre acceptée le {q.decided_at ? new Date(q.decided_at).toLocaleDateString('fr-FR') : ''} — finalisez la logistique via la messagerie.
-          </p>
+          <AcceptedQuoteActions quote={q} isProducer={isProducer} />
         )}
       </div>
+    </div>
+  );
+}
+
+/* ---- Actions sur devis accepté : conversion en commande B2B ---- */
+function AcceptedQuoteActions({ quote: q, isProducer }: { quote: QuoteRequest; isProducer: boolean }) {
+  const { t } = useI18n();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [existingOrder, setExistingOrder] = useState<{ order_number?: string } | null | 'loading'>('loading');
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    getOrderForQuote(q.id).then(o => { if (!cancelled) setExistingOrder(o); });
+    return () => { cancelled = true; };
+  }, [q.id]);
+
+  const convert = async () => {
+    if (!user) return;
+    setBusy(true);
+    const { orderNumber, error } = await createOrderFromQuote(q, user.id);
+    setBusy(false);
+    if (error) { alert(error); return; }
+    if (orderNumber) navigate('/dashboard/commandes');
+  };
+
+  return (
+    <div className="flex items-center gap-3 flex-wrap">
+      <p className="text-xs text-emerald-700 font-semibold flex items-center gap-1.5">
+        <CheckCircle2 className="w-4 h-4" /> {t('q.acceptedOn')} {q.decided_at ? new Date(q.decided_at).toLocaleDateString('fr-FR') : ''}
+      </p>
+      {existingOrder !== 'loading' && existingOrder && (
+        <Link to="/dashboard/commandes" className="text-xs font-black text-brand-700 hover:underline">
+          📦 {t('q.orderCreated')} {existingOrder.order_number ?? ''} →
+        </Link>
+      )}
+      {existingOrder !== 'loading' && !existingOrder && !isProducer && isQuoteConvertible(q) && (
+        <button onClick={convert} disabled={busy}
+          className="px-4 py-2 text-xs font-black rounded-xl bg-brand-600 text-white hover:bg-brand-700 inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-60">
+          {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null} {t('q.convertToOrder')}
+        </button>
+      )}
+      {existingOrder !== 'loading' && !existingOrder && isProducer && (
+        <p className="text-[11px] text-gray-400">{t('q.awaitingBuyerOrder')}</p>
+      )}
     </div>
   );
 }

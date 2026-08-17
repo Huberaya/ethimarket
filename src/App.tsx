@@ -31,6 +31,7 @@ import MonProfil from './pages/dashboard/MonProfil';
 import Messages from './pages/dashboard/Messages';
 import { SettingsPage } from './pages/dashboard/PlaceholderPages';
 import QuotesPage from './pages/dashboard/QuotesPage';
+import OrdersPage from './pages/dashboard/OrdersPage';
 import OrganizationPage from './pages/dashboard/OrganizationPage';
 import Verification from './pages/dashboard/Verification';
 import AdminLayout from './components/AdminLayout';
@@ -99,7 +100,8 @@ export default function App() {
           <Route path="modifier-produit/:id" element={<EditProduct />} />
           <Route path="ma-boutique" element={<MyShop />} />
           <Route path="mon-profil" element={<MonProfil />} />
-          <Route path="commandes" element={<QuotesPage />} />
+          <Route path="devis" element={<QuotesPage />} />
+          <Route path="commandes" element={<OrdersPage />} />
           <Route path="messages" element={<Messages />} />
           <Route path="parametres" element={<SettingsPage />} />
           <Route path="verification" element={<Verification />} />

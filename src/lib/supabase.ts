@@ -400,12 +400,16 @@ export type OrderStatus = 'new' | 'processing' | 'shipped' | 'delivered' | 'disp
 
 export type Order = {
   id: string;
+  order_number?: string | null;
+  quote_id?: string | null;
   buyer_id: string | null;
   producer_id: string | null;
   product_id: string | null;
+  product_name?: string | null;
   quantity: number;
   unit: string;
   unit_price: number;
+  currency?: string;
   total_amount: number;
   commission_rate: number;
   commission_amount: number;
@@ -414,8 +418,15 @@ export type Order = {
   shipping_method: string | null;
   shipping_cost: number;
   customs_cost: number;
+  delivery_country?: string | null;
+  expected_delivery_days?: string | null;
   tracking_number: string | null;
   notes: string | null;
+  confirmed_at?: string | null;
+  shipped_at?: string | null;
+  delivered_at?: string | null;
+  cancelled_at?: string | null;
+  cancel_reason?: string | null;
   created_at: string;
   updated_at: string;
   producers?: Producer | null;

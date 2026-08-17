@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Package, PlusCircle, Store, ShoppingCart,
   MessageSquare, Settings, Leaf, Bell, LogOut, Menu, X,
   ChevronRight, UserCircle, ShieldCheck, TrendingUp, Factory,
-  PackageSearch, SlidersHorizontal, Bot, Vault, Building2,
+  PackageSearch, SlidersHorizontal, Bot, Vault, Building2, FileText,
 } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { supabase } from '../lib/supabase';
@@ -19,6 +19,7 @@ const PRODUCER_NAV = [
   { icon: PlusCircle,      labelKey: 'dash.addProduct', path: '/dashboard/ajouter-produit' },
   { icon: Store,           labelKey: 'dash.myShop',     path: '/dashboard/ma-boutique' },
   { icon: UserCircle,      labelKey: 'dash.myProfile',       path: '/dashboard/mon-profil' },
+  { icon: FileText,        labelKey: 'dash.quotes', path: '/dashboard/devis' },
   { icon: ShoppingCart,    labelKey: 'dash.orders', path: '/dashboard/commandes' },
   { icon: MessageSquare,   labelKey: 'dash.messages',         path: '/dashboard/messages' },
   { icon: Settings,        labelKey: 'dash.settings',       path: '/dashboard/parametres' },
@@ -34,6 +35,7 @@ const BUYER_NAV = [
   { icon: Bot,             labelKey: 'dash.sourcing',       path: '/dashboard/sourcing' },
   { icon: Vault,           labelKey: 'dash.documents',         path: '/dashboard/documents' },
   { icon: Building2,       labelKey: 'dash.myOrg',  path: '/dashboard/organisation' },
+  { icon: FileText,        labelKey: 'dash.quotes', path: '/dashboard/devis' },
   { icon: ShoppingCart,    labelKey: 'dash.orders', path: '/dashboard/commandes' },
   { icon: MessageSquare,   labelKey: 'dash.messages',          path: '/dashboard/messages' },
   { icon: UserCircle,      labelKey: 'dash.myProfile',        path: '/dashboard/mon-profil' },

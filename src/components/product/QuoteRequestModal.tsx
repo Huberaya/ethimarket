@@ -90,7 +90,7 @@ export default function QuoteRequestModal({
               dans votre espace <strong>Devis & commandes</strong>.
             </p>
             <div className="mt-6 flex gap-3 justify-center">
-              <Link to="/dashboard/commandes" className="btn-primary px-5 py-2.5 text-sm font-bold rounded-xl">
+              <Link to="/dashboard/devis" className="btn-primary px-5 py-2.5 text-sm font-bold rounded-xl">
                 Suivre mes devis →
               </Link>
               <button onClick={onClose} className="px-5 py-2.5 text-sm font-bold rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700">

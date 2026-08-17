@@ -9,6 +9,13 @@ import type { Locale } from './index';
 type Dict = Record<string, string>;
 
 const en: Dict = {
+  // --- Circuit de commande B2B ---
+  'Le règlement se fait par virement entre l\'acheteur et le producteur, à réception de facture. EthiMarket n\'encaisse aucun paiement.': 'Payment is made by bank transfer between the buyer and the producer, upon receipt of invoice. EthiMarket does not collect any payment.',
+  'Motif de l\'annulation ?': 'Reason for cancellation?',
+  'Décrivez le problème rencontré (produit non conforme, quantité, retard…) :': 'Describe the issue encountered (non-compliant product, quantity, delay…):',
+  'Ex: DHL-123456789': 'E.g. DHL-123456789',
+  'Ex: DHL, Maersk, transporteur local…': 'E.g. DHL, Maersk, local carrier…',
+
   // --- Catégories du blog ---
   'Agriculture': 'Agriculture',
   'Commerce équitable': 'Fair trade',
@@ -308,6 +315,13 @@ const en: Dict = {
 };
 
 const es: Dict = {
+  // --- Circuit de commande B2B ---
+  'Le règlement se fait par virement entre l\'acheteur et le producteur, à réception de facture. EthiMarket n\'encaisse aucun paiement.': 'El pago se realiza por transferencia entre el comprador y el productor, a la recepción de la factura. EthiMarket no cobra ningún pago.',
+  'Motif de l\'annulation ?': '¿Motivo de la anulación?',
+  'Décrivez le problème rencontré (produit non conforme, quantité, retard…) :': 'Describa el problema encontrado (producto no conforme, cantidad, retraso…):',
+  'Ex: DHL-123456789': 'Ej.: DHL-123456789',
+  'Ex: DHL, Maersk, transporteur local…': 'Ej.: DHL, Maersk, transportista local…',
+
   // --- Catégories du blog ---
   'Agriculture': 'Agricultura',
   'Commerce équitable': 'Comercio justo',
@@ -594,6 +608,13 @@ const es: Dict = {
 };
 
 const pt: Dict = {
+  // --- Circuit de commande B2B ---
+  'Le règlement se fait par virement entre l\'acheteur et le producteur, à réception de facture. EthiMarket n\'encaisse aucun paiement.': 'O pagamento é feito por transferência entre o comprador e o produtor, após receção da fatura. A EthiMarket não recebe qualquer pagamento.',
+  'Motif de l\'annulation ?': 'Motivo da anulação?',
+  'Décrivez le problème rencontré (produit non conforme, quantité, retard…) :': 'Descreva o problema encontrado (produto não conforme, quantidade, atraso…):',
+  'Ex: DHL-123456789': 'Ex.: DHL-123456789',
+  'Ex: DHL, Maersk, transporteur local…': 'Ex.: DHL, Maersk, transportadora local…',
+
   // --- Catégories du blog ---
   'Agriculture': 'Agricultura',
   'Commerce équitable': 'Comércio justo',
@@ -880,6 +901,13 @@ const pt: Dict = {
 };
 
 const ar: Dict = {
+  // --- Circuit de commande B2B ---
+  'Le règlement se fait par virement entre l\'acheteur et le producteur, à réception de facture. EthiMarket n\'encaisse aucun paiement.': 'يتم الدفع بالتحويل البنكي بين المشتري والمنتِج عند استلام الفاتورة. لا تحصّل EthiMarket أي مدفوعات.',
+  'Motif de l\'annulation ?': 'ما سبب الإلغاء؟',
+  'Décrivez le problème rencontré (produit non conforme, quantité, retard…) :': 'صف المشكلة (منتج غير مطابق، كمية، تأخير…):',
+  'Ex: DHL-123456789': 'مثال: DHL-123456789',
+  'Ex: DHL, Maersk, transporteur local…': 'مثال: DHL أو Maersk أو ناقل محلي…',
+
   // --- Catégories du blog ---
   'Agriculture': 'الزراعة',
   'Commerce équitable': 'التجارة العادلة',
