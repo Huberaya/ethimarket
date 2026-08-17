@@ -1,69 +1,82 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import Catalogue from './pages/Catalogue';
-import ProductDetail from './pages/ProductDetail';
-import Login from './pages/Login';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
-import Register from './pages/Register';
-import ProducerShop from './pages/ProducerShop';
-import HowItWorks from './pages/HowItWorks';
-import Blog from './pages/Blog';
-import BlogArticle from './pages/BlogArticle';
-import Contact from './pages/Contact';
-import DevenirVendeur from './pages/DevenirVendeur';
-import NotreMission from './pages/NotreMission';
-import TrustCenter from './pages/TrustCenter';
-import { Tarifs, NotreEquipe, CertificationsPage, Presse, Partenaires, CentreAide } from './pages/InstitutionalPages';
-import BuyerWorkspace from './pages/dashboard/BuyerWorkspace';
-import SupplierSourcing from './pages/dashboard/SupplierSourcing';
-import DocumentVault from './pages/dashboard/DocumentVault';
-import Producers from './pages/Producers';
-import Legal from './pages/Legal';
-import NotFound from './pages/NotFound';
+
+// Code-splitting : chaque page est un chunk séparé (bundle initial réduit)
+const Catalogue = lazy(() => import('./pages/Catalogue'));
+const ProductDetail = lazy(() => import('./pages/ProductDetail'));
+const Login = lazy(() => import('./pages/Login'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const Register = lazy(() => import('./pages/Register'));
+const ProducerShop = lazy(() => import('./pages/ProducerShop'));
+const HowItWorks = lazy(() => import('./pages/HowItWorks'));
+const Blog = lazy(() => import('./pages/Blog'));
+const BlogArticle = lazy(() => import('./pages/BlogArticle'));
+const Contact = lazy(() => import('./pages/Contact'));
+const DevenirVendeur = lazy(() => import('./pages/DevenirVendeur'));
+const NotreMission = lazy(() => import('./pages/NotreMission'));
+const TrustCenter = lazy(() => import('./pages/TrustCenter'));
+const Tarifs = lazy(() => import('./pages/InstitutionalPages').then(m => ({ default: m.Tarifs })));
+const NotreEquipe = lazy(() => import('./pages/InstitutionalPages').then(m => ({ default: m.NotreEquipe })));
+const CertificationsPage = lazy(() => import('./pages/InstitutionalPages').then(m => ({ default: m.CertificationsPage })));
+const Presse = lazy(() => import('./pages/InstitutionalPages').then(m => ({ default: m.Presse })));
+const Partenaires = lazy(() => import('./pages/InstitutionalPages').then(m => ({ default: m.Partenaires })));
+const CentreAide = lazy(() => import('./pages/InstitutionalPages').then(m => ({ default: m.CentreAide })));
+const BuyerWorkspace = lazy(() => import('./pages/dashboard/BuyerWorkspace'));
+const SupplierSourcing = lazy(() => import('./pages/dashboard/SupplierSourcing'));
+const DocumentVault = lazy(() => import('./pages/dashboard/DocumentVault'));
+const Producers = lazy(() => import('./pages/Producers'));
+const Legal = lazy(() => import('./pages/Legal'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const AddProduct = lazy(() => import('./pages/dashboard/AddProduct'));
+const EditProduct = lazy(() => import('./pages/dashboard/EditProduct'));
+const MyProducts = lazy(() => import('./pages/dashboard/MyProducts'));
+const MyShop = lazy(() => import('./pages/dashboard/MyShop'));
+const MonProfil = lazy(() => import('./pages/dashboard/MonProfil'));
+const Messages = lazy(() => import('./pages/dashboard/Messages'));
+const SettingsPage = lazy(() => import('./pages/dashboard/PlaceholderPages').then(m => ({ default: m.SettingsPage })));
+const QuotesPage = lazy(() => import('./pages/dashboard/QuotesPage'));
+const OrdersPage = lazy(() => import('./pages/dashboard/OrdersPage'));
+const OrganizationPage = lazy(() => import('./pages/dashboard/OrganizationPage'));
+const Verification = lazy(() => import('./pages/dashboard/Verification'));
+const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
+const AdminProducers = lazy(() => import('./pages/admin/Producers'));
+const AdminVerificationsPage = lazy(() => import('./pages/admin/Verifications'));
+const AdminVerificationDetail = lazy(() => import('./pages/admin/AdminVerificationDetail'));
+const AdminCertBodies = lazy(() => import('./pages/admin/AdminCertBodies'));
+const AdminProducts = lazy(() => import('./pages/admin/Products'));
+const AdminOrders = lazy(() => import('./pages/admin/Orders'));
+const AdminDisputes = lazy(() => import('./pages/admin/Disputes'));
+const AdminFinances = lazy(() => import('./pages/admin/Finances'));
+const AdminUsers = lazy(() => import('./pages/admin/Users'));
+const AdminReports = lazy(() => import('./pages/admin/Reports'));
+const ScoreEthiMarket = lazy(() => import('./pages/ScoreEthiMarket'));
+const CertificationsDashboard = lazy(() => import('./pages/admin/CertificationsDashboard'));
+const ProducerCertificationsList = lazy(() => import('./pages/admin/ProducerCertificationsList'));
+const ProducerCertificationDetail = lazy(() => import('./pages/admin/ProducerCertificationDetail'));
+const AdminCertBodiesDirectory = lazy(() => import('./pages/admin/AdminCertBodiesDirectory'));
+const AdminCertBodyDetail = lazy(() => import('./pages/admin/AdminCertBodyDetail'));
+const AdminMessageTemplates = lazy(() => import('./pages/admin/AdminMessageTemplates'));
 import BackToTop from './components/BackToTop';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
-import Dashboard from './pages/Dashboard';
-import AddProduct from './pages/dashboard/AddProduct';
-import EditProduct from './pages/dashboard/EditProduct';
-import MyProducts from './pages/dashboard/MyProducts';
-import MyShop from './pages/dashboard/MyShop';
-import MonProfil from './pages/dashboard/MonProfil';
-import Messages from './pages/dashboard/Messages';
-import { SettingsPage } from './pages/dashboard/PlaceholderPages';
-import QuotesPage from './pages/dashboard/QuotesPage';
-import OrdersPage from './pages/dashboard/OrdersPage';
-import OrganizationPage from './pages/dashboard/OrganizationPage';
-import Verification from './pages/dashboard/Verification';
 import AdminLayout from './components/AdminLayout';
 import AdminRoute from './components/AdminRoute';
-import AdminDashboard from './pages/admin/Dashboard';
-import AdminProducers from './pages/admin/Producers';
-import AdminVerificationsPage from './pages/admin/Verifications';
-import AdminVerificationDetail from './pages/admin/AdminVerificationDetail';
-import AdminCertBodies from './pages/admin/AdminCertBodies';
-import AdminProducts from './pages/admin/Products';
-import AdminOrders from './pages/admin/Orders';
-import AdminDisputes from './pages/admin/Disputes';
-import AdminFinances from './pages/admin/Finances';
-import AdminUsers from './pages/admin/Users';
-import AdminReports from './pages/admin/Reports';
-import ScoreEthiMarket from './pages/ScoreEthiMarket';
 
 // Module mondial de vérification des certifications (Étape 5)
-import CertificationsDashboard from './pages/admin/CertificationsDashboard';
-import ProducerCertificationsList from './pages/admin/ProducerCertificationsList';
-import ProducerCertificationDetail from './pages/admin/ProducerCertificationDetail';
-import AdminCertBodiesDirectory from './pages/admin/AdminCertBodiesDirectory';
-import AdminCertBodyDetail from './pages/admin/AdminCertBodyDetail';
-import AdminMessageTemplates from './pages/admin/AdminMessageTemplates';
 
 export default function App() {
   return (
     <BrowserRouter>
       <BackToTop />
       <a href="#main-content" className="skip-link">Aller au contenu principal</a>
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="w-8 h-8 border-3 border-brand-200 border-t-brand-600 rounded-full animate-spin" aria-label="Chargement" />
+        </div>
+      }>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/catalogue" element={<Catalogue />} />
@@ -143,6 +156,7 @@ export default function App() {
         {/* 404 Catch-All */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

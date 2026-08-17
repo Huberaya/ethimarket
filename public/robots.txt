@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /dashboard/
 
-Sitemap: https://ethimarket.com/sitemap.xml
+Sitemap: https://ethimarket.vercel.app/sitemap.xml
