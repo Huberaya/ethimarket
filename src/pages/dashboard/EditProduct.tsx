@@ -5,6 +5,8 @@ import { useAuth } from '../../lib/auth';
 import { supabase, type Category, type Product } from '../../lib/supabase';
 import ProductClaimsEditor, { DraftClaim, saveDraftClaims } from '../../components/trust/ProductClaimsEditor';
 import { useI18n } from '../../lib/i18n';
+import ImpactAssistant from '../../components/dashboard/ImpactAssistant';
+import { estimateFootprints } from '../../lib/impactEstimator';
 
 const COUNTRIES = [
   'France', 'Belgique', 'Suisse', 'Canada', 'Maroc', 'Éthiopie', 'Iran', 'Madagascar',
@@ -37,6 +39,9 @@ export default function EditProduct() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [existingClaims, setExistingClaims] = useState<{ id: string; claim_label: string; verification_status: string }[]>([]);
   const [newClaims, setNewClaims] = useState<DraftClaim[]>([]);
+  // Assistant d'impact : true si les empreintes en base proviennent
+  // d'une ACV producteur (et non de notre estimation sectorielle).
+  const [hasAcv, setHasAcv] = useState(false);
 
   const [form, setForm] = useState({
     name: '', short_description: '', description: '',
@@ -92,6 +97,7 @@ export default function EditProduct() {
             raw_materials_origin: (p as Record<string, unknown>).raw_materials_origin as string ?? '',
             carbon_footprint_kg: ((p as Record<string, unknown>).carbon_footprint_kg ?? '').toString(),
             water_footprint_liters: ((p as Record<string, unknown>).water_footprint_liters ?? '').toString(),
+            /* hasAcv est positionné plus bas (setHasAcv) selon carbon_footprint_source */
             is_vegan: Boolean((p as Record<string, unknown>).is_vegan),
             is_recycled: Boolean((p as Record<string, unknown>).is_recycled),
             recycled_percentage: ((p as Record<string, unknown>).recycled_percentage ?? '').toString(),
@@ -109,6 +115,11 @@ export default function EditProduct() {
             tier3_min_qty: (((p as Record<string, unknown>).volume_tiers as { min_qty: number; discount_pct: number }[] | null)?.[1]?.min_qty ?? '').toString(),
             tier3_discount_pct: (((p as Record<string, unknown>).volume_tiers as { min_qty: number; discount_pct: number }[] | null)?.[1]?.discount_pct ?? '').toString(),
           });
+          // ACV producteur = valeur présente ET non marquée 'estimated'
+          const rawP = p as Record<string, unknown>;
+          setHasAcv(
+            Number(rawP.carbon_footprint_kg) > 0 && rawP.carbon_footprint_source !== 'estimated'
+          );
           setImagePreview(p.image_url ?? null);
           supabase.from('product_claims')
             .select('id, claim_label, verification_status')
@@ -185,8 +196,25 @@ export default function EditProduct() {
       product_type: form.product_type || null,
       manufacturing_country: form.manufacturing_country || form.country || null,
       raw_materials_origin: form.raw_materials_origin || form.country || null,
-      carbon_footprint_kg: form.carbon_footprint_kg ? parseFloat(form.carbon_footprint_kg) : null,
-      water_footprint_liters: form.water_footprint_liters ? parseFloat(form.water_footprint_liters) : null,
+      // Assistant d'impact : ACV producteur si fournie, sinon estimation
+      // sectorielle sourcée (marqueur 'estimated' pour l'honnêteté).
+      ...(() => {
+        const acvCo2 = hasAcv && form.carbon_footprint_kg ? parseFloat(form.carbon_footprint_kg) : null;
+        const acvWater = hasAcv && form.water_footprint_liters ? parseFloat(form.water_footprint_liters) : null;
+        const est = estimateFootprints({
+          product_type: form.product_type || undefined,
+          category_name: categories.find(c => c.id === form.category_id)?.name,
+          name: form.name || undefined,
+          farming_method: (product as Record<string, unknown> | null)?.farming_method as string | undefined,
+          certifications: form.certifications,
+        });
+        return {
+          carbon_footprint_kg: acvCo2 && !Number.isNaN(acvCo2) ? acvCo2 : est.co2PerKg,
+          carbon_footprint_source: acvCo2 && !Number.isNaN(acvCo2) ? 'producer' : 'estimated',
+          water_footprint_liters: acvWater && !Number.isNaN(acvWater) ? acvWater : est.waterPerKg,
+          water_footprint_source: acvWater && !Number.isNaN(acvWater) ? 'producer' : 'estimated',
+        };
+      })(),
       is_vegan: form.is_vegan,
       is_recycled: form.is_recycled,
       recycled_percentage: form.is_recycled && form.recycled_percentage ? parseFloat(form.recycled_percentage) : null,
@@ -458,18 +486,20 @@ export default function EditProduct() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>{tx('Empreinte carbone (kg CO2e)')}</label>
-              <input type="number" step="0.1" min="0" value={form.carbon_footprint_kg}
-                onChange={e => update('carbon_footprint_kg', e.target.value)} placeholder="Ex: 1.6" className={inputClass} />
-            </div>
-            <div>
-              <label className={labelClass}>{tx('Empreinte eau (litres)')}</label>
-              <input type="number" step="1" min="0" value={form.water_footprint_liters}
-                onChange={e => update('water_footprint_liters', e.target.value)} placeholder="Ex: 140" className={inputClass} />
-            </div>
-          </div>
+          <ImpactAssistant
+            productType={form.product_type}
+            categoryName={categories.find(c => c.id === form.category_id)?.name}
+            productName={form.name}
+            farmingMethod={(product as Record<string, unknown> | null)?.farming_method as string | undefined}
+            certifications={form.certifications}
+            co2Value={form.carbon_footprint_kg}
+            waterValue={form.water_footprint_liters}
+            hasAcv={hasAcv}
+            onChange={(field, value) => update(field, value)}
+            onToggleAcv={setHasAcv}
+            inputClass={inputClass}
+            labelClass={labelClass}
+          />
 
           <div>
             <label className={labelClass}>{tx('Engagements éthiques & sociaux')}</label>

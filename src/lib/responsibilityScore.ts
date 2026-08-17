@@ -12,6 +12,7 @@
 
 import { Product } from './supabase';
 import { supabase } from './supabase';
+import { carbonPerformance, waterPerformance } from './impactEstimator';
 
 export interface CriterionScore {
   key: 'environment' | 'social' | 'traceability' | 'certifications' | 'logistics' | 'supplier';
@@ -77,17 +78,28 @@ export function computeResponsibilityReport(
   // ---------- 🌱 ENVIRONNEMENT ----------
   {
     const d: CriterionScore['details'] = [{ label: 'Base', points: 30 }];
-    const co2 = product.carbon_footprint_kg;
-    if (co2 !== undefined && co2 !== null) {
-      if (co2 <= 1) d.push({ label: `Empreinte carbone très faible (${co2} kg CO2e)`, points: 30 });
-      else if (co2 <= 2) d.push({ label: `Empreinte carbone faible (${co2} kg CO2e)`, points: 20 });
-      else if (co2 <= 4) d.push({ label: `Empreinte carbone modérée (${co2} kg CO2e)`, points: 8 });
-      else d.push({ label: `Empreinte carbone élevée (${co2} kg CO2e)`, points: -10 });
-    } else {
-      d.push({ label: 'Empreinte carbone non renseignée', points: 0 });
-      attention.push({ severity: 'warning', message: "L'empreinte carbone n'est pas renseignée : impossible d'évaluer précisément l'impact climatique." });
+    // Performance carbone RELATIVE à la référence conventionnelle de la
+    // catégorie (comparer le CO2 absolu d'un café ~16 kg/kg à celui d'un
+    // miel ~1,8 kg/kg n'aurait aucun sens). Une ACV fournie par le
+    // producteur (donnée primaire) vaut plus de points qu'une estimation
+    // sectorielle — mais l'absence d'ACV n'est plus pénalisée : les
+    // agriculteurs n'ont pas les moyens de mesurer ces chiffres, la
+    // plateforme les estime pour eux (Agribalyse, Poore & Nemecek, WFN).
+    const co2Perf = carbonPerformance(product);
+    const isAcv = co2Perf.source === 'producer';
+    const co2Pts = isAcv
+      ? { excellent: 30, good: 20, neutral: 8, high: -10 }
+      : { excellent: 18, good: 12, neutral: 4, high: -6 };
+    const co2SrcTag = isAcv ? 'ACV producteur' : 'estimation sectorielle';
+    if (co2Perf.tier === 'excellent') d.push({ label: `Empreinte carbone très inférieure à la référence de sa catégorie (${co2Perf.value} kg CO2e/kg — ${co2SrcTag})`, points: co2Pts.excellent });
+    else if (co2Perf.tier === 'good') d.push({ label: `Empreinte carbone inférieure à la référence de sa catégorie (${co2Perf.value} kg CO2e/kg — ${co2SrcTag})`, points: co2Pts.good });
+    else if (co2Perf.tier === 'neutral') d.push({ label: `Empreinte carbone dans la moyenne de sa catégorie (${co2Perf.value} kg CO2e/kg — ${co2SrcTag})`, points: co2Pts.neutral });
+    else d.push({ label: `Empreinte carbone supérieure à la référence de sa catégorie (${co2Perf.value} kg CO2e/kg — ${co2SrcTag})`, points: co2Pts.high });
+    if (!isAcv) {
+      attention.push({ severity: 'info', message: 'Empreintes CO2 et eau estimées à partir de moyennes sectorielles sourcées (Agribalyse 3.1, Poore & Nemecek 2018, Water Footprint Network). Une ACV produit fournie par le producteur les remplacerait par des valeurs mesurées.' });
     }
-    if ((product.water_footprint_liters ?? 0) > 0 && (product.water_footprint_liters ?? 0) <= 150) d.push({ label: 'Consommation d\'eau maîtrisée', points: 10 });
+    const waterPerf = waterPerformance(product);
+    if (waterPerf.tier === 'excellent' || waterPerf.tier === 'good') d.push({ label: `Consommation d'eau inférieure à la référence de sa catégorie (${waterPerf.source === 'producer' ? 'ACV producteur' : 'estimation sectorielle'})`, points: waterPerf.source === 'producer' ? 10 : 6 });
     const pkg = product.packaging_types ?? [];
     if (pkg.includes('plastic_free')) d.push({ label: 'Emballage sans plastique', points: 10 });
     if (pkg.includes('compostable')) d.push({ label: 'Emballage compostable', points: 8 });

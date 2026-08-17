@@ -158,8 +158,10 @@ export function calculateCarbonFootprint(
   // Si le producteur a fourni une empreinte spécifique (ACV produit),
   // elle PRIME sur la moyenne sectorielle (hiérarchie GHG Protocol :
   // données primaires > données secondaires).
+  // Une valeur stockée marquée 'estimated' provient de notre propre
+  // Assistant d'impact — elle N'EST PAS une donnée primaire producteur.
   const producerDeclaredCo2 = Number(product?.carbon_footprint_kg) || 0;
-  const usesPrimaryData = producerDeclaredCo2 > 0;
+  const usesPrimaryData = producerDeclaredCo2 > 0 && product?.carbon_footprint_source !== 'estimated';
   const conventionalPerKg = entry.conv.value;
   const organicPerKg = conventionalPerKg * (1 - entry.organicReductionPct / 100);
   const productionPerKg = usesPrimaryData
@@ -244,7 +246,7 @@ export function calculateWaterFootprint(
 
   // Donnée primaire producteur si disponible (L/kg)
   const producerDeclaredWater = Number(product?.water_footprint_liters) || 0;
-  const usesPrimaryData = producerDeclaredWater > 0;
+  const usesPrimaryData = producerDeclaredWater > 0 && product?.water_footprint_source !== 'estimated';
 
   const totalPerKgConv = entry.total.value;
   const greenPerKg = totalPerKgConv * entry.greenPct / 100;

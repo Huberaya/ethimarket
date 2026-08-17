@@ -9,6 +9,25 @@ import type { Locale } from './index';
 type Dict = Record<string, string>;
 
 const en: Dict = {
+  // --- Assistant d'impact (empreintes CO2/eau estimées) ---
+  'Empreintes CO2 & eau — calculées pour vous': 'CO2 & water footprints — calculated for you',
+  'Pas besoin de mesurer vous-même : EthiMarket estime vos empreintes à partir de références scientifiques (Agribalyse, Poore & Nemecek, Water Footprint Network) selon votre type de produit et votre méthode agricole.': 'No need to measure it yourself: EthiMarket estimates your footprints from scientific references (Agribalyse, Poore & Nemecek, Water Footprint Network) based on your product type and farming method.',
+  'Empreinte carbone estimée': 'Estimated carbon footprint',
+  'Empreinte eau estimée': 'Estimated water footprint',
+  'Référence conventionnelle de la catégorie :': 'Conventional reference for the category:',
+  'Estimation sectorielle sourcée': 'Sourced sector estimate',
+  'Réduction bio appliquée (méta-analyses scientifiques)': 'Organic reduction applied (scientific meta-analyses)',
+  'Masquer la méthodologie': 'Hide methodology',
+  'Voir la méthodologie': 'View methodology',
+  'Eau': 'Water',
+  'Ces valeurs sont des moyennes sectorielles mondiales, toujours affichées comme estimations dans le Trust Center. Elles sont remplacées par vos données dès que vous fournissez une ACV.': 'These values are global sector averages, always shown as estimates in the Trust Center. They are replaced by your data as soon as you provide an LCA.',
+  'J\'ai une analyse de cycle de vie (ACV) : saisir mes valeurs mesurées': 'I have a life-cycle assessment (LCA): enter my measured values',
+  'Valeurs mesurées (ACV produit)': 'Measured values (product LCA)',
+  'Revenir à l\'estimation automatique': 'Back to automatic estimate',
+  'Empreinte carbone mesurée (kg CO2e / kg)': 'Measured carbon footprint (kg CO2e / kg)',
+  'Empreinte eau mesurée (litres / kg)': 'Measured water footprint (litres / kg)',
+  'Ces valeurs seront affichées comme « ACV producteur » dans le Trust Center et rapporteront plus de points au Responsibility Score qu\'une estimation.': 'These values will appear as “Producer LCA” in the Trust Center and earn more Responsibility Score points than an estimate.',
+
   'Pièces d\'identité': 'Identity documents',
   'Ex: près de la rivière...': 'E.g. near the river...',
   'Ex: Café Arabica Yirgacheffe Grand Cru Bio 1kg': 'E.g. Organic Yirgacheffe Arabica Coffee Grand Cru 1kg',
@@ -282,6 +301,25 @@ const en: Dict = {
 };
 
 const es: Dict = {
+  // --- Assistant d'impact (empreintes CO2/eau estimées) ---
+  'Empreintes CO2 & eau — calculées pour vous': 'Huellas de CO2 y agua — calculadas por usted',
+  'Pas besoin de mesurer vous-même : EthiMarket estime vos empreintes à partir de références scientifiques (Agribalyse, Poore & Nemecek, Water Footprint Network) selon votre type de produit et votre méthode agricole.': 'No necesita medirlas usted mismo: EthiMarket estima sus huellas a partir de referencias científicas (Agribalyse, Poore & Nemecek, Water Footprint Network) según su tipo de producto y método agrícola.',
+  'Empreinte carbone estimée': 'Huella de carbono estimada',
+  'Empreinte eau estimée': 'Huella hídrica estimada',
+  'Référence conventionnelle de la catégorie :': 'Referencia convencional de la categoría:',
+  'Estimation sectorielle sourcée': 'Estimación sectorial con fuentes',
+  'Réduction bio appliquée (méta-analyses scientifiques)': 'Reducción ecológica aplicada (metaanálisis científicos)',
+  'Masquer la méthodologie': 'Ocultar la metodología',
+  'Voir la méthodologie': 'Ver la metodología',
+  'Eau': 'Agua',
+  'Ces valeurs sont des moyennes sectorielles mondiales, toujours affichées comme estimations dans le Trust Center. Elles sont remplacées par vos données dès que vous fournissez une ACV.': 'Estos valores son promedios sectoriales mundiales, siempre mostrados como estimaciones en el Trust Center. Se sustituyen por sus datos en cuanto proporciona un ACV.',
+  'J\'ai une analyse de cycle de vie (ACV) : saisir mes valeurs mesurées': 'Tengo un análisis de ciclo de vida (ACV): introducir mis valores medidos',
+  'Valeurs mesurées (ACV produit)': 'Valores medidos (ACV del producto)',
+  'Revenir à l\'estimation automatique': 'Volver a la estimación automática',
+  'Empreinte carbone mesurée (kg CO2e / kg)': 'Huella de carbono medida (kg CO2e / kg)',
+  'Empreinte eau mesurée (litres / kg)': 'Huella hídrica medida (litros / kg)',
+  'Ces valeurs seront affichées comme « ACV producteur » dans le Trust Center et rapporteront plus de points au Responsibility Score qu\'une estimation.': 'Estos valores se mostrarán como «ACV del productor» en el Trust Center y otorgarán más puntos al Responsibility Score que una estimación.',
+
   'Pièces d\'identité': 'Documentos de identidad',
   'Ex: près de la rivière...': 'Ej: cerca del río...',
   'Ex: Café Arabica Yirgacheffe Grand Cru Bio 1kg': 'Ej: Café Arábica Yirgacheffe Grand Cru Orgánico 1kg',
@@ -542,6 +580,25 @@ const es: Dict = {
 };
 
 const pt: Dict = {
+  // --- Assistant d'impact (empreintes CO2/eau estimées) ---
+  'Empreintes CO2 & eau — calculées pour vous': 'Pegadas de CO2 e água — calculadas por si',
+  'Pas besoin de mesurer vous-même : EthiMarket estime vos empreintes à partir de références scientifiques (Agribalyse, Poore & Nemecek, Water Footprint Network) selon votre type de produit et votre méthode agricole.': 'Não precisa de medir você mesmo: a EthiMarket estima as suas pegadas a partir de referências científicas (Agribalyse, Poore & Nemecek, Water Footprint Network) segundo o tipo de produto e o método agrícola.',
+  'Empreinte carbone estimée': 'Pegada de carbono estimada',
+  'Empreinte eau estimée': 'Pegada hídrica estimada',
+  'Référence conventionnelle de la catégorie :': 'Referência convencional da categoria:',
+  'Estimation sectorielle sourcée': 'Estimativa setorial com fontes',
+  'Réduction bio appliquée (méta-analyses scientifiques)': 'Redução biológica aplicada (meta-análises científicas)',
+  'Masquer la méthodologie': 'Ocultar a metodologia',
+  'Voir la méthodologie': 'Ver a metodologia',
+  'Eau': 'Água',
+  'Ces valeurs sont des moyennes sectorielles mondiales, toujours affichées comme estimations dans le Trust Center. Elles sont remplacées par vos données dès que vous fournissez une ACV.': 'Estes valores são médias setoriais mundiais, sempre apresentados como estimativas no Trust Center. São substituídos pelos seus dados assim que fornecer uma ACV.',
+  'J\'ai une analyse de cycle de vie (ACV) : saisir mes valeurs mesurées': 'Tenho uma análise de ciclo de vida (ACV): introduzir os meus valores medidos',
+  'Valeurs mesurées (ACV produit)': 'Valores medidos (ACV do produto)',
+  'Revenir à l\'estimation automatique': 'Voltar à estimativa automática',
+  'Empreinte carbone mesurée (kg CO2e / kg)': 'Pegada de carbono medida (kg CO2e / kg)',
+  'Empreinte eau mesurée (litres / kg)': 'Pegada hídrica medida (litros / kg)',
+  'Ces valeurs seront affichées comme « ACV producteur » dans le Trust Center et rapporteront plus de points au Responsibility Score qu\'une estimation.': 'Estes valores serão apresentados como «ACV do produtor» no Trust Center e valem mais pontos no Responsibility Score do que uma estimativa.',
+
   'Pièces d\'identité': 'Documentos de identidade',
   'Ex: près de la rivière...': 'Ex: perto do rio...',
   'Ex: Café Arabica Yirgacheffe Grand Cru Bio 1kg': 'Ex: Café Arábica Yirgacheffe Grand Cru Orgânico 1kg',
@@ -802,6 +859,25 @@ const pt: Dict = {
 };
 
 const ar: Dict = {
+  // --- Assistant d'impact (empreintes CO2/eau estimées) ---
+  'Empreintes CO2 & eau — calculées pour vous': 'بصمتا الكربون والماء — تُحسبان لك تلقائيًا',
+  'Pas besoin de mesurer vous-même : EthiMarket estime vos empreintes à partir de références scientifiques (Agribalyse, Poore & Nemecek, Water Footprint Network) selon votre type de produit et votre méthode agricole.': 'لا حاجة للقياس بنفسك: تقدّر EthiMarket بصماتك استنادًا إلى مراجع علمية (Agribalyse وPoore & Nemecek وWater Footprint Network) حسب نوع منتجك وطريقتك الزراعية.',
+  'Empreinte carbone estimée': 'البصمة الكربونية المقدّرة',
+  'Empreinte eau estimée': 'البصمة المائية المقدّرة',
+  'Référence conventionnelle de la catégorie :': 'المرجع التقليدي للفئة:',
+  'Estimation sectorielle sourcée': 'تقدير قطاعي موثّق المصادر',
+  'Réduction bio appliquée (méta-analyses scientifiques)': 'خصم عضوي مطبَّق (تحليلات علمية تجميعية)',
+  'Masquer la méthodologie': 'إخفاء المنهجية',
+  'Voir la méthodologie': 'عرض المنهجية',
+  'Eau': 'الماء',
+  'Ces valeurs sont des moyennes sectorielles mondiales, toujours affichées comme estimations dans le Trust Center. Elles sont remplacées par vos données dès que vous fournissez une ACV.': 'هذه القيم متوسطات قطاعية عالمية، تُعرض دائمًا كتقديرات في مركز الثقة. وتُستبدل ببياناتك فور تقديم تحليل دورة حياة (ACV).',
+  'J\'ai une analyse de cycle de vie (ACV) : saisir mes valeurs mesurées': 'لديّ تحليل دورة حياة (ACV): إدخال قيمي المقيسة',
+  'Valeurs mesurées (ACV produit)': 'قيم مقيسة (تحليل دورة حياة المنتج)',
+  'Revenir à l\'estimation automatique': 'العودة إلى التقدير التلقائي',
+  'Empreinte carbone mesurée (kg CO2e / kg)': 'البصمة الكربونية المقيسة (كغ CO2e / كغ)',
+  'Empreinte eau mesurée (litres / kg)': 'البصمة المائية المقيسة (لتر / كغ)',
+  'Ces valeurs seront affichées comme « ACV producteur » dans le Trust Center et rapporteront plus de points au Responsibility Score qu\'une estimation.': 'ستُعرض هذه القيم كـ«تحليل دورة حياة المنتِج» في مركز الثقة وتمنح نقاطًا أكثر في Responsibility Score من التقدير.',
+
   'Pièces d\'identité': 'وثائق الهوية',
   'Ex: près de la rivière...': 'مثال: قرب النهر...',
   'Ex: Café Arabica Yirgacheffe Grand Cru Bio 1kg': 'مثال: قهوة أرابيكا يرغاتشيف غراند كرو عضوية 1 كغ',

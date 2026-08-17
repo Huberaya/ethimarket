@@ -129,9 +129,12 @@ export const SearchResultsTable: React.FC<SearchResultsTableProps> = ({
 
                 {/* CO2 */}
                 <td className="p-3 text-center text-xs">
-                  <span className="inline-flex items-center gap-1 text-neutral-600 font-medium">
+                  <span
+                    className="inline-flex items-center gap-1 text-neutral-600 font-medium"
+                    title={prod.carbon_footprint_source === 'estimated' ? 'Estimation sectorielle sourcée (Agribalyse, Poore & Nemecek)' : 'ACV fournie par le producteur'}
+                  >
                     <Leaf className="w-3 h-3 text-emerald-600" />
-                    <span>{co2} kg</span>
+                    <span>{prod.carbon_footprint_source === 'estimated' ? '~' : ''}{co2} kg</span>
                   </span>
                 </td>
 

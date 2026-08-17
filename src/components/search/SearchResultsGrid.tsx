@@ -61,9 +61,12 @@ export const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
                   <span>Score {score}/100</span>
                 </span>
                 {co2 > 0 && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold bg-white/95 text-neutral-800 shadow-md backdrop-blur-sm">
+                  <span
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold bg-white/95 text-neutral-800 shadow-md backdrop-blur-sm"
+                    title={prod.carbon_footprint_source === 'estimated' ? 'Estimation sectorielle sourcée (Agribalyse, Poore & Nemecek)' : 'ACV fournie par le producteur'}
+                  >
                     <Leaf className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>{co2} kg CO2</span>
+                    <span>{prod.carbon_footprint_source === 'estimated' ? '~' : ''}{co2} kg CO2</span>
                   </span>
                 )}
               </div>

@@ -7,6 +7,8 @@ import { supabase, type Category } from '../../lib/supabase';
 import { COUNTRIES, getCountryFlag } from '../../lib/countries';
 import { cleanPayload, toFloatOrNull, toIntOrNull, toStringOrNull, toDateOrNull } from '../../lib/dbHelpers';
 import { useI18n } from '../../lib/i18n';
+import ImpactAssistant from '../../components/dashboard/ImpactAssistant';
+import { estimateFootprints } from '../../lib/impactEstimator';
 
 const CERT_OPTIONS = ['Bio', 'Fairtrade', 'Ecocert', 'Rainforest Alliance', 'GlobalGAP'];
 const CURRENCIES = ['EUR', 'USD', 'MAD', 'XOF'];
@@ -45,6 +47,9 @@ export default function AddProduct() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [draftClaims, setDraftClaims] = useState<DraftClaim[]>([]);
+  // Assistant d'impact : par défaut la plateforme estime les empreintes ;
+  // le producteur peut basculer en mode « ACV » pour saisir ses mesures.
+  const [hasAcv, setHasAcv] = useState(false);
 
   const [form, setForm] = useState({
     name: '',
@@ -376,8 +381,25 @@ export default function AddProduct() {
         product_type: toStringOrNull(form.product_type),
         manufacturing_country: toStringOrNull(form.manufacturing_country) ?? toStringOrNull(form.country),
         raw_materials_origin: toStringOrNull(form.raw_materials_origin) ?? toStringOrNull(form.country),
-        carbon_footprint_kg: toFloatOrNull(form.carbon_footprint_kg),
-        water_footprint_liters: toFloatOrNull(form.water_footprint_liters),
+        // Assistant d'impact : ACV producteur si fournie, sinon estimation
+        // sectorielle sourcée écrite en base avec le marqueur 'estimated'.
+        ...(() => {
+          const acvCo2 = hasAcv ? toFloatOrNull(form.carbon_footprint_kg) : null;
+          const acvWater = hasAcv ? toFloatOrNull(form.water_footprint_liters) : null;
+          const est = estimateFootprints({
+            product_type: form.product_type || undefined,
+            category_name: categories.find(c => c.id === form.category_id)?.name,
+            name: form.name || undefined,
+            farming_method: form.farming_method || undefined,
+            certifications: form.certifications,
+          });
+          return {
+            carbon_footprint_kg: acvCo2 ?? est.co2PerKg,
+            carbon_footprint_source: acvCo2 !== null ? 'producer' : 'estimated',
+            water_footprint_liters: acvWater ?? est.waterPerKg,
+            water_footprint_source: acvWater !== null ? 'producer' : 'estimated',
+          };
+        })(),
         is_vegan: form.is_vegan,
         is_recycled: form.is_recycled,
         recycled_percentage: form.is_recycled ? toFloatOrNull(form.recycled_percentage) : null,
@@ -965,28 +987,20 @@ export default function AddProduct() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className={labelClass}>{tx('Empreinte carbone (kg CO2e / unité)')}</label>
-                <input
-                  type="number" step="0.1" min="0"
-                  value={form.carbon_footprint_kg}
-                  onChange={e => update('carbon_footprint_kg', e.target.value)}
-                  placeholder="Ex: 1.6"
-                  className={inputClass}
-                />
-              </div>
-              <div>
-                <label className={labelClass}>{tx('Empreinte eau (litres / unité)')}</label>
-                <input
-                  type="number" step="1" min="0"
-                  value={form.water_footprint_liters}
-                  onChange={e => update('water_footprint_liters', e.target.value)}
-                  placeholder="Ex: 140"
-                  className={inputClass}
-                />
-              </div>
-            </div>
+            <ImpactAssistant
+              productType={form.product_type}
+              categoryName={categories.find(c => c.id === form.category_id)?.name}
+              productName={form.name}
+              farmingMethod={form.farming_method}
+              certifications={form.certifications}
+              co2Value={form.carbon_footprint_kg}
+              waterValue={form.water_footprint_liters}
+              hasAcv={hasAcv}
+              onChange={(field, value) => update(field, value)}
+              onToggleAcv={setHasAcv}
+              inputClass={inputClass}
+              labelClass={labelClass}
+            />
 
             {/* Engagements ethiques et sociaux */}
             <div>

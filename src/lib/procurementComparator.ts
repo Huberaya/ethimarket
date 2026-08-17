@@ -13,6 +13,7 @@
 
 import { Product } from './supabase';
 import { supabase } from './supabase';
+import { carbonPerformance } from './impactEstimator';
 
 export type RiskLevel = 'low' | 'medium' | 'high';
 
@@ -156,14 +157,15 @@ export function computeScorecards(
     if (p.social_audit_passed) { resp += 10; strengths.push('Audit social réalisé'); }
     if (p.is_cooperative) { resp += 6; strengths.push('Production en coopérative'); }
     if (p.is_recycled && (p.recycled_percentage ?? 0) > 0) { resp += 5; }
-    const co2 = p.carbon_footprint_kg;
-    if (co2 !== undefined && co2 !== null) {
-      if (co2 <= 1) { resp += 12; strengths.push(`Empreinte carbone faible (${co2} kg CO2e)`); }
-      else if (co2 <= 2) resp += 7;
-      else if (co2 > 4) { resp -= 8; weaknesses.push(`Empreinte carbone élevée (${co2} kg CO2e)`); }
-    } else {
-      weaknesses.push('Empreinte carbone non renseignée');
-    }
+    // Performance carbone relative à la référence conventionnelle de la
+    // catégorie ; si le producteur n'a pas fourni d'ACV, l'estimation
+    // sectorielle sourcée est utilisée (jamais de pénalité pour donnée
+    // manquante — voir impactEstimator.ts).
+    const co2Perf = carbonPerformance(p);
+    const co2Tag = co2Perf.source === 'producer' ? 'ACV producteur' : 'estimation sectorielle';
+    if (co2Perf.tier === 'excellent') { resp += co2Perf.source === 'producer' ? 12 : 8; strengths.push(`Empreinte carbone très inférieure à sa catégorie (${co2Perf.value} kg CO2e/kg — ${co2Tag})`); }
+    else if (co2Perf.tier === 'good') resp += co2Perf.source === 'producer' ? 7 : 5;
+    else if (co2Perf.tier === 'high') { resp -= 8; weaknesses.push(`Empreinte carbone supérieure à sa catégorie (${co2Perf.value} kg CO2e/kg — ${co2Tag})`); }
     if ((p.packaging_types ?? []).some(t => ['plastic_free', 'compostable'].includes(t))) resp += 5;
     if (!p.fair_trade && !p.living_wage_guaranteed) weaknesses.push('Aucune garantie sociale (équitable / salaire décent)');
     const responsibilityScore = clamp(resp);

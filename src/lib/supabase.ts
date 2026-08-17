@@ -241,6 +241,10 @@ export type Product = {
   attributes?: ProductAttributes | null;
   carbon_footprint_kg?: number;
   water_footprint_liters?: number;
+  /** Provenance de l'empreinte carbone : 'producer' (ACV fournie) ou 'estimated' (moyenne sectorielle sourcée) */
+  carbon_footprint_source?: 'producer' | 'estimated' | null;
+  /** Provenance de l'empreinte eau : 'producer' ou 'estimated' */
+  water_footprint_source?: 'producer' | 'estimated' | null;
   transport_distance_km?: number;
   living_wage_guaranteed?: boolean;
   social_protection?: boolean;
