@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard, Package, PlusCircle, Store, ShoppingCart,
-  MessageSquare, Settings, Leaf, Bell, LogOut, Menu, X,
+  MessageSquare, Settings, Leaf, LogOut, Menu, X,
   ChevronRight, UserCircle, ShieldCheck, TrendingUp, Factory,
   PackageSearch, SlidersHorizontal, Bot, Vault, Building2, FileText,
 } from 'lucide-react';
@@ -10,6 +10,7 @@ import { useAuth } from '../lib/auth';
 import { supabase } from '../lib/supabase';
 import { useI18n } from '../lib/i18n';
 import LanguageSwitcher from './LanguageSwitcher';
+import NotificationBell from './NotificationBell';
 
 // Menu VENDEUR (producteur)
 const PRODUCER_NAV = [
@@ -228,9 +229,7 @@ export default function DashboardLayout() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button className="relative p-2.5 hover:bg-gray-100 rounded-xl transition-colors">
-              <Bell className="w-5 h-5 text-gray-500" />
-            </button>
+            <NotificationBell />
             <LanguageSwitcher />
             <Link to="/dashboard/ajouter-produit" className="hidden sm:flex items-center gap-2 px-4 py-2 bg-brand-500 text-white text-sm font-bold rounded-xl hover:bg-brand-600 transition-colors">
               <PlusCircle className="w-4 h-4" />

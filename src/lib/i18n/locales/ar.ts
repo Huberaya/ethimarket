@@ -650,6 +650,25 @@ const ar: Record<string, string> = {
   'ord.stDisputed': 'نزاع',
   'ord.stCancelled': 'ملغاة',
   'ord.stRefunded': 'مستردة',
+
+  // --- Notifications in-app ---
+  'notif.title': 'الإشعارات',
+  'notif.markAllRead': 'وضع علامة مقروء على الكل',
+  'notif.empty': 'لا إشعارات حتى الآن.',
+  'notif.today': 'اليوم',
+  'notif.earlier': 'أقدم',
+  'notif.justNow': 'الآن',
+  'notif.quote_received': '{counterpart} يطلب عرض سعر: {product} ({quantity} {unit})',
+  'notif.quote_offer': 'ردّ {counterpart} على طلب عرض السعر لـ {product}',
+  'notif.quote_accepted': 'قبل {counterpart} عرضك لـ {product}',
+  'notif.quote_declined': 'رُفض عرض السعر لـ {product}',
+  'notif.order_created': 'طلبية جديدة {orderNumber} من {counterpart}: {product}',
+  'notif.order_confirmed': 'أكّد {counterpart} الطلبية {orderNumber}',
+  'notif.order_shipped': 'شُحنت الطلبية {orderNumber} — تابع التسليم',
+  'notif.order_delivered': 'أكّد {counterpart} استلام {orderNumber}',
+  'notif.order_disputed': 'فُتح نزاع على الطلبية {orderNumber}',
+  'notif.order_cancelled': 'أُلغيت الطلبية {orderNumber}',
+  'notif.message_received': 'رسالة جديدة من {counterpart}: «{preview}»',
 };
 
 export default ar;

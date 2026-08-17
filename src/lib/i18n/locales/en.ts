@@ -650,6 +650,25 @@ const en: Record<string, string> = {
   'ord.stDisputed': 'Disputed',
   'ord.stCancelled': 'Cancelled',
   'ord.stRefunded': 'Refunded',
+
+  // --- Notifications in-app ---
+  'notif.title': 'Notifications',
+  'notif.markAllRead': 'Mark all read',
+  'notif.empty': 'No notifications yet.',
+  'notif.today': 'Today',
+  'notif.earlier': 'Earlier',
+  'notif.justNow': 'Just now',
+  'notif.quote_received': '{counterpart} requests a quote: {product} ({quantity} {unit})',
+  'notif.quote_offer': '{counterpart} replied to your quote request for {product}',
+  'notif.quote_accepted': '{counterpart} accepted your offer for {product}',
+  'notif.quote_declined': 'The quote for {product} was declined',
+  'notif.order_created': 'New order {orderNumber} from {counterpart}: {product}',
+  'notif.order_confirmed': 'Order {orderNumber} confirmed by {counterpart}',
+  'notif.order_shipped': 'Order {orderNumber} shipped — track the delivery',
+  'notif.order_delivered': '{counterpart} confirmed receipt of {orderNumber}',
+  'notif.order_disputed': 'Dispute opened on order {orderNumber}',
+  'notif.order_cancelled': 'Order {orderNumber} cancelled',
+  'notif.message_received': 'New message from {counterpart}: "{preview}"',
 };
 
 export default en;

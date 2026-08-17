@@ -650,6 +650,25 @@ const fr: Record<string, string> = {
   'ord.stDisputed': 'Litige',
   'ord.stCancelled': 'Annulée',
   'ord.stRefunded': 'Remboursée',
+
+  // --- Notifications in-app ---
+  'notif.title': 'Notifications',
+  'notif.markAllRead': 'Tout marquer lu',
+  'notif.empty': 'Aucune notification pour le moment.',
+  'notif.today': 'Aujourd\'hui',
+  'notif.earlier': 'Plus ancien',
+  'notif.justNow': 'À l\'instant',
+  'notif.quote_received': '{counterpart} demande un devis : {product} ({quantity} {unit})',
+  'notif.quote_offer': '{counterpart} a répondu à votre demande de devis pour {product}',
+  'notif.quote_accepted': '{counterpart} a accepté votre offre pour {product}',
+  'notif.quote_declined': 'Le devis pour {product} a été décliné',
+  'notif.order_created': 'Nouvelle commande {orderNumber} de {counterpart} : {product}',
+  'notif.order_confirmed': 'Commande {orderNumber} confirmée par {counterpart}',
+  'notif.order_shipped': 'Commande {orderNumber} expédiée — suivez la livraison',
+  'notif.order_delivered': '{counterpart} a confirmé la réception de {orderNumber}',
+  'notif.order_disputed': 'Litige ouvert sur la commande {orderNumber}',
+  'notif.order_cancelled': 'Commande {orderNumber} annulée',
+  'notif.message_received': 'Nouveau message de {counterpart} : « {preview} »',
 };
 
 export default fr;

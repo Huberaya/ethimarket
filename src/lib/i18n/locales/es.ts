@@ -650,6 +650,25 @@ const es: Record<string, string> = {
   'ord.stDisputed': 'Litigio',
   'ord.stCancelled': 'Anulado',
   'ord.stRefunded': 'Reembolsado',
+
+  // --- Notifications in-app ---
+  'notif.title': 'Notificaciones',
+  'notif.markAllRead': 'Marcar todo leído',
+  'notif.empty': 'Sin notificaciones por ahora.',
+  'notif.today': 'Hoy',
+  'notif.earlier': 'Anteriores',
+  'notif.justNow': 'Ahora mismo',
+  'notif.quote_received': '{counterpart} solicita un presupuesto: {product} ({quantity} {unit})',
+  'notif.quote_offer': '{counterpart} respondió a su solicitud de presupuesto de {product}',
+  'notif.quote_accepted': '{counterpart} aceptó su oferta por {product}',
+  'notif.quote_declined': 'El presupuesto de {product} fue rechazado',
+  'notif.order_created': 'Nuevo pedido {orderNumber} de {counterpart}: {product}',
+  'notif.order_confirmed': 'Pedido {orderNumber} confirmado por {counterpart}',
+  'notif.order_shipped': 'Pedido {orderNumber} enviado — siga la entrega',
+  'notif.order_delivered': '{counterpart} confirmó la recepción de {orderNumber}',
+  'notif.order_disputed': 'Litigio abierto en el pedido {orderNumber}',
+  'notif.order_cancelled': 'Pedido {orderNumber} anulado',
+  'notif.message_received': 'Nuevo mensaje de {counterpart}: «{preview}»',
 };
 
 export default es;
