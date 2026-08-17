@@ -594,6 +594,17 @@ const es: Record<string, string> = {
   'chat.sent': 'Enviado',
   'chat.fileTooBig': 'El archivo supera el tamaño máximo permitido (10 MB)',
   'chat.downloadFile': 'Descargar el archivo',
+  'ui.backToTop': 'Volver arriba',
+  'ui.loading': 'Cargando...',
+  'pd.qrTitle': 'Código QR de trazabilidad',
+  'pd.ownProduct': 'Usted es el propietario de este producto.',
+  'pd.convError': 'No se pudo abrir la conversación con el vendedor.',
+  'trust.rejected': '✗ rechazado',
+  'search.extracted': 'Criterios extraídos de su búsqueda:',
+  'search.priority': 'Clasificados por prioridad estricta',
+  'map.worldwide': '🌍 Distribución mundial',
+  'pp.avgResponse': 'respuesta media',
+  'voice.stop': 'Dejar de escuchar',
 };
 
 export default es;

@@ -1,7 +1,9 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
+import { useI18n } from '../lib/i18n';
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { t } = useI18n();
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -12,7 +14,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
           </svg>
-          <p className="text-sm text-gray-500">Chargement...</p>
+          <p className="text-sm text-gray-500">{t('ui.loading')}</p>
         </div>
       </div>
     );

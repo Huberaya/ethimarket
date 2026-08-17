@@ -52,7 +52,7 @@ export default function Producers() {
           <div style="font-weight: 700; margin-bottom: 4px; color: #1f2937;">${p.name}</div>
           <div style="font-size: 12px; color: #6b7280; margin-bottom: 6px;">${p.country_flag} ${p.country}</div>
           <div style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">${p.product_count} produits · ⭐ ${p.rating}</div>
-          <a href="/boutique/${p.slug}" style="display: inline-block; padding: 6px 12px; background: #15803d; color: white; border-radius: 8px; font-size: 12px; font-weight: 600; text-decoration: none;">Voir la boutique</a>
+          <a href="/boutique/${p.slug}" style="display: inline-block; padding: 6px 12px; background: #15803d; color: white; border-radius: 8px; font-size: 12px; font-weight: 600; text-decoration: none;">${t('producers.seeShop')}</a>
         </div>
       `,
     })), [filtered]);

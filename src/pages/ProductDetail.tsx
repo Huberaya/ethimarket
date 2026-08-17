@@ -175,7 +175,7 @@ export default function ProductDetail() {
     }
 
     if (user.id === recipientUserId) {
-      alert("Vous êtes le propriétaire de ce produit.");
+      alert(t('pd.ownProduct'));
       return;
     }
 
@@ -212,7 +212,7 @@ export default function ProductDetail() {
       navigate(`/dashboard/messages?conversation=${newConv.id}`);
     } catch (err) {
       console.error('Contact seller error:', err);
-      alert('Impossible d\'ouvrir la conversation avec le vendeur.');
+      alert(t('pd.convError'));
     } finally {
       setContacting(false);
     }

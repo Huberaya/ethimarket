@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { ChevronUp } from 'lucide-react';
+import { useI18n } from '../lib/i18n';
 
 export default function BackToTop() {
+  const { t } = useI18n();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -29,7 +31,7 @@ export default function BackToTop() {
   return (
     <button
       onClick={scrollToTop}
-      aria-label="Retour en haut"
+      aria-label={t('ui.backToTop')}
       className="fixed bottom-6 right-6 z-40 p-3 bg-brand-600 text-white rounded-full shadow-lg hover:bg-brand-700 hover:scale-110 active:scale-95 transition-all duration-200 border border-brand-400/30 group"
     >
       <ChevronUp className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />

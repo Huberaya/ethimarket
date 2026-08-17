@@ -594,6 +594,17 @@ const en: Record<string, string> = {
   'chat.sent': 'Sent',
   'chat.fileTooBig': 'The file exceeds the maximum allowed size (10 MB)',
   'chat.downloadFile': 'Download the file',
+  'ui.backToTop': 'Back to top',
+  'ui.loading': 'Loading...',
+  'pd.qrTitle': 'Traceability QR Code',
+  'pd.ownProduct': 'You are the owner of this product.',
+  'pd.convError': 'Unable to open the conversation with the seller.',
+  'trust.rejected': '✗ rejected',
+  'search.extracted': 'Criteria extracted from your search:',
+  'search.priority': 'Ranked by strict priority',
+  'map.worldwide': '🌍 Worldwide distribution',
+  'pp.avgResponse': 'avg. response',
+  'voice.stop': 'Stop listening',
 };
 
 export default en;

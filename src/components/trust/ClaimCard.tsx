@@ -204,7 +204,7 @@ export default function ClaimCard({ claim }: ClaimCardProps) {
                     {e.checked_at && (
                       <span className="text-gray-500"> · contrôlé le {formatDateFr(e.checked_at)}{e.checked_by_name ? ` par ${e.checked_by_name}` : ''}</span>
                     )}
-                    {e.check_result === 'rejected' && <span className="ml-1 font-semibold text-red-700">✗ rejeté</span>}
+                    {e.check_result === 'rejected' && <span className="ml-1 font-semibold text-red-700">{t('trust.rejected')}</span>}
                     {e.source_url && (
                       <> · <a href={e.source_url} target="_blank" rel="noopener noreferrer" className="text-emerald-700 underline">source</a></>
                     )}
