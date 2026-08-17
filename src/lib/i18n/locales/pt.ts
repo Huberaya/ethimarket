@@ -669,6 +669,28 @@ const pt: Record<string, string> = {
   'notif.order_disputed': 'Litígio aberto na encomenda {orderNumber}',
   'notif.order_cancelled': 'Encomenda {orderNumber} anulada',
   'notif.message_received': 'Nova mensagem de {counterpart}: «{preview}»',
+
+  // --- Mot de passe oublié ---
+  'fp.title': 'Palavra-passe esquecida',
+  'fp.subtitle': 'Indique o seu endereço: enviamos-lhe um link de redefinição.',
+  'fp.send': 'Enviar o link',
+  'fp.sentTitle': 'E-mail enviado',
+  'fp.sentDesc': 'Se existir uma conta para {email}, acabou de lhe ser enviado um link de redefinição.',
+  'fp.checkSpam': 'Lembre-se de verificar a pasta de spam.',
+  'fp.backToLogin': 'Voltar ao início de sessão',
+  'fp.rateLimited': 'Demasiadas tentativas. Tente novamente dentro de alguns minutos.',
+  'fp.resetTitle': 'Nova palavra-passe',
+  'fp.resetSubtitle': 'Escolha a sua nova palavra-passe.',
+  'fp.newPassword': 'Nova palavra-passe',
+  'fp.confirmPassword': 'Confirme a palavra-passe',
+  'fp.apply': 'Guardar a nova palavra-passe',
+  'fp.tooShort': 'A palavra-passe deve ter pelo menos {min} caracteres.',
+  'fp.mismatch': 'As duas palavras-passe não coincidem.',
+  'fp.doneTitle': 'Palavra-passe alterada ✅',
+  'fp.doneDesc': 'Sessão iniciada. A redirecionar para o seu painel…',
+  'fp.invalidTitle': 'Link inválido ou expirado',
+  'fp.invalidDesc': 'Este link de redefinição já não é válido (expira após utilização ou ao fim de uma hora).',
+  'fp.requestNew': 'Pedir um novo link',
 };
 
 export default pt;

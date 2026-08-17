@@ -669,6 +669,28 @@ const es: Record<string, string> = {
   'notif.order_disputed': 'Litigio abierto en el pedido {orderNumber}',
   'notif.order_cancelled': 'Pedido {orderNumber} anulado',
   'notif.message_received': 'Nuevo mensaje de {counterpart}: «{preview}»',
+
+  // --- Mot de passe oublié ---
+  'fp.title': 'Contraseña olvidada',
+  'fp.subtitle': 'Indique su dirección: le enviaremos un enlace de restablecimiento.',
+  'fp.send': 'Enviar el enlace',
+  'fp.sentTitle': 'Correo enviado',
+  'fp.sentDesc': 'Si existe una cuenta para {email}, se le acaba de enviar un enlace de restablecimiento.',
+  'fp.checkSpam': 'Recuerde revisar su carpeta de spam.',
+  'fp.backToLogin': 'Volver al inicio de sesión',
+  'fp.rateLimited': 'Demasiados intentos. Vuelva a intentarlo en unos minutos.',
+  'fp.resetTitle': 'Nueva contraseña',
+  'fp.resetSubtitle': 'Elija su nueva contraseña.',
+  'fp.newPassword': 'Nueva contraseña',
+  'fp.confirmPassword': 'Confirme la contraseña',
+  'fp.apply': 'Guardar la nueva contraseña',
+  'fp.tooShort': 'La contraseña debe tener al menos {min} caracteres.',
+  'fp.mismatch': 'Las dos contraseñas no coinciden.',
+  'fp.doneTitle': 'Contraseña cambiada ✅',
+  'fp.doneDesc': 'Ha iniciado sesión. Redirigiendo a su panel…',
+  'fp.invalidTitle': 'Enlace no válido o caducado',
+  'fp.invalidDesc': 'Este enlace de restablecimiento ya no es válido (caduca tras su uso o al cabo de una hora).',
+  'fp.requestNew': 'Solicitar un nuevo enlace',
 };
 
 export default es;

@@ -669,6 +669,28 @@ const ar: Record<string, string> = {
   'notif.order_disputed': 'فُتح نزاع على الطلبية {orderNumber}',
   'notif.order_cancelled': 'أُلغيت الطلبية {orderNumber}',
   'notif.message_received': 'رسالة جديدة من {counterpart}: «{preview}»',
+
+  // --- Mot de passe oublié ---
+  'fp.title': 'نسيت كلمة المرور',
+  'fp.subtitle': 'أدخل بريدك الإلكتروني: سنرسل لك رابط إعادة التعيين.',
+  'fp.send': 'إرسال الرابط',
+  'fp.sentTitle': 'تم إرسال البريد',
+  'fp.sentDesc': 'إذا كان هناك حساب لـ {email}، فقد أُرسل إليه للتو رابط إعادة تعيين.',
+  'fp.checkSpam': 'تذكر التحقق من مجلد البريد غير المرغوب فيه.',
+  'fp.backToLogin': 'العودة إلى تسجيل الدخول',
+  'fp.rateLimited': 'محاولات كثيرة جدًا. أعد المحاولة بعد بضع دقائق.',
+  'fp.resetTitle': 'كلمة مرور جديدة',
+  'fp.resetSubtitle': 'اختر كلمة المرور الجديدة.',
+  'fp.newPassword': 'كلمة المرور الجديدة',
+  'fp.confirmPassword': 'تأكيد كلمة المرور',
+  'fp.apply': 'حفظ كلمة المرور الجديدة',
+  'fp.tooShort': 'يجب أن تتكون كلمة المرور من {min} أحرف على الأقل.',
+  'fp.mismatch': 'كلمتا المرور غير متطابقتين.',
+  'fp.doneTitle': 'تم تغيير كلمة المرور ✅',
+  'fp.doneDesc': 'تم تسجيل دخولك. جارٍ التحويل إلى لوحة التحكم…',
+  'fp.invalidTitle': 'رابط غير صالح أو منتهي الصلاحية',
+  'fp.invalidDesc': 'لم يعد رابط إعادة التعيين هذا صالحًا (تنتهي صلاحيته بعد الاستخدام أو بعد ساعة).',
+  'fp.requestNew': 'طلب رابط جديد',
 };
 
 export default ar;

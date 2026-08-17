@@ -669,6 +669,28 @@ const fr: Record<string, string> = {
   'notif.order_disputed': 'Litige ouvert sur la commande {orderNumber}',
   'notif.order_cancelled': 'Commande {orderNumber} annulée',
   'notif.message_received': 'Nouveau message de {counterpart} : « {preview} »',
+
+  // --- Mot de passe oublié ---
+  'fp.title': 'Mot de passe oublié',
+  'fp.subtitle': 'Indiquez votre adresse : nous vous envoyons un lien de réinitialisation.',
+  'fp.send': 'Envoyer le lien',
+  'fp.sentTitle': 'E-mail envoyé',
+  'fp.sentDesc': 'Si un compte existe pour {email}, un lien de réinitialisation vient de lui être envoyé.',
+  'fp.checkSpam': 'Pensez à vérifier vos courriers indésirables.',
+  'fp.backToLogin': 'Retour à la connexion',
+  'fp.rateLimited': 'Trop de tentatives. Réessayez dans quelques minutes.',
+  'fp.resetTitle': 'Nouveau mot de passe',
+  'fp.resetSubtitle': 'Choisissez votre nouveau mot de passe.',
+  'fp.newPassword': 'Nouveau mot de passe',
+  'fp.confirmPassword': 'Confirmez le mot de passe',
+  'fp.apply': 'Enregistrer le nouveau mot de passe',
+  'fp.tooShort': 'Le mot de passe doit contenir au moins {min} caractères.',
+  'fp.mismatch': 'Les deux mots de passe ne correspondent pas.',
+  'fp.doneTitle': 'Mot de passe modifié ✅',
+  'fp.doneDesc': 'Vous êtes connecté. Redirection vers votre tableau de bord…',
+  'fp.invalidTitle': 'Lien invalide ou expiré',
+  'fp.invalidDesc': 'Ce lien de réinitialisation n\'est plus valide (il expire après usage ou au bout d\'une heure).',
+  'fp.requestNew': 'Demander un nouveau lien',
 };
 
 export default fr;

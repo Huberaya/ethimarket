@@ -669,6 +669,28 @@ const en: Record<string, string> = {
   'notif.order_disputed': 'Dispute opened on order {orderNumber}',
   'notif.order_cancelled': 'Order {orderNumber} cancelled',
   'notif.message_received': 'New message from {counterpart}: "{preview}"',
+
+  // --- Mot de passe oublié ---
+  'fp.title': 'Forgot password',
+  'fp.subtitle': 'Enter your address: we will send you a reset link.',
+  'fp.send': 'Send the link',
+  'fp.sentTitle': 'Email sent',
+  'fp.sentDesc': 'If an account exists for {email}, a reset link has just been sent to it.',
+  'fp.checkSpam': 'Remember to check your spam folder.',
+  'fp.backToLogin': 'Back to sign in',
+  'fp.rateLimited': 'Too many attempts. Try again in a few minutes.',
+  'fp.resetTitle': 'New password',
+  'fp.resetSubtitle': 'Choose your new password.',
+  'fp.newPassword': 'New password',
+  'fp.confirmPassword': 'Confirm password',
+  'fp.apply': 'Save the new password',
+  'fp.tooShort': 'The password must be at least {min} characters long.',
+  'fp.mismatch': 'The two passwords do not match.',
+  'fp.doneTitle': 'Password changed ✅',
+  'fp.doneDesc': 'You are signed in. Redirecting to your dashboard…',
+  'fp.invalidTitle': 'Invalid or expired link',
+  'fp.invalidDesc': 'This reset link is no longer valid (it expires after use or after one hour).',
+  'fp.requestNew': 'Request a new link',
 };
 
 export default en;

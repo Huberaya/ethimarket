@@ -3,6 +3,8 @@ import Home from './pages/Home';
 import Catalogue from './pages/Catalogue';
 import ProductDetail from './pages/ProductDetail';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Register from './pages/Register';
 import ProducerShop from './pages/ProducerShop';
 import HowItWorks from './pages/HowItWorks';
@@ -68,6 +70,8 @@ export default function App() {
         <Route path="/produit/:id" element={<ProductDetail />} />
         <Route path="/produits/:id" element={<ProductDetail />} />
         <Route path="/connexion" element={<Login />} />
+        <Route path="/mot-de-passe-oublie" element={<ForgotPassword />} />
+        <Route path="/reinitialiser-mot-de-passe" element={<ResetPassword />} />
         <Route path="/inscription" element={<Register />} />
         <Route path="/boutique/:id" element={<ProducerShop />} />
         <Route path="/comment-ca-marche" element={<HowItWorks />} />
