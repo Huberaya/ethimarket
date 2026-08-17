@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Globe, Check, ChevronDown } from 'lucide-react';
 import { useI18n, LOCALES, type Locale } from '../lib/i18n';
+import { supabase } from '../lib/supabase';
 
 /**
  * Sélecteur de langue accessible (bouton + menu déroulant).
@@ -43,6 +44,17 @@ export default function LanguageSwitcher({
   const selectLocale = (code: Locale) => {
     setLocale(code);
     setOpen(false);
+    // Persiste la langue préférée : les e-mails transactionnels
+    // (triggers SQL) l'utilisent pour écrire dans la langue de
+    // l'utilisateur. Silencieux et non bloquant si déconnecté.
+    void (async () => {
+      try {
+        const { data } = await supabase.auth.getUser();
+        if (data.user) {
+          await supabase.from('profiles').update({ preferred_locale: code }).eq('id', data.user.id);
+        }
+      } catch { /* jamais bloquant */ }
+    })();
   };
 
   return (

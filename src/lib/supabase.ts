@@ -19,6 +19,8 @@ export type Profile = {
   role: string;
   is_admin?: boolean;
   avatar_url: string | null;
+  /** Langue des e-mails transactionnels (synchronisée par le sélecteur de langue) */
+  preferred_locale?: 'fr' | 'en' | 'es' | 'pt' | 'ar';
   created_at: string;
 };
 
