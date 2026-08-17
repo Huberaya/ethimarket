@@ -482,7 +482,7 @@ export default function ProductDetail() {
               <div className="mt-5 flex items-center gap-3 bg-gray-50 rounded-xl p-3 border border-gray-100">
                 <img src={qrUrl} alt="QR Code" className="w-14 h-14 rounded-lg border border-gray-100" />
                 <div>
-                  <p className="text-xs font-bold text-gray-900 flex items-center gap-1.5"><QrCode className="w-3.5 h-3.5 text-brand-500" /> QR Code de traçabilité</p>
+                  <p className="text-xs font-bold text-gray-900 flex items-center gap-1.5"><QrCode className="w-3.5 h-3.5 text-brand-500" /> {t('pd.qrTitle')}</p>
                   <p className="text-[10px] text-gray-500">{t('pd.scanQr')}</p>
                 </div>
               </div>

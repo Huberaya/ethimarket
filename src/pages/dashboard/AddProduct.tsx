@@ -6,6 +6,7 @@ import ProductClaimsEditor, { DraftClaim, saveDraftClaims } from '../../componen
 import { supabase, type Category } from '../../lib/supabase';
 import { COUNTRIES, getCountryFlag } from '../../lib/countries';
 import { cleanPayload, toFloatOrNull, toIntOrNull, toStringOrNull, toDateOrNull } from '../../lib/dbHelpers';
+import { useI18n } from '../../lib/i18n';
 
 const CERT_OPTIONS = ['Bio', 'Fairtrade', 'Ecocert', 'Rainforest Alliance', 'GlobalGAP'];
 const CURRENCIES = ['EUR', 'USD', 'MAD', 'XOF'];
@@ -33,6 +34,7 @@ const slugify = (s: string) =>
   s.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
 
 export default function AddProduct() {
+  const { tx } = useI18n();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
@@ -447,8 +449,8 @@ export default function AddProduct() {
             <PackagePlus className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-2xl font-black text-gray-900">Ajouter un produit</h1>
-            <p className="text-gray-500 text-sm mt-0.5">Renseignez les données d'exploitation réelles pour générer vos impacts scientifiques</p>
+            <h1 className="text-2xl font-black text-gray-900">{tx('Ajouter un produit')}</h1>
+            <p className="text-gray-500 text-sm mt-0.5">{tx('Renseignez les données d\'exploitation réelles pour générer vos impacts scientifiques')}</p>
           </div>
         </div>
       </div>
@@ -463,7 +465,7 @@ export default function AddProduct() {
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3.5 rounded-xl mb-6 flex items-start gap-2.5">
-          <span className="font-bold">Erreur :</span>
+          <span className="font-bold">{tx('Erreur :')}</span>
           <span className="flex-1">{error}</span>
         </div>
       )}
@@ -471,13 +473,13 @@ export default function AddProduct() {
       {loadingProducer ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center flex flex-col items-center justify-center">
           <Loader2 className="w-8 h-8 text-brand-600 animate-spin mb-3" />
-          <p className="text-gray-500 text-sm">Préparation du formulaire d'ajout...</p>
+          <p className="text-gray-500 text-sm">{tx('Préparation du formulaire d\'ajout...')}</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Photo */}
           <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-            <label className={labelClass}>Photo principale du produit</label>
+            <label className={labelClass}>{tx('Photo principale du produit')}</label>
             <div className="flex items-center gap-5 mt-2">
               <div className="w-32 h-32 rounded-2xl border-2 border-dashed border-gray-200 overflow-hidden flex items-center justify-center bg-gray-50 flex-shrink-0 relative group">
                 {imagePreview ? (
@@ -485,7 +487,7 @@ export default function AddProduct() {
                 ) : (
                   <div className="text-center p-3">
                     <Upload className="w-8 h-8 text-gray-300 mx-auto mb-1" />
-                    <span className="text-xs text-gray-500">Aucune photo</span>
+                    <span className="text-xs text-gray-500">{tx('Aucune photo')}</span>
                   </div>
                 )}
               </div>
@@ -513,7 +515,7 @@ export default function AddProduct() {
 
           {/* General info */}
           <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-4">
-            <h2 className="text-base font-bold text-gray-900 border-b border-gray-100 pb-3">Informations générales</h2>
+            <h2 className="text-base font-bold text-gray-900 border-b border-gray-100 pb-3">{tx('Informations générales')}</h2>
             
             <div>
               <label className={labelClass}>
@@ -524,7 +526,7 @@ export default function AddProduct() {
                 required
                 value={form.name}
                 onChange={e => update('name', e.target.value)}
-                placeholder="Ex: Café Arabica Yirgacheffe Grand Cru Bio 1kg"
+                placeholder={tx('Ex: Café Arabica Yirgacheffe Grand Cru Bio 1kg')}
                 className={inputClass}
               />
             </div>
@@ -540,7 +542,7 @@ export default function AddProduct() {
                   onChange={e => update('category_id', e.target.value)}
                   className={inputClass}
                 >
-                  <option value="">Sélectionner une catégorie...</option>
+                  <option value="">{tx('Sélectionner une catégorie...')}</option>
                   {categories.map(c => (
                     <option key={c.id} value={c.id}>
                       {c.emoji ? `${c.emoji} ` : ''}{c.name}
@@ -559,7 +561,7 @@ export default function AddProduct() {
                   onChange={e => update('farming_method', e.target.value)}
                   className={inputClass}
                 >
-                  {FARMING_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
+                  {FARMING_METHODS.map(m => <option key={m} value={m}>{tx(m)}</option>)}
                 </select>
                 <p className="text-[11px] text-emerald-700 font-medium mt-1 flex items-center gap-1">
                   <Sparkles className="w-3 h-3" /> Nécessaire pour les facteurs d'émission CO2 & biodiversité ADEME
@@ -577,7 +579,7 @@ export default function AddProduct() {
                 onChange={e => update('packaging_type', e.target.value)}
                 className={inputClass}
               >
-                {PACKAGING_TYPES.map(p => <option key={p} value={p}>{p}</option>)}
+                {PACKAGING_TYPES.map(p => <option key={p} value={p}>{tx(p)}</option>)}
               </select>
               <p className="text-[11px] text-emerald-700 font-medium mt-1 flex items-center gap-1">
                 <Sparkles className="w-3 h-3" /> Détermine l'empreinte emballage (ADEME 2024)
@@ -586,7 +588,7 @@ export default function AddProduct() {
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className={labelClass}>Résumé court (aperçu)</label>
+                <label className={labelClass}>{tx('Résumé court (aperçu)')}</label>
                 <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
                   Améliore votre score +2 pts
                 </span>
@@ -595,7 +597,7 @@ export default function AddProduct() {
                 type="text"
                 value={form.short_description}
                 onChange={e => update('short_description', e.target.value)}
-                placeholder="Ex: Café pure origine cultivé sous ombrage naturel à 2000m d'altitude."
+                placeholder={tx('Ex: Café pure origine cultivé sous ombrage naturel à 2000m d\'altitude.')}
                 className={inputClass}
                 maxLength={140}
               />
@@ -608,7 +610,7 @@ export default function AddProduct() {
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className={labelClass}>Description détaillée & Terroir</label>
+                <label className={labelClass}>{tx('Description détaillée & Terroir')}</label>
                 <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
                   Améliore votre score +4 pts
                 </span>
@@ -617,7 +619,7 @@ export default function AddProduct() {
                 rows={4}
                 value={form.description}
                 onChange={e => update('description', e.target.value)}
-                placeholder="Décrivez votre terroir, les techniques de récolte manuelle, la coopérative et les histoires de familles..."
+                placeholder={tx('Décrivez votre terroir, les techniques de récolte manuelle, la coopérative et les histoires de familles...')}
                 className={`${inputClass} resize-none`}
               />
               {!form.description && (
@@ -630,7 +632,7 @@ export default function AddProduct() {
 
           {/* Pricing & Stock */}
           <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-4">
-            <h2 className="text-base font-bold text-gray-900 border-b border-gray-100 pb-3">Prix, Unité et Stock</h2>
+            <h2 className="text-base font-bold text-gray-900 border-b border-gray-100 pb-3">{tx('Prix, Unité et Stock')}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label className={labelClass}>
@@ -648,7 +650,7 @@ export default function AddProduct() {
                 />
               </div>
               <div>
-                <label className={labelClass}>Devise</label>
+                <label className={labelClass}>{tx('Devise')}</label>
                 <select value={form.currency} onChange={e => update('currency', e.target.value)} className={inputClass}>
                   {CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
@@ -704,7 +706,7 @@ export default function AddProduct() {
 
           {/* Origin */}
           <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm space-y-4">
-            <h2 className="text-base font-bold text-gray-900 border-b border-gray-100 pb-3">Origine & Traçabilité Régionale</h2>
+            <h2 className="text-base font-bold text-gray-900 border-b border-gray-100 pb-3">{tx('Origine & Traçabilité Régionale')}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className={labelClass}>
@@ -719,7 +721,7 @@ export default function AddProduct() {
                 </select>
               </div>
               <div>
-                <label className={labelClass}>Région / Vallée / Terroir</label>
+                <label className={labelClass}>{tx('Région / Vallée / Terroir')}</label>
                 <input
                   type="text"
                   value={form.region}
@@ -734,12 +736,12 @@ export default function AddProduct() {
           {/* Certifications */}
           <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-2">
-              <label className={labelClass}>Certifications & Labels</label>
+              <label className={labelClass}>{tx('Certifications & Labels')}</label>
               <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                 Garantit les exonérations douanières UE 0%
               </span>
             </div>
-            <p className="text-xs text-gray-500 mb-3">Sélectionnez les certifications valides de votre exploitation :</p>
+            <p className="text-xs text-gray-500 mb-3">{tx('Sélectionnez les certifications valides de votre exploitation :')}</p>
             <div className="flex flex-wrap gap-2.5">
               {CERT_OPTIONS.map(cert => {
                 const isSelected = form.certifications.includes(cert);
@@ -771,7 +773,7 @@ export default function AddProduct() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs font-bold text-gray-700">Date de plantation</label>
+                  <label className="text-xs font-bold text-gray-700">{tx('Date de plantation')}</label>
                   <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded">+2 pts</span>
                 </div>
                 <input
@@ -784,7 +786,7 @@ export default function AddProduct() {
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs font-bold text-gray-700">Date de récolte</label>
+                  <label className="text-xs font-bold text-gray-700">{tx('Date de récolte')}</label>
                   <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded">+3 pts</span>
                 </div>
                 <input
@@ -797,7 +799,7 @@ export default function AddProduct() {
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs font-bold text-gray-700">Date d'emballage</label>
+                  <label className="text-xs font-bold text-gray-700">{tx('Date d\'emballage')}</label>
                   <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded">+2 pts</span>
                 </div>
                 <input
@@ -812,7 +814,7 @@ export default function AddProduct() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs font-bold text-gray-700">Coordonnées GPS de la parcelle</label>
+                  <label className="text-xs font-bold text-gray-700">{tx('Coordonnées GPS de la parcelle')}</label>
                   <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded">+5 pts</span>
                 </div>
                 <input
@@ -831,7 +833,7 @@ export default function AddProduct() {
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs font-bold text-gray-700">Numéro de lot (Batch)</label>
+                  <label className="text-xs font-bold text-gray-700">{tx('Numéro de lot (Batch)')}</label>
                   <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded">+3 pts</span>
                 </div>
                 <input
@@ -869,13 +871,13 @@ export default function AddProduct() {
                   placeholder="Ex : 3000" className={inputClass} />
               </div>
               <div>
-                <label className={labelClass}>Délai de livraison (jours)</label>
+                <label className={labelClass}>{tx('Délai de livraison (jours)')}</label>
                 <select value={form.delivery_days} onChange={e => update('delivery_days', e.target.value)} className={inputClass}>
                   {['3-5', '5-7', '7-10', '7-14', '10-14', '14-21', '21-30'].map(d => <option key={d} value={d}>{d} jours</option>)}
                 </select>
               </div>
               <div>
-                <label className={labelClass}>Volume « sur devis » à partir de</label>
+                <label className={labelClass}>{tx('Volume « sur devis » à partir de')}</label>
                 <input type="number" min="1" value={form.quote_threshold_qty}
                   onChange={e => update('quote_threshold_qty', e.target.value)}
                   placeholder={`Ex : ${(parseInt(form.moq_value) || 1) * 50}`} className={inputClass} />
@@ -883,31 +885,31 @@ export default function AddProduct() {
             </div>
 
             <div>
-              <label className={labelClass}>Paliers de remise volume (optionnel)</label>
+              <label className={labelClass}>{tx('Paliers de remise volume (optionnel)')}</label>
               <p className="text-[11px] text-gray-500 mb-3">
                 Définissez vos remises par volume. Sans paliers, une grille standard est générée à partir
                 de votre MOQ et de la remise maximale ci-dessous.
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-500 mb-1">Palier 2 : dès (qté)</label>
+                  <label className="block text-[11px] font-semibold text-gray-500 mb-1">{tx('Palier 2 : dès (qté)')}</label>
                   <input type="number" min="1" value={form.tier2_min_qty} onChange={e => update('tier2_min_qty', e.target.value)} placeholder="100" className={inputClass} />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-500 mb-1">Remise palier 2 (%)</label>
+                  <label className="block text-[11px] font-semibold text-gray-500 mb-1">{tx('Remise palier 2 (%)')}</label>
                   <input type="number" min="0" max="60" value={form.tier2_discount_pct} onChange={e => update('tier2_discount_pct', e.target.value)} placeholder="11" className={inputClass} />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-500 mb-1">Palier 3 : dès (qté)</label>
+                  <label className="block text-[11px] font-semibold text-gray-500 mb-1">{tx('Palier 3 : dès (qté)')}</label>
                   <input type="number" min="1" value={form.tier3_min_qty} onChange={e => update('tier3_min_qty', e.target.value)} placeholder="500" className={inputClass} />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-500 mb-1">Remise palier 3 (%)</label>
+                  <label className="block text-[11px] font-semibold text-gray-500 mb-1">{tx('Remise palier 3 (%)')}</label>
                   <input type="number" min="0" max="60" value={form.tier3_discount_pct} onChange={e => update('tier3_discount_pct', e.target.value)} placeholder="21" className={inputClass} />
                 </div>
               </div>
               <div className="mt-3 max-w-xs">
-                <label className="block text-[11px] font-semibold text-gray-500 mb-1">Remise maximale consentie (%) — si pas de paliers</label>
+                <label className="block text-[11px] font-semibold text-gray-500 mb-1">{tx('Remise maximale consentie (%) — si pas de paliers')}</label>
                 <input type="number" min="0" max="60" value={form.max_volume_discount_pct} onChange={e => update('max_volume_discount_pct', e.target.value)} className={inputClass} />
               </div>
             </div>
@@ -931,18 +933,18 @@ export default function AddProduct() {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className={labelClass}>Type de produit</label>
+                <label className={labelClass}>{tx('Type de produit')}</label>
                 <input
                   type="text"
                   value={form.product_type}
                   onChange={e => update('product_type', e.target.value)}
-                  placeholder="Ex: café, miel, huile, t-shirt…"
+                  placeholder={tx('Ex: café, miel, huile, t-shirt…')}
                   className={inputClass}
                 />
-                <p className="text-[11px] text-gray-500 mt-1">Utilisé pour la recherche « je cherche du café bio »</p>
+                <p className="text-[11px] text-gray-500 mt-1">{tx('Utilisé pour la recherche « je cherche du café bio »')}</p>
               </div>
               <div>
-                <label className={labelClass}>Pays de fabrication</label>
+                <label className={labelClass}>{tx('Pays de fabrication')}</label>
                 <input
                   type="text"
                   value={form.manufacturing_country}
@@ -952,7 +954,7 @@ export default function AddProduct() {
                 />
               </div>
               <div>
-                <label className={labelClass}>Origine des matières premières</label>
+                <label className={labelClass}>{tx('Origine des matières premières')}</label>
                 <input
                   type="text"
                   value={form.raw_materials_origin}
@@ -965,7 +967,7 @@ export default function AddProduct() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className={labelClass}>Empreinte carbone (kg CO2e / unité)</label>
+                <label className={labelClass}>{tx('Empreinte carbone (kg CO2e / unité)')}</label>
                 <input
                   type="number" step="0.1" min="0"
                   value={form.carbon_footprint_kg}
@@ -975,7 +977,7 @@ export default function AddProduct() {
                 />
               </div>
               <div>
-                <label className={labelClass}>Empreinte eau (litres / unité)</label>
+                <label className={labelClass}>{tx('Empreinte eau (litres / unité)')}</label>
                 <input
                   type="number" step="1" min="0"
                   value={form.water_footprint_liters}
@@ -988,7 +990,7 @@ export default function AddProduct() {
 
             {/* Engagements ethiques et sociaux */}
             <div>
-              <label className={labelClass}>Engagements éthiques & sociaux</label>
+              <label className={labelClass}>{tx('Engagements éthiques & sociaux')}</label>
               <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-3">
                 ⚠️ Ces déclarations apparaîtront dans le Trust Center comme « Déclaration fournisseur »
                 tant qu'elles ne sont pas appuyées par un certificat ou un audit vérifié.
@@ -1019,7 +1021,7 @@ export default function AddProduct() {
               </div>
               {form.is_recycled && (
                 <div className="mt-3 max-w-xs">
-                  <label className={labelClass}>% de matières recyclées</label>
+                  <label className={labelClass}>{tx('% de matières recyclées')}</label>
                   <input
                     type="number" min="1" max="100"
                     value={form.recycled_percentage}
@@ -1033,7 +1035,7 @@ export default function AddProduct() {
 
             {/* Emballage */}
             <div>
-              <label className={labelClass}>Emballage</label>
+              <label className={labelClass}>{tx('Emballage')}</label>
               <div className="flex flex-wrap gap-2.5">
                 {([
                   ['plastic_free', '🚫 Sans plastique'],
@@ -1075,7 +1077,7 @@ export default function AddProduct() {
                   <Loader2 className="w-5 h-5 animate-spin" /> Publication du produit en cours...
                 </>
               ) : (
-                <>Publier le produit dans le catalogue</>
+                <>{tx('Publier le produit dans le catalogue')}</>
               )}
             </button>
             <button

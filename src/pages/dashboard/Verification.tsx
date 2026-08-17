@@ -11,6 +11,7 @@ import { supabase, type Producer, type ProducerVerification, type VerificationDo
 import { LeafletMap } from '../../components/LeafletMap';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { MultiFileUpload } from '../../components/ui/MultiFileUpload';
+import { useI18n } from '../../lib/i18n';
 
 type VerificationStatus = 'draft' | 'submitted' | 'under_review' | 'approved' | 'rejected' | 'suspended';
 
@@ -24,6 +25,7 @@ const STATUS_CONFIG: Record<VerificationStatus, { label: string; desc: string; c
 };
 
 export default function Verification() {
+  const { tx } = useI18n();
   const { user, producer, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [verification, setVerification] = useState<ProducerVerification | null>(null);
@@ -243,7 +245,7 @@ export default function Verification() {
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-black text-gray-900">Vérification & Accréditation Producteur</h1>
+        <h1 className="text-2xl font-black text-gray-900">{tx('Vérification & Accréditation Producteur')}</h1>
         <p className="text-gray-500 text-sm mt-1">
           Inspiré des standards Amazon Seller Central x Bureau Veritas. Votre boutique sera visible dès validation admin.
         </p>
@@ -293,12 +295,12 @@ export default function Verification() {
         <div className="bg-red-50 border-2 border-red-200 rounded-3xl p-6 text-red-900 space-y-3">
           <div className="flex items-center gap-2 font-black text-red-800 text-base">
             <AlertCircle className="w-5 h-5 text-red-600" />
-            <span>❌ Votre dossier a été rejeté — Corrections nécessaires</span>
+            <span>{tx('❌ Votre dossier a été rejeté — Corrections nécessaires')}</span>
           </div>
 
           {producer?.rejection_reason && (
             <div className="p-4 bg-white rounded-2xl border border-red-200 text-xs space-y-1">
-              <p className="font-bold text-gray-900">Commentaire de l'administrateur Bureau Veritas :</p>
+              <p className="font-bold text-gray-900">{tx('Commentaire de l\'administrateur Bureau Veritas :')}</p>
               <p className="text-gray-700 italic">"{producer.rejection_reason}"</p>
             </div>
           )}
@@ -335,11 +337,11 @@ export default function Verification() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
           {/* Identité */}
           <div className="p-3.5 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
-            <span className="font-semibold text-gray-700">☐ Pièce d'identité recto</span>
+            <span className="font-semibold text-gray-700">{tx('☐ Pièce d\'identité recto')}</span>
             {hasIdCard ? (
-              <span className="text-emerald-700 font-bold flex items-center gap-1">Uploadé ✅</span>
+              <span className="text-emerald-700 font-bold flex items-center gap-1">{tx('Uploadé ✅')}</span>
             ) : (
-              <span className="text-red-600 font-bold flex items-center gap-1">Manquant ❌</span>
+              <span className="text-red-600 font-bold flex items-center gap-1">{tx('Manquant ❌')}</span>
             )}
           </div>
 
@@ -347,9 +349,9 @@ export default function Verification() {
           <div className="p-3.5 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
             <span className="font-semibold text-gray-700">☐ Registre du commerce</span>
             {hasBusinessReg ? (
-              <span className="text-emerald-700 font-bold flex items-center gap-1">Uploadé ✅</span>
+              <span className="text-emerald-700 font-bold flex items-center gap-1">{tx('Uploadé ✅')}</span>
             ) : (
-              <span className="text-red-600 font-bold flex items-center gap-1">Manquant ❌</span>
+              <span className="text-red-600 font-bold flex items-center gap-1">{tx('Manquant ❌')}</span>
             )}
           </div>
 
@@ -357,9 +359,9 @@ export default function Verification() {
           <div className="p-3.5 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
             <span className="font-semibold text-gray-700">☐ Au moins 1 certification</span>
             {hasCertification ? (
-              <span className="text-emerald-700 font-bold flex items-center gap-1">Uploadé ✅</span>
+              <span className="text-emerald-700 font-bold flex items-center gap-1">{tx('Uploadé ✅')}</span>
             ) : (
-              <span className="text-red-600 font-bold flex items-center gap-1">Manquant ❌</span>
+              <span className="text-red-600 font-bold flex items-center gap-1">{tx('Manquant ❌')}</span>
             )}
           </div>
 
@@ -375,21 +377,21 @@ export default function Verification() {
 
           {/* Charte éthique signée */}
           <div className="p-3.5 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
-            <span className="font-semibold text-gray-700">☐ Charte éthique signée</span>
+            <span className="font-semibold text-gray-700">{tx('☐ Charte éthique signée')}</span>
             {hasEthicalCharter ? (
-              <span className="text-emerald-700 font-bold flex items-center gap-1">Signée ✅</span>
+              <span className="text-emerald-700 font-bold flex items-center gap-1">{tx('Signée ✅')}</span>
             ) : (
-              <span className="text-red-600 font-bold flex items-center gap-1">Non ❌</span>
+              <span className="text-red-600 font-bold flex items-center gap-1">{tx('Non ❌')}</span>
             )}
           </div>
 
           {/* GPS renseigné */}
           <div className="p-3.5 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
-            <span className="font-semibold text-gray-700">☐ GPS renseigné</span>
+            <span className="font-semibold text-gray-700">{tx('☐ GPS renseigné')}</span>
             {hasGps ? (
-              <span className="text-emerald-700 font-bold flex items-center gap-1">Oui ✅</span>
+              <span className="text-emerald-700 font-bold flex items-center gap-1">{tx('Oui ✅')}</span>
             ) : (
-              <span className="text-red-600 font-bold flex items-center gap-1">Non ❌</span>
+              <span className="text-red-600 font-bold flex items-center gap-1">{tx('Non ❌')}</span>
             )}
           </div>
         </div>
@@ -418,7 +420,7 @@ export default function Verification() {
                 className="w-full py-3.5 text-sm font-bold bg-gray-200 text-gray-500 rounded-2xl cursor-not-allowed flex items-center justify-center gap-2"
               >
                 <Send className="w-4 h-4" />
-                <span>Soumettre mon dossier pour validation</span>
+                <span>{tx('Soumettre mon dossier pour validation')}</span>
               </button>
               <p className="text-xs text-amber-700 font-medium">
                 ⚠️ Complétez les documents manquants dans les sections ci-dessous avant de pouvoir soumettre.
@@ -463,7 +465,7 @@ export default function Verification() {
 
         {/* Section 3: Certifications */}
         <SectionAccordion
-          title="3. Certifications Bio & Éthiques"
+          title={tx('3. Certifications Bio & Éthiques')}
           icon={Award}
           isOpen={openSection === 3}
           onToggle={() => setOpenSection(openSection === 3 ? null : 3)}
@@ -479,7 +481,7 @@ export default function Verification() {
 
         {/* Section 5: Engagement éthique */}
         <SectionAccordion
-          title="4. Engagement Éthique & Charte"
+          title={tx('4. Engagement Éthique & Charte')}
           icon={Heart}
           isOpen={openSection === 5}
           onToggle={() => setOpenSection(openSection === 5 ? null : 5)}
@@ -653,6 +655,7 @@ function Section2Form({
   setDocs: React.Dispatch<React.SetStateAction<VerificationDocument[]>>;
   onRefresh: () => void;
 }) {
+  const { tx } = useI18n();
   const [address, setAddress] = useState(producer?.address || '');
   const [city, setCity] = useState(producer?.city || '');
   const [lat, setLat] = useState(producer?.latitude?.toString() || '');
@@ -701,25 +704,25 @@ function Section2Form({
     <div className="space-y-4 text-xs">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className="block font-bold text-gray-700 mb-1">Adresse complète *</label>
+          <label className="block font-bold text-gray-700 mb-1">{tx('Adresse complète *')}</label>
           <input value={address} onChange={e => setAddress(e.target.value)} className={inputClass} placeholder="Ex: Route Rurale..." />
         </div>
         <div>
-          <label className="block font-bold text-gray-700 mb-1">Ville / Commune *</label>
+          <label className="block font-bold text-gray-700 mb-1">{tx('Ville / Commune *')}</label>
           <input value={city} onChange={e => setCity(e.target.value)} className={inputClass} placeholder="Ex: Agadir" />
         </div>
       </div>
 
       <div>
         <div className="flex items-center justify-between mb-1">
-          <label className="font-bold text-gray-700">Coordonnées GPS *</label>
+          <label className="font-bold text-gray-700">{tx('Coordonnées GPS *')}</label>
           <button onClick={detectLocation} className="text-brand-600 font-bold flex items-center gap-1 hover:underline">
             <Navigation className="w-3 h-3" /> Détecter ma position GPS
           </button>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <input value={lat} onChange={e => setLat(e.target.value)} className={inputClass} placeholder="Latitude (ex: 30.4278)" />
-          <input value={lng} onChange={e => setLng(e.target.value)} className={inputClass} placeholder="Longitude (ex: -9.5981)" />
+          <input value={lat} onChange={e => setLat(e.target.value)} className={inputClass} placeholder={tx('Latitude (ex: 30.4278)')} />
+          <input value={lng} onChange={e => setLng(e.target.value)} className={inputClass} placeholder={tx('Longitude (ex: -9.5981)')} />
         </div>
       </div>
 
@@ -792,6 +795,7 @@ function Section3Form({
   setCerts: React.Dispatch<React.SetStateAction<VerificationCertification[]>>;
   onRefresh: () => void;
 }) {
+  const { tx } = useI18n();
   const [certType, setCertType] = useState('');
   const [certNumber, setCertNumber] = useState('');
   const [body, setBody] = useState('');
@@ -857,16 +861,16 @@ function Section3Form({
             <p className="font-bold text-gray-900">{c.cert_type}</p>
             <p className="text-[11px] text-gray-500">N° {c.cert_number} • {c.certifying_body}</p>
           </div>
-          <span className="text-brand-600 font-bold flex items-center gap-1">✅ Certificat prêt</span>
+          <span className="text-brand-600 font-bold flex items-center gap-1">{tx('✅ Certificat prêt')}</span>
         </div>
       ))}
 
       <div className="p-4 bg-gray-50/80 border border-gray-200 rounded-2xl space-y-3">
-        <h4 className="font-bold text-gray-800">Ajouter une certification Bio / Éthique</h4>
+        <h4 className="font-bold text-gray-800">{tx('Ajouter une certification Bio / Éthique')}</h4>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <input value={certType} onChange={e => setCertType(e.target.value)} placeholder="Type (Ex: AB, Fairtrade)" className={inputClass} />
+          <input value={certType} onChange={e => setCertType(e.target.value)} placeholder={tx('Type (Ex: AB, Fairtrade)')} className={inputClass} />
           <input value={certNumber} onChange={e => setCertNumber(e.target.value)} placeholder="N° Certificat" className={inputClass} />
-          <input value={body} onChange={e => setBody(e.target.value)} placeholder="Organisme (Ex: Ecocert)" className={inputClass} />
+          <input value={body} onChange={e => setBody(e.target.value)} placeholder={tx('Organisme (Ex: Ecocert)')} className={inputClass} />
         </div>
 
         <div className="space-y-3">
@@ -911,6 +915,7 @@ function Section5Form({
   setDocs: React.Dispatch<React.SetStateAction<VerificationDocument[]>>;
   onRefresh: () => void;
 }) {
+  const { tx } = useI18n();
   const [signed, setSigned] = useState(producer?.ethical_charter_signed || false);
   const [childLaborDoc, setChildLaborDoc] = useState('');
   const [saving, setSaving] = useState(false);
@@ -972,7 +977,7 @@ function Section5Form({
             onChange={e => setSigned(e.target.checked)}
             className="w-4 h-4 text-brand-600 rounded accent-brand-600"
           />
-          <span>Je soussigné(e) confirme signer la Charte Éthique & Environnementale EthiMarket x Bureau Veritas.</span>
+          <span>{tx('Je soussigné(e) confirme signer la Charte Éthique & Environnementale EthiMarket x Bureau Veritas.')}</span>
         </label>
       </div>
 

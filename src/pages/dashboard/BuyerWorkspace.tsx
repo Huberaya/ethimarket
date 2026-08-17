@@ -50,7 +50,7 @@ const WEIGHT_LABELS: Record<keyof BuyerWeights, { labelKey: string; emoji: strin
 };
 
 export default function BuyerWorkspace() {
-  const { t } = useI18n();
+  const { t, tx } = useI18n();
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const initialTab = (['suppliers', 'products', 'purchases', 'rules'] as Tab[]).includes(searchParams.get('tab') as Tab)
@@ -145,7 +145,7 @@ export default function BuyerWorkspace() {
         <div className="rounded-2xl border-2 border-violet-200 bg-violet-50 p-4 flex items-start gap-3">
           <Brain className="w-5 h-5 text-violet-600 shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-black text-violet-600 uppercase tracking-wide">Ce que la plateforme a appris de vous</p>
+            <p className="text-xs font-black text-violet-600 uppercase tracking-wide">{tx('Ce que la plateforme a appris de vous')}</p>
             {prefs.learned.insights.map((ins, i) => (
               <p key={i} className="text-sm text-violet-900 font-medium mt-0.5">« {ins} »</p>
             ))}
@@ -177,12 +177,12 @@ export default function BuyerWorkspace() {
         <div className="space-y-5">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white rounded-2xl border border-gray-100 p-5">
-              <div className="flex items-center gap-2 text-emerald-600"><PiggyBank className="w-4 h-4" /><span className="text-xs font-bold uppercase">Économies</span></div>
+              <div className="flex items-center gap-2 text-emerald-600"><PiggyBank className="w-4 h-4" /><span className="text-xs font-bold uppercase">{tx('Économies')}</span></div>
               <p className="text-2xl font-black text-gray-900 mt-2">{analytics.savings.toLocaleString('fr-FR')} €</p>
               <p className="text-[11px] text-gray-500 mt-1">vs prix de référence marché{analytics.premiumPaid > 0 ? ` · prime conformité payée : ${analytics.premiumPaid.toLocaleString('fr-FR')} €` : ''}</p>
             </div>
             <div className="bg-white rounded-2xl border border-gray-100 p-5">
-              <div className="flex items-center gap-2 text-emerald-600"><Leaf className="w-4 h-4" /><span className="text-xs font-bold uppercase">Impact</span></div>
+              <div className="flex items-center gap-2 text-emerald-600"><Leaf className="w-4 h-4" /><span className="text-xs font-bold uppercase">{tx('Impact')}</span></div>
               <p className="text-2xl font-black text-gray-900 mt-2">{analytics.totalCarbonKg} kg</p>
               <p className="text-[11px] text-gray-500 mt-1">{t('bw.co2Total')}</p>
             </div>
@@ -200,7 +200,7 @@ export default function BuyerWorkspace() {
 
           {/* Évolution du score */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5">
-            <h3 className="text-sm font-bold text-gray-900 mb-4">📈 Évolution du score éthique de vos achats</h3>
+            <h3 className="text-sm font-bold text-gray-900 mb-4">{tx('📈 Évolution du score éthique de vos achats')}</h3>
             {analytics.scoreTrend.length === 0 ? (
               <p className="text-sm text-gray-400 italic">{t('bw.recordPurchases')}</p>
             ) : (
@@ -222,7 +222,7 @@ export default function BuyerWorkspace() {
           {/* Historique */}
           {purchases.length > 0 && (
             <div className="bg-white rounded-2xl border border-gray-100 p-5">
-              <h3 className="text-sm font-bold text-gray-900 mb-3">Historique</h3>
+              <h3 className="text-sm font-bold text-gray-900 mb-3">{tx('Historique')}</h3>
               <ul className="divide-y divide-gray-50">
                 {purchases.slice(0, 10).map(p => (
                   <li key={p.id} className="py-2.5 flex items-center justify-between gap-3 text-sm">
@@ -259,8 +259,8 @@ export default function BuyerWorkspace() {
           {suppliers.length === 0 && (
             <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
               <Factory className="w-8 h-8 text-gray-300 mx-auto mb-3" />
-              <p className="text-sm text-gray-500">Vous ne suivez encore aucun fournisseur.</p>
-              <Link to="/producteurs" className="inline-block mt-3 text-sm font-bold text-brand-700 hover:underline">Parcourir les producteurs →</Link>
+              <p className="text-sm text-gray-500">{tx('Vous ne suivez encore aucun fournisseur.')}</p>
+              <Link to="/producteurs" className="inline-block mt-3 text-sm font-bold text-brand-700 hover:underline">{tx('Parcourir les producteurs →')}</Link>
             </div>
           )}
 
@@ -284,8 +284,8 @@ export default function BuyerWorkspace() {
                         className="text-xs font-bold border border-gray-200 rounded-lg px-2 py-1.5 bg-white cursor-pointer"
                       >
                         <option value="active">✅ Actif</option>
-                        <option value="evaluating">🕓 En évaluation</option>
-                        <option value="at_risk">⚠️ À risque</option>
+                        <option value="evaluating">{tx('🕓 En évaluation')}</option>
+                        <option value="at_risk">{tx('⚠️ À risque')}</option>
                         <option value="suspended">🚫 Suspendu</option>
                       </select>
                     </li>
@@ -317,7 +317,7 @@ export default function BuyerWorkspace() {
             <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
               <PackageSearch className="w-8 h-8 text-gray-300 mx-auto mb-3" />
               <p className="text-sm text-gray-500">{t('bw.noTracked')}</p>
-              <Link to="/catalogue" className="inline-block mt-3 text-sm font-bold text-brand-700 hover:underline">Parcourir le catalogue →</Link>
+              <Link to="/catalogue" className="inline-block mt-3 text-sm font-bold text-brand-700 hover:underline">{tx('Parcourir le catalogue →')}</Link>
             </div>
           )}
 
@@ -344,9 +344,9 @@ export default function BuyerWorkspace() {
                           onChange={async e => { if (tp.product) { await setProductStatus(user.id, tp.product, e.target.value as ProductTrackStatus); void reload(); } }}
                           className="text-xs font-bold border border-gray-200 rounded-lg px-2 py-1.5 bg-white cursor-pointer"
                         >
-                          <option value="approved">✅ Approuvé</option>
+                          <option value="approved">{tx('✅ Approuvé')}</option>
                           <option value="analyzing">🔍 En analyse</option>
-                          <option value="rejected">❌ Rejeté</option>
+                          <option value="rejected">{tx('❌ Rejeté')}</option>
                         </select>
                       </div>
                       {/* Alternatives pour les rejetés */}
@@ -385,7 +385,7 @@ export default function BuyerWorkspace() {
             </div>
           )}
           <div className="bg-white rounded-2xl border border-gray-100 p-6">
-            <h3 className="text-sm font-bold text-gray-900">⚖️ Mes pondérations de décision</h3>
+            <h3 className="text-sm font-bold text-gray-900">{tx('⚖️ Mes pondérations de décision')}</h3>
             <p className="text-xs text-gray-500 mt-1 mb-5">
               Définissez l'importance de chaque critère dans vos recommandations et comparaisons. La somme doit faire 100%.
             </p>
@@ -416,7 +416,7 @@ export default function BuyerWorkspace() {
 
             {effective && useLearned && prefs.learned && Object.keys(prefs.learned.adjustments).length > 0 && (
               <div className="mt-3 rounded-xl bg-violet-50 border border-violet-200 p-3">
-                <p className="text-[11px] font-bold text-violet-700 uppercase mb-1">Pondérations effectives (règles + apprentissage)</p>
+                <p className="text-[11px] font-bold text-violet-700 uppercase mb-1">{tx('Pondérations effectives (règles + apprentissage)')}</p>
                 <div className="flex flex-wrap gap-2">
                   {(Object.keys(WEIGHT_LABELS) as (keyof BuyerWeights)[]).map(k => (
                     <span key={k} className="text-[11px] font-bold bg-white border border-violet-200 rounded-full px-2.5 py-1 text-violet-900">
@@ -463,7 +463,7 @@ export default function BuyerWorkspace() {
 
 // ---------- Formulaire d'achat rapide ----------
 function QuickPurchaseForm({ userId, catalog, onAdded }: { userId: string; catalog: Product[]; onAdded: () => void }) {
-  const { t } = useI18n();
+  const { t, tx } = useI18n();
   const [productId, setProductId] = useState('');
   const [qty, setQty] = useState('1');
   const [baseline, setBaseline] = useState('');
@@ -473,14 +473,14 @@ function QuickPurchaseForm({ userId, catalog, onAdded }: { userId: string; catal
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-5">
-      <h3 className="text-sm font-bold text-gray-900 mb-3">➕ Enregistrer un achat</h3>
+      <h3 className="text-sm font-bold text-gray-900 mb-3">{tx('➕ Enregistrer un achat')}</h3>
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
         <select value={productId} onChange={e => setProductId(e.target.value)} className="sm:col-span-2 text-sm border border-gray-200 rounded-xl px-3 py-2.5 bg-white">
-          <option value="">— Choisir un produit du catalogue —</option>
+          <option value="">{tx('— Choisir un produit du catalogue —')}</option>
           {catalog.map(p => <option key={p.id} value={p.id}>{p.name} · {p.price} €</option>)}
         </select>
-        <input type="number" min="0.1" step="0.1" value={qty} onChange={e => setQty(e.target.value)} placeholder="Quantité" className="text-sm border border-gray-200 rounded-xl px-3 py-2.5" />
-        <input type="number" min="0" step="0.01" value={baseline} onChange={e => setBaseline(e.target.value)} placeholder="Prix marché réf. (€)" title="Prix unitaire de référence du marché conventionnel — sert au calcul de vos économies" className="text-sm border border-gray-200 rounded-xl px-3 py-2.5" />
+        <input type="number" min="0.1" step="0.1" value={qty} onChange={e => setQty(e.target.value)} placeholder={tx('Quantité')} className="text-sm border border-gray-200 rounded-xl px-3 py-2.5" />
+        <input type="number" min="0" step="0.01" value={baseline} onChange={e => setBaseline(e.target.value)} placeholder={tx('Prix marché réf. (€)')} title={tx('Prix unitaire de référence du marché conventionnel — sert au calcul de vos économies')} className="text-sm border border-gray-200 rounded-xl px-3 py-2.5" />
       </div>
       <button
         onClick={async () => {

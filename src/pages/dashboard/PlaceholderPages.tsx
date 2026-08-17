@@ -40,6 +40,7 @@ const slugify = (s: string) =>
   s.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
 
 export function SettingsPage() {
+  const { tx } = useI18n();
   const { user, profile, producer, refresh } = useAuth();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -185,8 +186,8 @@ export function SettingsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-black text-gray-900 mb-1">Paramètres</h1>
-      <p className="text-gray-500 text-sm mb-6">Gérez vos informations de compte</p>
+      <h1 className="text-2xl font-black text-gray-900 mb-1">{tx('Paramètres')}</h1>
+      <p className="text-gray-500 text-sm mb-6">{tx('Gérez vos informations de compte')}</p>
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl mb-5 flex items-center gap-2">
@@ -205,47 +206,47 @@ export function SettingsPage() {
         </h3>
 
         <div>
-          <label className={labelClass}>Email</label>
+          <label className={labelClass}>{tx('Email')}</label>
           <div className="px-4 py-2.5 bg-gray-50 rounded-xl text-sm text-gray-500 border border-gray-100">{user?.email}</div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Prénom <span className="text-red-500">*</span></label>
-            <input type="text" required value={firstName} onChange={e => setFirstName(e.target.value)} className={inputClass} placeholder="Jean" />
+            <label className={labelClass}>{tx('Prénom')} <span className="text-red-500">*</span></label>
+            <input type="text" required value={firstName} onChange={e => setFirstName(e.target.value)} className={inputClass} placeholder={tx('Jean')} />
           </div>
           <div>
-            <label className={labelClass}>Nom <span className="text-red-500">*</span></label>
-            <input type="text" required value={lastName} onChange={e => setLastName(e.target.value)} className={inputClass} placeholder="Dupont" />
+            <label className={labelClass}>{tx('Nom')} <span className="text-red-500">*</span></label>
+            <input type="text" required value={lastName} onChange={e => setLastName(e.target.value)} className={inputClass} placeholder={tx('Dupont')} />
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Téléphone</label>
+            <label className={labelClass}>{tx('Téléphone')}</label>
             <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className={inputClass} placeholder="+33 6 ..." />
           </div>
           <div>
-            <label className={labelClass}>WhatsApp</label>
+            <label className={labelClass}>{tx('WhatsApp')}</label>
             <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} className={inputClass} placeholder="+33 6 ..." />
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Pays</label>
+            <label className={labelClass}>{tx('Pays')}</label>
             <select value={country} onChange={e => setCountry(e.target.value)} className={inputClass}>
               {COUNTRIES.map(c => <option key={c.code}>{c.name}</option>)}
             </select>
           </div>
           <div>
-            <label className={labelClass}>Ville</label>
-            <input type="text" value={city} onChange={e => setCity(e.target.value)} className={inputClass} placeholder="Votre ville" />
+            <label className={labelClass}>{tx('Ville')}</label>
+            <input type="text" value={city} onChange={e => setCity(e.target.value)} className={inputClass} placeholder={tx('Votre ville')} />
           </div>
         </div>
 
         <div>
-          <label className={labelClass}>Rôle</label>
+          <label className={labelClass}>{tx('Rôle')}</label>
           <div className="px-4 py-2.5 bg-gray-50 rounded-xl text-sm text-gray-500 border border-gray-100 capitalize">{profile?.role ?? 'N/A'}</div>
         </div>
 

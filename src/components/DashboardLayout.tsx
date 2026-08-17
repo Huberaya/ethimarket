@@ -41,6 +41,7 @@ const BUYER_NAV = [
 ] as const;
 
 function VerificationBadge({ producerId }: { producerId: string }) {
+  const { t } = useI18n();
   const [vStatus, setVStatus] = useState<string>('draft');
 
   useEffect(() => {
@@ -62,7 +63,7 @@ function VerificationBadge({ producerId }: { producerId: string }) {
     return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Soumis</span>;
   }
   if (vStatus === 'rejected') {
-    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-700">Rejeté</span>;
+    return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-700">{t('dash.rejected')}</span>;
   }
   if (vStatus === 'under_review') {
     return <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Examen</span>;

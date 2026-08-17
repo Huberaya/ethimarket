@@ -5,6 +5,7 @@ import React, { useMemo } from 'react';
 import { LeafletMap } from '../LeafletMap';
 import { SearchResultItem } from '../../lib/productSearchEngine';
 import { Product } from '../../lib/supabase';
+import { useI18n } from '../../lib/i18n';
 
 interface SearchResultsMapProps {
   results: SearchResultItem[];
@@ -31,6 +32,7 @@ const COUNTRY_COORDINATES: Record<string, [number, number]> = {
 export const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
   results
 }) => {
+  const { t } = useI18n();
   const markers = useMemo(() => {
     return results.map((prod, index) => {
       let lat = 0;
@@ -101,7 +103,7 @@ export const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
         {/* Map Legend Floating Card */}
         <div className="absolute top-4 right-4 z-10 bg-white/95 backdrop-blur-md px-4 py-3 rounded-2xl shadow-lg border border-neutral-200 text-xs space-y-1.5 hidden sm:block pointer-events-auto">
           <div className="font-bold text-neutral-900 flex items-center gap-1.5">
-            <span>🌍 Répartition mondiale</span>
+            <span>{t('map.worldwide')}</span>
           </div>
           <div className="text-neutral-500">
             {markers.length} exploitations & ateliers géo-localisés

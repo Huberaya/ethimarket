@@ -26,7 +26,7 @@ const WEIGHT_LABELS: Record<keyof BuyerWeights, string> = {
 };
 
 export default function OrganizationPage() {
-  const { t } = useI18n();
+  const { t, tx } = useI18n();
   const { user } = useAuth();
   const [org, setOrg] = useState<Organization | null>(null);
   const [members, setMembers] = useState<OrgMember[]>([]);
@@ -46,7 +46,7 @@ export default function OrganizationPage() {
   useEffect(() => { void reload(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [user?.id]);
 
   if (!user) return null;
-  if (loading) return <div className="flex justify-center py-20" role="status" aria-label="Chargement"><Loader2 className="w-6 h-6 animate-spin text-brand-500" /></div>;
+  if (loading) return <div className="flex justify-center py-20" role="status" aria-label={tx('Chargement')}><Loader2 className="w-6 h-6 animate-spin text-brand-500" /></div>;
 
   return (
     <div className="space-y-6 max-w-3xl">
@@ -76,7 +76,7 @@ export default function OrganizationPage() {
 
 /* ---------- Créer ou rejoindre ---------- */
 function CreateOrJoin({ onDone }: { onDone: () => void }) {
-  const { t } = useI18n();
+  const { t, tx } = useI18n();
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState<'create' | 'join' | null>(null);
@@ -88,7 +88,7 @@ function CreateOrJoin({ onDone }: { onDone: () => void }) {
         <Building2 className="w-6 h-6 text-brand-600 mb-3" aria-hidden="true" />
         <h2 className="font-black text-gray-900">{t('org.create')}</h2>
         <p className="text-xs text-gray-500 mt-1 mb-4">{t('org.createDesc')}</p>
-        <label htmlFor="org-name" className="block text-sm font-semibold text-gray-700 mb-1.5">Nom de l'entreprise</label>
+        <label htmlFor="org-name" className="block text-sm font-semibold text-gray-700 mb-1.5">{tx('Nom de l\'entreprise')}</label>
         <input
           id="org-name" type="text" value={name} onChange={e => setName(e.target.value)}
           placeholder="Ex : Acme Achats Responsables"
@@ -110,9 +110,9 @@ function CreateOrJoin({ onDone }: { onDone: () => void }) {
 
       <div className="bg-white rounded-2xl border border-gray-200 p-6">
         <Users className="w-6 h-6 text-gray-500 mb-3" aria-hidden="true" />
-        <h2 className="font-black text-gray-900">Rejoindre une organisation</h2>
-        <p className="text-xs text-gray-500 mt-1 mb-4">Entrez le code d'invitation transmis par votre administrateur.</p>
-        <label htmlFor="org-code" className="block text-sm font-semibold text-gray-700 mb-1.5">Code d'invitation</label>
+        <h2 className="font-black text-gray-900">{tx('Rejoindre une organisation')}</h2>
+        <p className="text-xs text-gray-500 mt-1 mb-4">{tx('Entrez le code d\'invitation transmis par votre administrateur.')}</p>
+        <label htmlFor="org-code" className="block text-sm font-semibold text-gray-700 mb-1.5">{tx('Code d\'invitation')}</label>
         <input
           id="org-code" type="text" value={code} onChange={e => setCode(e.target.value.toUpperCase())}
           placeholder="Ex : A0871DD0" maxLength={8}
@@ -139,6 +139,7 @@ function CreateOrJoin({ onDone }: { onDone: () => void }) {
 
 /* ---------- En-tête organisation + code ---------- */
 function OrgHeader({ org, myRole, onRotated }: { org: Organization; myRole: OrgRole; onRotated: (code: string) => void }) {
+  const { tx } = useI18n();
   const [copied, setCopied] = useState(false);
   const [rotating, setRotating] = useState(false);
   const canManage = myRole === 'owner' || myRole === 'admin';
@@ -160,7 +161,7 @@ function OrgHeader({ org, myRole, onRotated }: { org: Organization; myRole: OrgR
 
         {canManage && (
           <div className="text-right">
-            <p className="text-[11px] font-bold text-gray-500 uppercase">Code d'invitation</p>
+            <p className="text-[11px] font-bold text-gray-500 uppercase">{tx('Code d\'invitation')}</p>
             <div className="flex items-center gap-2 mt-1">
               <code className="font-mono font-black text-brand-700 bg-brand-50 border border-brand-200 rounded-lg px-3 py-1.5 tracking-widest">
                 {org.invite_code}
@@ -175,13 +176,13 @@ function OrgHeader({ org, myRole, onRotated }: { org: Organization; myRole: OrgR
               <button
                 onClick={async () => { setRotating(true); const { code } = await rotateInviteCode(org.id); setRotating(false); if (code) onRotated(code); }}
                 className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50"
-                aria-label="Régénérer le code d'invitation"
-                title="Régénérer (invalide l'ancien code)"
+                aria-label={tx('Régénérer le code d\'invitation')}
+                title={tx('Régénérer (invalide l\'ancien code)')}
               >
                 <RefreshCw className={`w-4 h-4 text-gray-500 ${rotating ? 'animate-spin' : ''}`} aria-hidden="true" />
               </button>
             </div>
-            <p className="text-[10px] text-gray-500 mt-1">Partagez ce code avec vos collègues pour qu'ils rejoignent l'organisation.</p>
+            <p className="text-[10px] text-gray-500 mt-1">{tx('Partagez ce code avec vos collègues pour qu\'ils rejoignent l\'organisation.')}</p>
           </div>
         )}
       </div>
@@ -267,6 +268,7 @@ function MembersList({ members, myRole, myUserId, onChanged }: {
 
 /* ---------- Pondérations entreprise ---------- */
 function OrgWeightsEditor({ org, onSaved }: { org: Organization; onSaved: () => void }) {
+  const { tx } = useI18n();
   const [weights, setWeights] = useState<BuyerWeights>(orgWeights(org));
   const [enforced, setEnforced] = useState(org.weights_enforced);
   const [saving, setSaving] = useState(false);
@@ -307,7 +309,7 @@ function OrgWeightsEditor({ org, onSaved }: { org: Organization; onSaved: () => 
 
       <label className="mt-4 flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
         <input type="checkbox" checked={enforced} onChange={e => setEnforced(e.target.checked)} className="accent-brand-600 w-4 h-4" />
-        <span><strong>Imposer ces règles</strong> à tous les membres (elles remplacent leurs règles personnelles)</span>
+        <span><strong>{tx('Imposer ces règles')}</strong> à tous les membres (elles remplacent leurs règles personnelles)</span>
       </label>
 
       {error && <p className="mt-2 text-sm text-red-600 font-semibold" role="alert">{error}</p>}

@@ -107,7 +107,7 @@ function StatTile({ emoji, value, label, highlight }: { emoji: string; value: nu
 function QuoteCard({ quote: q, isProducer, onRespond, onAction }: {
   quote: QuoteRequest; isProducer: boolean; onRespond: () => void; onAction: () => void;
 }) {
-  const { t } = useI18n();
+  const { t, tx } = useI18n();
   const meta = QUOTE_STATUS_META[q.status];
   const [busy, setBusy] = useState(false);
   const act = async (fn: () => Promise<string | null>) => {
@@ -156,7 +156,7 @@ function QuoteCard({ quote: q, isProducer, onRespond, onAction }: {
           ) : q.unit_price_at_request != null ? (
             <>
               <p className="text-sm font-bold text-gray-500 tabular-nums">{q.unit_price_at_request.toFixed(2)} {q.currency}/{q.unit}</p>
-              <p className="text-[11px] text-gray-500">prix indicatif à la demande</p>
+              <p className="text-[11px] text-gray-500">{tx('prix indicatif à la demande')}</p>
             </>
           ) : (
             <p className="text-sm font-bold text-gray-400">{t('q.onQuote')}</p>
@@ -217,6 +217,7 @@ function QuoteCard({ quote: q, isProducer, onRespond, onAction }: {
 
 /* ---- Modale de réponse producteur ---- */
 function RespondModal({ quote, onClose, onDone }: { quote: QuoteRequest; onClose: () => void; onDone: () => void }) {
+  const { tx } = useI18n();
   const defaultValidity = new Date(Date.now() + 14 * 24 * 3600 * 1000).toISOString().slice(0, 10);
   const [price, setPrice] = useState(quote.unit_price_at_request?.toString() ?? '');
   const [delay, setDelay] = useState('7-10');
@@ -240,11 +241,11 @@ function RespondModal({ quote, onClose, onDone }: { quote: QuoteRequest; onClose
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6" onClick={e => e.stopPropagation()} role="dialog" aria-label="Répondre au devis">
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6" onClick={e => e.stopPropagation()} role="dialog" aria-label={tx('Répondre au devis')}>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-brand-100 flex items-center justify-center"><FileText className="w-5 h-5 text-brand-700" /></div>
           <div>
-            <h2 className="font-black text-gray-900">Votre offre</h2>
+            <h2 className="font-black text-gray-900">{tx('Votre offre')}</h2>
             <p className="text-xs text-gray-500">{quote.product_name} · {quote.quantity.toLocaleString('fr-FR')} {quote.unit}</p>
           </div>
         </div>
@@ -257,7 +258,7 @@ function RespondModal({ quote, onClose, onDone }: { quote: QuoteRequest; onClose
                 className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none" />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Délai (jours)</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">{tx('Délai (jours)')}</label>
               <select value={delay} onChange={e => setDelay(e.target.value)}
                 className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-brand-500 outline-none">
                 {['3-5', '5-7', '7-10', '10-14', '14-21', '21-30'].map(d => <option key={d}>{d}</option>)}
@@ -265,14 +266,14 @@ function RespondModal({ quote, onClose, onDone }: { quote: QuoteRequest; onClose
             </div>
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Offre valide jusqu'au *</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">{tx('Offre valide jusqu\'au *')}</label>
             <input type="date" value={validUntil} min={new Date().toISOString().slice(0, 10)} onChange={e => setValidUntil(e.target.value)}
               className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none" />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Message (optionnel)</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">{tx('Message (optionnel)')}</label>
             <textarea rows={2} value={message} onChange={e => setMessage(e.target.value)}
-              placeholder="Conditions particulières, remise supplémentaire, échantillon offert…"
+              placeholder={tx('Conditions particulières, remise supplémentaire, échantillon offert…')}
               className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none resize-none" />
           </div>
 
@@ -287,7 +288,7 @@ function RespondModal({ quote, onClose, onDone }: { quote: QuoteRequest; onClose
             <button onClick={submit} disabled={busy} className="btn-primary flex-1 py-3 text-sm font-black rounded-xl inline-flex items-center justify-center gap-2 disabled:opacity-50">
               {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />} Envoyer l'offre
             </button>
-            <button onClick={onClose} className="px-5 py-3 text-sm font-bold rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700">Annuler</button>
+            <button onClick={onClose} className="px-5 py-3 text-sm font-bold rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700">{tx('Annuler')}</button>
           </div>
           <p className="text-[11px] text-gray-500 flex items-center gap-1"><Clock className="w-3 h-3" /> Passée la date de validité, l'offre expirera automatiquement.</p>
         </div>

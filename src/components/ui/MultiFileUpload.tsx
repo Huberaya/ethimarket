@@ -188,7 +188,7 @@ export function MultiFileUpload({
                   type="button"
                   onClick={() => (img ? setActivePreview(url) : window.open(url, '_blank'))}
                   className="p-1.5 bg-white/90 text-gray-800 rounded-lg hover:bg-white shadow transition"
-                  title="Aperçu"
+                  title={t('upload.preview')}
                 >
                   <Eye className="w-4 h-4" />
                 </button>

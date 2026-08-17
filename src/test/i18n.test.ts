@@ -194,3 +194,51 @@ describe('i18n — contenus éditoriaux des pages', () => {
     }
   });
 });
+
+// ─────────────────────────────────────────────────────────────
+// Système gettext (tx) — formulaires denses
+// ─────────────────────────────────────────────────────────────
+import { translateSource } from '../lib/i18n';
+import { GETTEXT } from '../lib/i18n/gettext';
+
+describe('i18n — translateSource (gettext)', () => {
+  it('fr : renvoie la chaîne source telle quelle', () => {
+    expect(translateSource('fr', 'Prénom')).toBe('Prénom');
+  });
+
+  it('traduit les libellés de formulaire dans les 4 langues', () => {
+    expect(translateSource('en', 'Prénom')).toBe('First name');
+    expect(translateSource('es', 'Prénom')).toBe('Nombre');
+    expect(translateSource('pt', 'Prénom')).toBe('Nome');
+    expect(translateSource('ar', 'Prénom')).toBe('الاسم الأول');
+  });
+
+  it('fallback : chaîne inconnue -> renvoyée inchangée (jamais vide)', () => {
+    const unknown = 'Chaîne totalement inconnue du dictionnaire';
+    for (const l of ['en', 'es', 'pt', 'ar'] as const) {
+      expect(translateSource(l, unknown)).toBe(unknown);
+    }
+  });
+
+  it('les 4 dictionnaires gettext couvrent les mêmes clés', () => {
+    const enKeys = Object.keys(GETTEXT.en).sort();
+    for (const l of ['es', 'pt', 'ar'] as const) {
+      const keys = Object.keys(GETTEXT[l]).sort();
+      const missing = enKeys.filter(k => !keys.includes(k));
+      // tolérance zéro : toute clé EN doit exister dans les autres langues
+      expect(missing, `Clés manquantes en ${l}: ${missing.slice(0, 5).join(' | ')}`).toEqual([]);
+    }
+  });
+
+  it('aucune valeur vide dans les dictionnaires gettext', () => {
+    for (const l of ['en', 'es', 'pt', 'ar'] as const) {
+      const empty = Object.entries(GETTEXT[l]).filter(([, v]) => !v || !v.trim());
+      expect(empty.map(([k]) => k)).toEqual([]);
+    }
+  });
+
+  it('les mois sont traduits (utilisés pour la saisonnalité)', () => {
+    expect(translateSource('en', 'Janvier')).toBe('January');
+    expect(translateSource('ar', 'Décembre')).toBe('ديسمبر');
+  });
+});

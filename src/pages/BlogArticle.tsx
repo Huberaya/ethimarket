@@ -148,7 +148,7 @@ export default function BlogArticle() {
           {article.excerpt && <p className="text-lg text-gray-600 leading-relaxed font-medium border-l-4 border-brand-300 pl-4 my-6">{article.excerpt}</p>}
 
           <div className="prose-sm">
-            {article.content ? renderContent(article.content) : <p className="text-gray-500 italic">Contenu à venir.</p>}
+            {article.content ? renderContent(article.content) : <p className="text-gray-500 italic">{t('blog.notFoundDesc')}</p>}
           </div>
 
           {/* Articles liés */}

@@ -20,6 +20,7 @@ import {
 import { enhanceRecommendationWithFreeAi } from '../../lib/procurementLlm';
 import { recordBuyerEvent } from '../../lib/buyerWorkspace';
 import { useAuth } from '../../lib/auth';
+import { useI18n } from '../../lib/i18n';
 
 const RISK_DISPLAY: Record<RiskLevel, { emoji: string; label: string; cls: string }> = {
   low: { emoji: '🟢', label: 'Faible', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
@@ -50,6 +51,7 @@ interface ProcurementComparisonModalProps {
 }
 
 export default function ProcurementComparisonModal({ products, isOpen, onClose }: ProcurementComparisonModalProps) {
+  const { tx } = useI18n();
   const [analysis, setAnalysis] = useState<ComparisonAnalysis | null>(null);
   const [trust, setTrust] = useState<Record<string, TrustSnapshot>>({});
   const [loading, setLoading] = useState(false);
@@ -116,7 +118,7 @@ export default function ProcurementComparisonModal({ products, isOpen, onClose }
         className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl my-4"
         onClick={e => e.stopPropagation()}
         role="dialog"
-        aria-label="Comparateur achats responsables"
+        aria-label={tx('Comparateur achats responsables')}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white rounded-t-3xl z-10">
@@ -125,11 +127,11 @@ export default function ProcurementComparisonModal({ products, isOpen, onClose }
               <Trophy className="w-5 h-5 text-emerald-700" />
             </div>
             <div>
-              <h2 className="font-black text-gray-900">Comparateur achats responsables</h2>
+              <h2 className="font-black text-gray-900">{tx('Comparateur achats responsables')}</h2>
               <p className="text-xs text-gray-500">{products.length} produits · scores calculés à partir des preuves du Trust Center</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-xl transition-colors" aria-label="Fermer">
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-xl transition-colors" aria-label={tx('Fermer')}>
             <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>
@@ -137,7 +139,7 @@ export default function ProcurementComparisonModal({ products, isOpen, onClose }
         {loading || !analysis ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
             <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
-            <p className="text-sm text-gray-500">Analyse des preuves et calcul des scores…</p>
+            <p className="text-sm text-gray-500">{tx('Analyse des preuves et calcul des scores…')}</p>
           </div>
         ) : (
           <div className="p-6 space-y-6">
@@ -146,7 +148,7 @@ export default function ProcurementComparisonModal({ products, isOpen, onClose }
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-gray-50">
-                    <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 uppercase tracking-wide w-40">Critère</th>
+                    <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 uppercase tracking-wide w-40">{tx('Critère')}</th>
                     {analysis.scorecards.map((s, i) => {
                       const isReco = reco?.recommended.product.id === s.product.id;
                       return (
@@ -180,7 +182,7 @@ export default function ProcurementComparisonModal({ products, isOpen, onClose }
                     ))}
                   </tr>
                   <tr>
-                    <td className="px-4 py-3 font-semibold text-gray-600">🌍 Responsabilité</td>
+                    <td className="px-4 py-3 font-semibold text-gray-600">{tx('🌍 Responsabilité')}</td>
                     {analysis.scorecards.map(s => (
                       <td key={s.product.id} className={`px-4 py-3 ${reco?.recommended.product.id === s.product.id ? 'bg-emerald-50/40' : ''}`}>
                         <ScoreCell value={s.responsibilityScore} isBest={bestOf.responsibility === s.product.id} />
@@ -188,7 +190,7 @@ export default function ProcurementComparisonModal({ products, isOpen, onClose }
                     ))}
                   </tr>
                   <tr>
-                    <td className="px-4 py-3 font-semibold text-gray-600">🔍 Traçabilité</td>
+                    <td className="px-4 py-3 font-semibold text-gray-600">{tx('🔍 Traçabilité')}</td>
                     {analysis.scorecards.map(s => (
                       <td key={s.product.id} className={`px-4 py-3 ${reco?.recommended.product.id === s.product.id ? 'bg-emerald-50/40' : ''}`}>
                         <ScoreCell value={s.traceabilityScore} isBest={bestOf.traceability === s.product.id} />

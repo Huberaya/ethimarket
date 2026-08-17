@@ -12,6 +12,7 @@ import en from './locales/en';
 import es from './locales/es';
 import pt from './locales/pt';
 import ar from './locales/ar';
+import { GETTEXT } from './gettext';
 
 export type Locale = 'fr' | 'en' | 'es' | 'pt' | 'ar';
 
@@ -46,6 +47,16 @@ export function translate(
   return s;
 }
 
+/**
+ * Traduction « gettext » : la chaîne française EST la clé.
+ * Utilisée pour les formulaires denses (profil, ajout produit, vérification…).
+ * Fallback : la chaîne source, donc jamais de trou.
+ */
+export function translateSource(locale: Locale, frSource: string): string {
+  if (locale === 'fr') return frSource;
+  return GETTEXT[locale][frSource] ?? frSource;
+}
+
 export function detectLocale(): Locale {
   if (typeof window === 'undefined') return 'fr';
   try {
@@ -65,6 +76,8 @@ type I18nContextValue = {
   dir: 'ltr' | 'rtl';
   setLocale: (l: Locale) => void;
   t: (key: string, vars?: Record<string, string | number>) => string;
+  /** Traduction par chaîne source française (formulaires denses). */
+  tx: (frSource: string) => string;
 };
 
 const I18nContext = createContext<I18nContextValue>({
@@ -72,6 +85,7 @@ const I18nContext = createContext<I18nContextValue>({
   dir: 'ltr',
   setLocale: () => {},
   t: (key, vars) => translate('fr', key, vars),
+  tx: (s) => s,
 });
 
 export function I18nProvider({ children }: { children: ReactNode }) {
@@ -92,8 +106,13 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     [locale]
   );
 
+  const tx = useCallback(
+    (frSource: string) => translateSource(locale, frSource),
+    [locale]
+  );
+
   return (
-    <I18nContext.Provider value={{ locale, dir: dirFor(locale), setLocale, t }}>
+    <I18nContext.Provider value={{ locale, dir: dirFor(locale), setLocale, t, tx }}>
       {children}
     </I18nContext.Provider>
   );

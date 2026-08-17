@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { StructuredFilters } from '../../lib/productSearchEngine';
 import { SavedSearch, SavedSearchesService } from '../../lib/savedSearchesService';
+import { useI18n } from '../../lib/i18n';
 
 interface SavedSearchesModalProps {
   isOpen: boolean;
@@ -33,6 +34,7 @@ export const SavedSearchesModal: React.FC<SavedSearchesModalProps> = ({
   onApplySavedSearch,
   userId
 }) => {
+  const { tx } = useI18n();
   const [activeTab, setActiveTab] = useState<'save_current' | 'history'>('save_current');
   const [title, setTitle] = useState('');
   const [frequency, setFrequency] = useState<'instant' | 'daily' | 'weekly' | 'none'>('weekly');
@@ -116,7 +118,7 @@ export const SavedSearchesModal: React.FC<SavedSearchesModalProps> = ({
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Enregistrer la recherche active</span>
+            <span>{tx('Enregistrer la recherche active')}</span>
           </button>
           <button
             type="button"
@@ -170,8 +172,8 @@ export const SavedSearchesModal: React.FC<SavedSearchesModalProps> = ({
                           💰 ≤ {currentFilters.maxPrice} €
                         </span>
                       )}
-                      {currentFilters.isVegan && <span className="bg-neutral-200 px-2 py-0.5 rounded">Vegan</span>}
-                      {currentFilters.livingWageRequired && <span className="bg-neutral-200 px-2 py-0.5 rounded">Salaire décent</span>}
+                      {currentFilters.isVegan && <span className="bg-neutral-200 px-2 py-0.5 rounded">{tx('Vegan')}</span>}
+                      {currentFilters.livingWageRequired && <span className="bg-neutral-200 px-2 py-0.5 rounded">{tx('Salaire décent')}</span>}
                     </div>
                   </div>
 
@@ -185,7 +187,7 @@ export const SavedSearchesModal: React.FC<SavedSearchesModalProps> = ({
                       required
                       value={title}
                       onChange={e => setTitle(e.target.value)}
-                      placeholder="Ex: T-shirts coton bio Europe à moins de 15€"
+                      placeholder={tx('Ex: T-shirts coton bio Europe à moins de 15€')}
                       className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                   </div>
@@ -233,7 +235,7 @@ export const SavedSearchesModal: React.FC<SavedSearchesModalProps> = ({
                       className="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-bold text-sm shadow-md transition flex items-center justify-center gap-2"
                     >
                       <Bookmark className="w-4 h-4" />
-                      <span>Enregistrer et activer l'alerte</span>
+                      <span>{tx('Enregistrer et activer l\'alerte')}</span>
                     </button>
                   </div>
                 </>
@@ -245,7 +247,7 @@ export const SavedSearchesModal: React.FC<SavedSearchesModalProps> = ({
               {savedList.length === 0 ? (
                 <div className="text-center py-10 text-neutral-400 space-y-2">
                   <Bookmark className="w-8 h-8 mx-auto stroke-1" />
-                  <p className="text-xs">Aucune recherche sauvegardée pour le moment.</p>
+                  <p className="text-xs">{tx('Aucune recherche sauvegardée pour le moment.')}</p>
                 </div>
               ) : (
                 savedList.map(item => (
@@ -270,16 +272,16 @@ export const SavedSearchesModal: React.FC<SavedSearchesModalProps> = ({
                             onClose();
                           }}
                           className="px-2.5 py-1.5 bg-emerald-100 text-emerald-800 hover:bg-emerald-200 rounded-lg text-xs font-bold transition flex items-center gap-1"
-                          title="Lancer cette recherche"
+                          title={tx('Lancer cette recherche')}
                         >
                           <Play className="w-3 h-3" />
-                          <span>Lancer</span>
+                          <span>{tx('Lancer')}</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => handleDelete(item.id)}
                           className="p-1.5 text-neutral-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
-                          title="Supprimer"
+                          title={tx('Supprimer')}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -298,10 +300,10 @@ export const SavedSearchesModal: React.FC<SavedSearchesModalProps> = ({
                           onChange={e => handleUpdateFreq(item.id, e.target.value as 'instant' | 'daily' | 'weekly' | 'none')}
                           className="text-[11px] bg-neutral-100 border-none rounded px-2 py-0.5 font-medium text-neutral-700 focus:ring-1 focus:ring-emerald-500"
                         >
-                          <option value="weekly">Alerte : Hebdomadaire</option>
-                          <option value="daily">Alerte : Quotidienne</option>
-                          <option value="instant">Alerte : Instantanée</option>
-                          <option value="none">Alerte : Désactivée</option>
+                          <option value="weekly">{tx('Alerte : Hebdomadaire')}</option>
+                          <option value="daily">{tx('Alerte : Quotidienne')}</option>
+                          <option value="instant">{tx('Alerte : Instantanée')}</option>
+                          <option value="none">{tx('Alerte : Désactivée')}</option>
                         </select>
                       </div>
                     </div>

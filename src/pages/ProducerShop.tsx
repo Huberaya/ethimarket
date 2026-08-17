@@ -38,7 +38,7 @@ function Skeleton() {
 }
 
 export default function ProducerShop() {
-  const { t } = useI18n();
+  const { t, tx } = useI18n();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -365,7 +365,7 @@ export default function ProducerShop() {
                   </div>
                 </div>
 
-                <h2 className="font-black text-gray-900 text-xl mb-4">Notre histoire</h2>
+                <h2 className="font-black text-gray-900 text-xl mb-4">{tx('Notre histoire')}</h2>
                 <p className="text-gray-600 leading-relaxed mb-7">
                   {producer.description ??
                     `${producer.name} est une coopérative engagée dans la production durable et équitable${producer.founded_year ? ` depuis ${producer.founded_year}` : ''}. Nous travaillons en direct avec les communautés locales pour garantir une rémunération juste et des pratiques agricoles respectueuses de l'environnement et de la biodiversité.`

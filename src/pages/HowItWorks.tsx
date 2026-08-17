@@ -42,7 +42,7 @@ export default function HowItWorks() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <SEOHead
-        title="Comment ça marche ? | EthiMarket B2B"
+        title={`${t('how.title')} | EthiMarket B2B`}
         description="Découvrez comment EthiMarket connecte directement les acheteurs bio et les producteurs certifiés : inscription, commande sécurisée, paiement escrow et livraison."
       />
       <Header />

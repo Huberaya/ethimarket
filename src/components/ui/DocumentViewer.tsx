@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FileText, ExternalLink, ZoomIn, CheckCircle2, XCircle, AlertCircle, Eye, Download, X, RotateCw } from 'lucide-react';
+import { useI18n } from '../../lib/i18n';
 
 export interface DocumentViewerProps {
   title: string;
@@ -24,6 +25,7 @@ export function DocumentViewer({
   onApprove,
   onReject,
 }: DocumentViewerProps) {
+  const { tx } = useI18n();
   const [modalOpen, setModalOpen] = useState(false);
   const [localComment, setLocalComment] = useState(comment);
   const [showCommentBox, setShowCommentBox] = useState(false);
@@ -134,7 +136,7 @@ export function DocumentViewer({
                 </div>
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-gray-800 truncate">{title}</p>
-                  <span className="text-[10px] text-gray-500">Document PDF / Attestation officielle</span>
+                  <span className="text-[10px] text-gray-500">{tx('Document PDF / Attestation officielle')}</span>
                 </div>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
@@ -149,7 +151,7 @@ export function DocumentViewer({
                   type="button"
                   onClick={handleDownload}
                   className="p-1.5 text-gray-600 hover:text-emerald-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
-                  title="Télécharger"
+                  title={tx('Télécharger')}
                 >
                   <Download className="w-3.5 h-3.5" />
                 </button>
@@ -210,7 +212,7 @@ export function DocumentViewer({
                     onStatusChange(status, e.target.value);
                   }
                 }}
-                placeholder="Motif de non-conformité ou remarque..."
+                placeholder={tx('Motif de non-conformité ou remarque...')}
                 className="w-full px-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
               />
             </div>
@@ -219,7 +221,7 @@ export function DocumentViewer({
       ) : (
         <div className="p-4 bg-amber-50/50 border border-amber-200 rounded-xl text-center">
           <AlertCircle className="w-5 h-5 text-amber-500 mx-auto mb-1" />
-          <p className="text-xs text-amber-800 font-medium">Document non encore téléversé par le producteur.</p>
+          <p className="text-xs text-amber-800 font-medium">{tx('Document non encore téléversé par le producteur.')}</p>
         </div>
       )}
 
@@ -241,7 +243,7 @@ export function DocumentViewer({
                     type="button"
                     onClick={() => setRotation((r) => (r + 90) % 360)}
                     className="p-1.5 text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg"
-                    title="Pivoter"
+                    title={tx('Pivoter')}
                   >
                     <RotateCw className="w-4 h-4" />
                   </button>
@@ -258,7 +260,7 @@ export function DocumentViewer({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-1.5 text-gray-600 hover:text-gray-900 bg-white border border-gray-200 rounded-lg"
-                  title="Ouvrir dans un nouvel onglet"
+                  title={tx('Ouvrir dans un nouvel onglet')}
                 >
                   <ExternalLink className="w-4 h-4" />
                 </a>

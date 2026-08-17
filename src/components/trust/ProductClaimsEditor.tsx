@@ -16,6 +16,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, Trash2, ShieldCheck, AlertTriangle, FileText, Info } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { useI18n } from '../../lib/i18n';
 
 export interface DraftEvidence {
   certificateNumber: string;
@@ -77,6 +78,7 @@ interface ProductClaimsEditorProps {
 }
 
 export default function ProductClaimsEditor({ claims, onChange }: ProductClaimsEditorProps) {
+  const { tx } = useI18n();
   const [bodies, setBodies] = useState<CertBody[]>([]);
 
   useEffect(() => {
@@ -119,12 +121,12 @@ export default function ProductClaimsEditor({ claims, onChange }: ProductClaimsE
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
         <div className="flex items-start gap-2 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 text-emerald-800">
           <FileText className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-          <span><strong>Avec certificat joint :</strong> statut « 🕓 Vérification en cours », puis « ✅ Certifié » une fois
+          <span><strong>{tx('Avec certificat joint :')}</strong> statut « 🕓 Vérification en cours », puis « ✅ Certifié » une fois
           l'authenticité confirmée par EthiMarket auprès de l'organisme.</span>
         </div>
         <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 text-amber-800">
           <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-          <span><strong>Sans certificat :</strong> affichée « ⚠️ Déclaration fournisseur — preuve indépendante non trouvée. »</span>
+          <span><strong>{tx('Sans certificat :')}</strong> {tx('affichée « ⚠️ Déclaration fournisseur — preuve indépendante non trouvée. »')}</span>
         </div>
       </div>
 
@@ -142,14 +144,14 @@ export default function ProductClaimsEditor({ claims, onChange }: ProductClaimsE
               type="button"
               onClick={() => removeClaim(i)}
               className="absolute top-3 right-3 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-              aria-label="Supprimer cette allégation"
+              aria-label={tx('Supprimer cette allégation')}
             >
               <Trash2 className="w-4 h-4" />
             </button>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pr-8">
               <div>
-                <label className={labelClass}>Type d'allégation</label>
+                <label className={labelClass}>{tx('Type d\'allégation')}</label>
                 <select
                   value={claim.claimType}
                   onChange={e => updateClaim(i, { claimType: e.target.value })}
@@ -161,7 +163,7 @@ export default function ProductClaimsEditor({ claims, onChange }: ProductClaimsE
                 </select>
               </div>
               <div>
-                <label className={labelClass}>Libellé affiché publiquement *</label>
+                <label className={labelClass}>{tx('Libellé affiché publiquement *')}</label>
                 <input
                   type="text"
                   value={claim.claimLabel}
@@ -173,12 +175,12 @@ export default function ProductClaimsEditor({ claims, onChange }: ProductClaimsE
             </div>
 
             <div>
-              <label className={labelClass}>Précision (optionnel)</label>
+              <label className={labelClass}>{tx('Précision (optionnel)')}</label>
               <input
                 type="text"
                 value={claim.claimValue}
                 onChange={e => updateClaim(i, { claimValue: e.target.value })}
-                placeholder="Ex : 95% coton bio certifié, filé et tissé localement"
+                placeholder={tx('Ex : 95% coton bio certifié, filé et tissé localement')}
                 className={inputClass}
               />
             </div>
@@ -224,7 +226,7 @@ export default function ProductClaimsEditor({ claims, onChange }: ProductClaimsE
                         }}
                         className={inputClass}
                       >
-                        <option value="">— Sélectionner —</option>
+                        <option value="">{tx('— Sélectionner —')}</option>
                         {bodies.map(b => (
                           <option key={b.id} value={b.id}>{b.name}</option>
                         ))}
@@ -233,7 +235,7 @@ export default function ProductClaimsEditor({ claims, onChange }: ProductClaimsE
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <label className={labelClass}>Émis le</label>
+                      <label className={labelClass}>{tx('Émis le')}</label>
                       <input
                         type="date"
                         value={claim.evidence.validFrom}
@@ -251,7 +253,7 @@ export default function ProductClaimsEditor({ claims, onChange }: ProductClaimsE
                       />
                     </div>
                     <div>
-                      <label className={labelClass}>🔗 Lien de vérification officiel</label>
+                      <label className={labelClass}>{tx('🔗 Lien de vérification officiel')}</label>
                       <input
                         type="url"
                         value={claim.evidence.sourceUrl}

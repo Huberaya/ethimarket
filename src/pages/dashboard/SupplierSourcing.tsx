@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Bot, Search, Loader2, CheckCircle2, XCircle, Trophy, ChevronDown } from 'lucide-react';
 import { runSourcingMission, SourcingResult } from '../../lib/supplierSourcing';
+import { useI18n } from '../../lib/i18n';
 
 const EXAMPLES = [
   'Trouve-moi 10 fournisseurs européens capables de fournir 5 000 unités par mois, avec un score responsable supérieur à 80 et un prix inférieur à 8 €',
@@ -16,6 +17,7 @@ const EXAMPLES = [
 ];
 
 export default function SupplierSourcing() {
+  const { tx } = useI18n();
   const [query, setQuery] = useState('');
   const [result, setResult] = useState<SourcingResult | null>(null);
   const [loading, setLoading] = useState(false);
@@ -86,10 +88,10 @@ export default function SupplierSourcing() {
             {/* Critères compris */}
             <div className="flex flex-wrap gap-1.5 mt-3">
               {result.mission.region && <span className="text-[10px] font-bold bg-white border border-violet-200 rounded-full px-2 py-0.5">📍 {result.mission.region === 'europe' ? 'Europe' : result.mission.region === 'africa' ? 'Afrique' : result.mission.region === 'asia' ? 'Asie' : 'Amériques'}</span>}
-              {result.mission.minMonthlyCapacity && <span className="text-[10px] font-bold bg-white border border-violet-200 rounded-full px-2 py-0.5">🏭 ≥ {result.mission.minMonthlyCapacity.toLocaleString('fr-FR')} u/mois</span>}
+              {result.mission.minMonthlyCapacity && <span className="text-[10px] font-bold bg-white border border-violet-200 rounded-full px-2 py-0.5">🏭 ≥ {result.mission.minMonthlyCapacity.toLocaleString('fr-FR')} u/m</span>}
               {result.mission.minResponsibleScore && <span className="text-[10px] font-bold bg-white border border-violet-200 rounded-full px-2 py-0.5">🌱 score ≥ {result.mission.minResponsibleScore}</span>}
               {result.mission.maxUnitPrice !== undefined && <span className="text-[10px] font-bold bg-white border border-violet-200 rounded-full px-2 py-0.5">💶 ≤ {result.mission.maxUnitPrice} €</span>}
-              {result.mission.requireVerified && <span className="text-[10px] font-bold bg-white border border-violet-200 rounded-full px-2 py-0.5">🛡️ vérifiés uniquement</span>}
+              {result.mission.requireVerified && <span className="text-[10px] font-bold bg-white border border-violet-200 rounded-full px-2 py-0.5">{tx('🛡️ vérifiés uniquement')}</span>}
             </div>
           </div>
 
@@ -111,9 +113,9 @@ export default function SupplierSourcing() {
                       </div>
                     </div>
                     <div className="flex gap-4 text-center">
-                      <div><p className="text-lg font-black text-emerald-700">{ev.avgResponsibleScore}</p><p className="text-[9px] text-gray-500 font-bold uppercase">Score</p></div>
-                      <div><p className="text-lg font-black text-gray-900">{ev.minPrice} €</p><p className="text-[9px] text-gray-500 font-bold uppercase">Dès</p></div>
-                      {ev.monthlyCapacity > 0 && <div><p className="text-lg font-black text-gray-900">{ev.monthlyCapacity.toLocaleString('fr-FR')}</p><p className="text-[9px] text-gray-500 font-bold uppercase">u/mois</p></div>}
+                      <div><p className="text-lg font-black text-emerald-700">{ev.avgResponsibleScore}</p><p className="text-[9px] text-gray-500 font-bold uppercase">{tx('Score')}</p></div>
+                      <div><p className="text-lg font-black text-gray-900">{ev.minPrice} €</p><p className="text-[9px] text-gray-500 font-bold uppercase">{tx('Dès')}</p></div>
+                      {ev.monthlyCapacity > 0 && <div><p className="text-lg font-black text-gray-900">{ev.monthlyCapacity.toLocaleString('fr-FR')}</p><p className="text-[9px] text-gray-500 font-bold uppercase">u/m</p></div>}
                     </div>
                   </div>
                   {ev.bestProduct && (

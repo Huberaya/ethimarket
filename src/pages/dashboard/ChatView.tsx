@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase, type ChatMessage, type Conversation } from '../../lib/supabase';
+import { useI18n } from '../../lib/i18n';
 
 type InterlocutorInfo = {
   id: string;
@@ -35,6 +36,7 @@ export function ChatView({
   onBack,
   onMessageSent,
 }: ChatViewProps) {
+  const { t } = useI18n();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [inputText, setInputText] = useState('');
@@ -318,7 +320,7 @@ export function ChatView({
             <div className="w-12 h-12 rounded-full bg-brand-50 text-brand-500 flex items-center justify-center mb-3">
               💬
             </div>
-            <p className="font-bold text-gray-700 text-sm mb-1">Démarrez la conversation</p>
+            <p className="font-bold text-gray-700 text-sm mb-1">{t('chat.start')}</p>
             <p className="text-xs text-gray-500 max-w-xs">
               Posez vos questions sur les produits, la qualité, la logistique ou les prix sur mesure.
             </p>
@@ -383,7 +385,7 @@ export function ChatView({
                       msg.read_at ? (
                         <span title="Lu"><CheckCheck className="w-3.5 h-3.5 text-blue-300" /></span>
                       ) : (
-                        <span title="Envoyé"><Check className="w-3.5 h-3.5 text-brand-200" /></span>
+                        <span title={t('chat.sent')}><Check className="w-3.5 h-3.5 text-brand-200" /></span>
                       )
                     )}
                   </div>

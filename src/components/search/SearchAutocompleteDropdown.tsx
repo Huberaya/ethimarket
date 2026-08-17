@@ -5,6 +5,7 @@ import React from 'react';
 import { Search, Sparkles, History, ArrowUpRight, CheckCircle2, AlertCircle, HelpCircle } from 'lucide-react';
 import { ParsedSearchQuery, normalizeText } from '../../lib/naturalLanguageSearchService';
 import { SearchResultItem } from '../../lib/productSearchEngine';
+import { useI18n } from '../../lib/i18n';
 
 interface SearchAutocompleteDropdownProps {
   query: string;
@@ -64,6 +65,7 @@ export const SearchAutocompleteDropdown: React.FC<SearchAutocompleteDropdownProp
   onClearHistory,
   isOpen
 }) => {
+  const { t } = useI18n();
   if (!isOpen) return null;
 
   const hasExtractedEntities =
@@ -85,7 +87,7 @@ export const SearchAutocompleteDropdown: React.FC<SearchAutocompleteDropdownProp
         <div className="p-3 bg-emerald-50/80 border-b border-emerald-100">
           <div className="flex items-center gap-2 text-xs font-semibold text-emerald-900 mb-1.5">
             <Sparkles className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-            <span>Critères extraits de votre recherche :</span>
+            <span>{t('search.extracted')}</span>
             <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-emerald-200/70 text-emerald-800 font-medium">
               Confiance {Math.round(parsedQuery.confidence * 100)}%
             </span>
@@ -130,7 +132,7 @@ export const SearchAutocompleteDropdown: React.FC<SearchAutocompleteDropdownProp
         <div className="p-3">
           <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-neutral-400 px-2 mb-2">
             <span>Produits pertinents ({matchingProducts.length})</span>
-            <span className="text-[10px] font-normal text-neutral-400">Classés par priorité stricte</span>
+            <span className="text-[10px] font-normal text-neutral-400">{t('search.priority')}</span>
           </div>
           <div className="space-y-1">
             {matchingProducts.slice(0, 5).map(prod => {

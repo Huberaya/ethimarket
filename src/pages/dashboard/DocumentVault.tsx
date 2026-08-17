@@ -15,7 +15,7 @@ import {
 } from '../../lib/documentVault';
 
 export default function DocumentVault() {
-  const { t } = useI18n();
+  const { t, tx } = useI18n();
   const { user } = useAuth();
   const [docs, setDocs] = useState<VaultDocument[]>([]);
   const [loading, setLoading] = useState(true);
@@ -88,7 +88,7 @@ export default function DocumentVault() {
           <>
             <Upload className="w-8 h-8 text-brand-400 mx-auto mb-2" />
             <p className="text-sm font-bold text-gray-700">{t('dv.title')}</p>
-            <p className="text-xs text-gray-500 mt-1">Certificats · Audits · Factures · Fiches techniques · Rapports ESG · Questionnaires · Analyses · Réglementaire</p>
+            <p className="text-xs text-gray-500 mt-1">{tx('Certificats · Audits · Factures · Fiches techniques · Rapports ESG · Questionnaires · Analyses · Réglementaire')}</p>
           </>
         )}
       </label>

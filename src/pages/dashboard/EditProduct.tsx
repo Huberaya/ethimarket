@@ -4,6 +4,7 @@ import { Upload, Check, ArrowLeft, Loader2, Save } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 import { supabase, type Category, type Product } from '../../lib/supabase';
 import ProductClaimsEditor, { DraftClaim, saveDraftClaims } from '../../components/trust/ProductClaimsEditor';
+import { useI18n } from '../../lib/i18n';
 
 const COUNTRIES = [
   'France', 'Belgique', 'Suisse', 'Canada', 'Maroc', 'Éthiopie', 'Iran', 'Madagascar',
@@ -23,6 +24,7 @@ const CURRENCIES = ['EUR', 'USD', 'MAD', 'XOF'];
 const UNITS = ['kg', 'L', 'pièce', 'palette'];
 
 export default function EditProduct() {
+  const { tx } = useI18n();
   const { user } = useAuth();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -229,7 +231,7 @@ export default function EditProduct() {
   if (!product) {
     return (
       <div className="text-center py-20">
-        <p className="text-gray-500">Produit introuvable ou vous n'avez pas la permission de le modifier.</p>
+        <p className="text-gray-500">{tx('Produit introuvable ou vous n\'avez pas la permission de le modifier.')}</p>
       </div>
     );
   }
@@ -240,14 +242,14 @@ export default function EditProduct() {
         <button onClick={() => navigate('/dashboard/mes-produits')} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-600 transition-colors mb-3">
           <ArrowLeft className="w-4 h-4" /> Retour aux produits
         </button>
-        <h1 className="text-2xl font-black text-gray-900">Modifier le produit</h1>
+        <h1 className="text-2xl font-black text-gray-900">{tx('Modifier le produit')}</h1>
       </div>
 
       {error && <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl mb-5">{error}</div>}
 
       <form onSubmit={handleSubmit} className="max-w-3xl space-y-5">
         <div className="bg-white rounded-2xl border border-gray-100 p-6">
-          <label className={labelClass}>Photo du produit</label>
+          <label className={labelClass}>{tx('Photo du produit')}</label>
           <div className="flex items-center gap-4">
             <div className="w-28 h-28 rounded-2xl border-2 border-dashed border-gray-200 overflow-hidden flex items-center justify-center bg-gray-50 flex-shrink-0">
               {imagePreview ? <img src={imagePreview} alt="Aperçu" className="w-full h-full object-cover" /> : <Upload className="w-7 h-7 text-gray-300" />}
@@ -263,49 +265,49 @@ export default function EditProduct() {
 
         <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
           <div>
-            <label className={labelClass}>Nom du produit *</label>
+            <label className={labelClass}>{tx('Nom du produit *')}</label>
             <input type="text" required value={form.name} onChange={e => update('name', e.target.value)} className={inputClass} />
           </div>
           <div>
-            <label className={labelClass}>Description courte</label>
+            <label className={labelClass}>{tx('Description courte')}</label>
             <input type="text" value={form.short_description} onChange={e => update('short_description', e.target.value)} className={inputClass} maxLength={120} />
           </div>
           <div>
-            <label className={labelClass}>Description longue</label>
+            <label className={labelClass}>{tx('Description longue')}</label>
             <textarea rows={4} value={form.description} onChange={e => update('description', e.target.value)} className={`${inputClass} resize-none`} />
           </div>
           <div>
-            <label className={labelClass}>Catégorie</label>
+            <label className={labelClass}>{tx('Catégorie')}</label>
             <select value={form.category_id} onChange={e => update('category_id', e.target.value)} className={inputClass}>
-              <option value="">Sélectionner...</option>
+              <option value="">{tx('Sélectionner...')}</option>
               {categories.map(c => <option key={c.id} value={c.id}>{c.emoji} {c.name}</option>)}
             </select>
           </div>
           <div>
-            <label className={labelClass}>Statut</label>
+            <label className={labelClass}>{tx('Statut')}</label>
             <select value={form.status} onChange={e => update('status', e.target.value)} className={inputClass}>
-              <option value="active">Actif (visible dans le catalogue)</option>
-              <option value="draft">Brouillon (non visible)</option>
-              <option value="archived">Archivé</option>
+              <option value="active">{tx('Actif (visible dans le catalogue)')}</option>
+              <option value="draft">{tx('Brouillon (non visible)')}</option>
+              <option value="archived">{tx('Archivé')}</option>
             </select>
           </div>
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
-          <h3 className="font-bold text-gray-900 text-sm">Prix et quantité</h3>
+          <h3 className="font-bold text-gray-900 text-sm">{tx('Prix et quantité')}</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div>
-              <label className={labelClass}>Prix *</label>
+              <label className={labelClass}>{tx('Prix *')}</label>
               <input type="number" step="0.01" required value={form.price} onChange={e => update('price', e.target.value)} min="0" className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Devise</label>
+              <label className={labelClass}>{tx('Devise')}</label>
               <select value={form.currency} onChange={e => update('currency', e.target.value)} className={inputClass}>
                 {CURRENCIES.map(c => <option key={c}>{c}</option>)}
               </select>
             </div>
             <div>
-              <label className={labelClass}>Unité</label>
+              <label className={labelClass}>{tx('Unité')}</label>
               <select value={form.moq_unit} onChange={e => { update('moq_unit', e.target.value); update('stock_unit', e.target.value); }} className={inputClass}>
                 {UNITS.map(u => <option key={u}>{u}</option>)}
               </select>
@@ -317,30 +319,30 @@ export default function EditProduct() {
               <input type="number" required value={form.moq_value} onChange={e => update('moq_value', e.target.value)} min="1" className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Stock</label>
+              <label className={labelClass}>{tx('Stock')}</label>
               <input type="number" value={form.stock_value} onChange={e => update('stock_value', e.target.value)} min="0" className={inputClass} />
             </div>
           </div>
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
-          <h3 className="font-bold text-gray-900 text-sm">Origine</h3>
+          <h3 className="font-bold text-gray-900 text-sm">{tx('Origine')}</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className={labelClass}>Pays</label>
+              <label className={labelClass}>{tx('Pays')}</label>
               <select value={form.country} onChange={e => update('country', e.target.value)} className={inputClass}>
                 {COUNTRIES.map(c => <option key={c}>{c}</option>)}
               </select>
             </div>
             <div>
-              <label className={labelClass}>Région</label>
+              <label className={labelClass}>{tx('Région')}</label>
               <input type="text" value={form.region} onChange={e => update('region', e.target.value)} className={inputClass} />
             </div>
           </div>
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-100 p-6">
-          <label className={labelClass}>Certifications</label>
+          <label className={labelClass}>{tx('Certifications')}</label>
           <div className="flex flex-wrap gap-2">
             {CERT_OPTIONS.map(cert => (
               <button key={cert} type="button" onClick={() => toggleCert(cert)}
@@ -357,39 +359,39 @@ export default function EditProduct() {
         <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
           <div>
             <h3 className="font-bold text-gray-900 text-sm">💶 Conditions commerciales</h3>
-            <p className="text-xs text-gray-500 mt-1">Génèrent la grille dégressive, les délais et la capacité affichés aux acheteurs.</p>
+            <p className="text-xs text-gray-500 mt-1">{tx('Génèrent la grille dégressive, les délais et la capacité affichés aux acheteurs.')}</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className={labelClass}>Capacité mensuelle</label>
+              <label className={labelClass}>{tx('Capacité mensuelle')}</label>
               <input type="number" min="0" value={form.monthly_capacity} onChange={e => update('monthly_capacity', e.target.value)} placeholder="Ex : 3000" className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Délai de livraison (jours)</label>
+              <label className={labelClass}>{tx('Délai de livraison (jours)')}</label>
               <select value={form.delivery_days} onChange={e => update('delivery_days', e.target.value)} className={inputClass}>
                 {['3-5', '5-7', '7-10', '7-14', '10-14', '14-21', '21-30'].map(d => <option key={d} value={d}>{d} jours</option>)}
               </select>
             </div>
             <div>
-              <label className={labelClass}>« Sur devis » à partir de</label>
+              <label className={labelClass}>{tx('« Sur devis » à partir de')}</label>
               <input type="number" min="1" value={form.quote_threshold_qty} onChange={e => update('quote_threshold_qty', e.target.value)} placeholder="Ex : 1000" className={inputClass} />
             </div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div>
-              <label className="block text-[11px] font-semibold text-gray-500 mb-1">Palier 2 : dès (qté)</label>
+              <label className="block text-[11px] font-semibold text-gray-500 mb-1">{tx('Palier 2 : dès (qté)')}</label>
               <input type="number" min="1" value={form.tier2_min_qty} onChange={e => update('tier2_min_qty', e.target.value)} placeholder="100" className={inputClass} />
             </div>
             <div>
-              <label className="block text-[11px] font-semibold text-gray-500 mb-1">Remise 2 (%)</label>
+              <label className="block text-[11px] font-semibold text-gray-500 mb-1">{tx('Remise 2 (%)')}</label>
               <input type="number" min="0" max="60" value={form.tier2_discount_pct} onChange={e => update('tier2_discount_pct', e.target.value)} placeholder="11" className={inputClass} />
             </div>
             <div>
-              <label className="block text-[11px] font-semibold text-gray-500 mb-1">Palier 3 : dès (qté)</label>
+              <label className="block text-[11px] font-semibold text-gray-500 mb-1">{tx('Palier 3 : dès (qté)')}</label>
               <input type="number" min="1" value={form.tier3_min_qty} onChange={e => update('tier3_min_qty', e.target.value)} placeholder="500" className={inputClass} />
             </div>
             <div>
-              <label className="block text-[11px] font-semibold text-gray-500 mb-1">Remise 3 (%)</label>
+              <label className="block text-[11px] font-semibold text-gray-500 mb-1">{tx('Remise 3 (%)')}</label>
               <input type="number" min="0" max="60" value={form.tier3_discount_pct} onChange={e => update('tier3_discount_pct', e.target.value)} placeholder="21" className={inputClass} />
             </div>
           </div>
@@ -398,7 +400,7 @@ export default function EditProduct() {
         {/* Allégations Trust Center déjà déclarées */}
         {existingClaims.length > 0 && (
           <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-3">
-            <h3 className="font-bold text-gray-900 text-sm">🛡️ Allégations déjà déclarées</h3>
+            <h3 className="font-bold text-gray-900 text-sm">{tx('🛡️ Allégations déjà déclarées')}</h3>
             <p className="text-xs text-gray-500">
               Statut calculé par EthiMarket à partir des preuves. Pour joindre un certificat à une
               allégation existante, contactez l'équipe ou déposez le document dans votre espace vérification.
@@ -432,7 +434,7 @@ export default function EditProduct() {
         {/* Impact & Éthique — facettes du moteur intelligent */}
         <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
           <div>
-            <h3 className="font-bold text-gray-900 text-sm">🌍 Impact & Éthique</h3>
+            <h3 className="font-bold text-gray-900 text-sm">{tx('🌍 Impact & Éthique')}</h3>
             <p className="text-xs text-gray-500 mt-1">
               Ces informations alimentent le moteur de recherche multicritères et le Trust Center.
             </p>
@@ -440,17 +442,17 @@ export default function EditProduct() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className={labelClass}>Type de produit</label>
+              <label className={labelClass}>{tx('Type de produit')}</label>
               <input type="text" value={form.product_type} onChange={e => update('product_type', e.target.value)}
-                placeholder="Ex: café, miel, huile…" className={inputClass} />
+                placeholder={tx('Ex: café, miel, huile…')} className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Pays de fabrication</label>
+              <label className={labelClass}>{tx('Pays de fabrication')}</label>
               <input type="text" value={form.manufacturing_country} onChange={e => update('manufacturing_country', e.target.value)}
                 placeholder={form.country} className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Origine matières premières</label>
+              <label className={labelClass}>{tx('Origine matières premières')}</label>
               <input type="text" value={form.raw_materials_origin} onChange={e => update('raw_materials_origin', e.target.value)}
                 placeholder={form.country} className={inputClass} />
             </div>
@@ -458,19 +460,19 @@ export default function EditProduct() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className={labelClass}>Empreinte carbone (kg CO2e)</label>
+              <label className={labelClass}>{tx('Empreinte carbone (kg CO2e)')}</label>
               <input type="number" step="0.1" min="0" value={form.carbon_footprint_kg}
                 onChange={e => update('carbon_footprint_kg', e.target.value)} placeholder="Ex: 1.6" className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Empreinte eau (litres)</label>
+              <label className={labelClass}>{tx('Empreinte eau (litres)')}</label>
               <input type="number" step="1" min="0" value={form.water_footprint_liters}
                 onChange={e => update('water_footprint_liters', e.target.value)} placeholder="Ex: 140" className={inputClass} />
             </div>
           </div>
 
           <div>
-            <label className={labelClass}>Engagements éthiques & sociaux</label>
+            <label className={labelClass}>{tx('Engagements éthiques & sociaux')}</label>
             <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-3">
               ⚠️ Affichés comme « Déclaration fournisseur » dans le Trust Center tant que non vérifiés par certificat/audit.
             </p>
@@ -492,7 +494,7 @@ export default function EditProduct() {
             </div>
             {form.is_recycled && (
               <div className="mt-3 max-w-xs">
-                <label className={labelClass}>% de matières recyclées</label>
+                <label className={labelClass}>{tx('% de matières recyclées')}</label>
                 <input type="number" min="1" max="100" value={form.recycled_percentage}
                   onChange={e => update('recycled_percentage', e.target.value)} placeholder="Ex: 70" className={inputClass} />
               </div>
@@ -500,7 +502,7 @@ export default function EditProduct() {
           </div>
 
           <div>
-            <label className={labelClass}>Emballage</label>
+            <label className={labelClass}>{tx('Emballage')}</label>
             <div className="flex flex-wrap gap-2">
               {([
                 ['plastic_free', '🚫 Sans plastique'],
