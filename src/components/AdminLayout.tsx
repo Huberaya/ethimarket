@@ -45,6 +45,7 @@ const NAV_GROUPS: NavGroup[] = [
       { to: '/admin/produits', label: 'Produits', icon: Package },
       { to: '/admin/commandes', label: 'Commandes', icon: ShoppingCart },
       { to: '/admin/litiges', label: 'Litiges', icon: AlertTriangle },
+      { to: '/admin/incidents', label: 'Incidents qualité', icon: AlertTriangle },
       { to: '/admin/finances', label: 'Finances', icon: Wallet },
       { to: '/admin/configuration', label: 'Configuration', icon: Settings },
     ]

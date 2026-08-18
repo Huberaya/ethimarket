@@ -49,6 +49,7 @@ const AdminCertBodies = lazy(() => import('./pages/admin/AdminCertBodies'));
 const AdminProducts = lazy(() => import('./pages/admin/Products'));
 const AdminOrders = lazy(() => import('./pages/admin/Orders'));
 const AdminDisputes = lazy(() => import('./pages/admin/Disputes'));
+const AdminIncidents = lazy(() => import('./pages/admin/Incidents'));
 const AdminFinances = lazy(() => import('./pages/admin/Finances'));
 const AdminUsers = lazy(() => import('./pages/admin/Users'));
 const AdminReports = lazy(() => import('./pages/admin/Reports'));
@@ -147,6 +148,7 @@ export default function App() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="litiges" element={<AdminDisputes />} />
           <Route path="disputes" element={<AdminDisputes />} />
+          <Route path="incidents" element={<AdminIncidents />} />
           <Route path="finances" element={<AdminFinances />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="configuration" element={<AdminReports />} />

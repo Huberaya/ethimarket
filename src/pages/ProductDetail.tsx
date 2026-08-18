@@ -25,6 +25,7 @@ import FAQSection from '../components/product/FAQSection';
 import StickyActions from '../components/product/StickyActions';
 import { buildPricingSchedule, priceForQuantity, resolveLogistics } from '../lib/pricingEngine';
 import TrustCenterSection from '../components/trust/TrustCenterSection';
+import EuControlTransparency from '../components/trust/EuControlTransparency';
 import ResponsibilityScoreSection from '../components/product/ResponsibilityScoreSection';
 import QuoteRequestModal from '../components/product/QuoteRequestModal';
 import {
@@ -375,6 +376,13 @@ export default function ProductDetail() {
             <div className="mb-5">
               <ScoreBadge score={ethiScore} badge={producerBadge} details={scoreDetails} size="lg" />
             </div>
+
+            {/* Transparence contrôles UE (couche 2 du Product Trust Pipeline) */}
+            <EuControlTransparency
+              productType={product.product_type}
+              productName={product.name}
+              originCountry={product.country}
+            />
 
             {/* Price */}
             <div className="mb-4 pb-4 border-b border-gray-100">
