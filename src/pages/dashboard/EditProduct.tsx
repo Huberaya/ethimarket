@@ -9,6 +9,11 @@ import ImpactAssistant from '../../components/dashboard/ImpactAssistant';
 import { estimateFootprints } from '../../lib/impactEstimator';
 import { buildProductTranslations } from '../../lib/i18n/productAutoTranslate';
 import DescriptionTranslations, { type DescriptionTranslationsValue } from '../../components/dashboard/DescriptionTranslations';
+import ComplianceDossierEditor, { type ComplianceDraftMap } from '../../components/trust/ComplianceDossierEditor';
+import {
+  getComplianceItems, saveComplianceItems, parseComplianceError,
+  COMPLIANCE_META, type ComplianceKey,
+} from '../../lib/productCompliance';
 
 const COUNTRIES = [
   'France', 'Belgique', 'Suisse', 'Canada', 'Maroc', 'Éthiopie', 'Iran', 'Madagascar',
@@ -45,6 +50,8 @@ export default function EditProduct() {
   // d'une ACV producteur (et non de notre estimation sectorielle).
   const [hasAcv, setHasAcv] = useState(false);
   const [descTranslations, setDescTranslations] = useState<DescriptionTranslationsValue>({});
+  // Couche 1 : dossier de conformité produit (items existants → brouillons UI)
+  const [compliance, setCompliance] = useState<ComplianceDraftMap>({});
 
   const [form, setForm] = useState({
     name: '', short_description: '', description: '',
@@ -130,6 +137,21 @@ export default function EditProduct() {
             Number(rawP.carbon_footprint_kg) > 0 && rawP.carbon_footprint_source !== 'estimated'
           );
           setImagePreview(p.image_url ?? null);
+          // Dossier de conformité existant → pré-remplissage de l'éditeur
+          getComplianceItems(p.id).then(items => {
+            const map: ComplianceDraftMap = {};
+            for (const it of items) {
+              map[it.requirement_key] = {
+                key: it.requirement_key,
+                value_text: it.value_text ?? undefined,
+                file_url: it.file_url ?? undefined,
+                confirmed: COMPLIANCE_META[it.requirement_key]?.input === 'confirm'
+                  ? (it.status === 'provided' || it.status === 'verified')
+                  : undefined,
+              };
+            }
+            setCompliance(map);
+          });
           supabase.from('product_claims')
             .select('id, claim_label, verification_status')
             .eq('product_id', p.id)
@@ -176,6 +198,15 @@ export default function EditProduct() {
     if (!user || !product) return;
     setSaving(true);
     setError('');
+
+    // Couche 1 : sauvegarde du dossier de conformité AVANT l'update du
+    // produit — le verrou SQL le consulte si le statut passe à 'active'.
+    const complianceInput = {
+      product_type: form.product_type, name: form.name,
+      country: form.country, certifications: form.certifications,
+    };
+    const complianceErr = await saveComplianceItems(product.id, complianceInput, Object.values(compliance));
+    if (complianceErr) console.warn('[Compliance] Erreur enregistrement du dossier:', complianceErr);
 
     let imageUrl = product.image_url;
     if (imageFile) {
@@ -261,7 +292,16 @@ export default function EditProduct() {
     }).eq('id', product.id).eq('user_id', user.id);
 
     if (updateErr) {
-      setError(updateErr.message);
+      // Verrou SQL : dossier de conformité incomplet → message pédagogique
+      const missing = parseComplianceError(updateErr.message);
+      if (missing) {
+        setError(
+          tx('Publication impossible : le dossier de conformité est incomplet. Éléments manquants :') + ' '
+          + missing.map((k: ComplianceKey) => tx(COMPLIANCE_META[k].label)).join(' · ')
+        );
+      } else {
+        setError(updateErr.message);
+      }
       setSaving(false);
       return;
     }
@@ -577,6 +617,17 @@ export default function EditProduct() {
             </div>
           </div>
         </div>
+
+        {/* Dossier de conformité produit (couche 1 du Product Trust Pipeline).
+            La publication (statut Actif) exige un dossier complet — verrou SQL. */}
+        <ComplianceDossierEditor
+          product={{
+            product_type: form.product_type, name: form.name,
+            country: form.country, certifications: form.certifications,
+          }}
+          values={compliance}
+          onChange={setCompliance}
+        />
 
         <div className="flex gap-3">
           <button type="submit" disabled={saving}

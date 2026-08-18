@@ -14,6 +14,7 @@ export default function MyProducts() {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
   const showSuccess = searchParams.get('success') === '1';
+  const showDraft = searchParams.get('success') === 'draft';
 
   const fetchProducts = useCallback(async () => {
     if (!user) return;
@@ -49,6 +50,15 @@ export default function MyProducts() {
         <div className="bg-brand-50 border border-brand-200 text-brand-700 text-sm px-4 py-3 rounded-xl mb-5 flex items-center gap-2">
           <CheckCircle className="w-4 h-4" />
           Produit publié avec succès ! Il est maintenant visible dans le catalogue.
+        </div>
+      )}
+      {showDraft && (
+        <div className="bg-amber-50 border border-amber-200 text-amber-800 text-sm px-4 py-3 rounded-xl mb-5">
+          <p className="font-bold">📋 Produit enregistré en brouillon.</p>
+          <p className="text-xs mt-1">
+            Le dossier de conformité est incomplet : le produit n'apparaît pas encore dans le catalogue.
+            Ouvrez « Modifier » pour compléter les éléments manquants et le publier.
+          </p>
         </div>
       )}
 

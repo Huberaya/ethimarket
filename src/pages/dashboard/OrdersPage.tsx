@@ -15,13 +15,16 @@ import {
 import { useI18n } from '../../lib/i18n';
 import { useAuth } from '../../lib/auth';
 import {
-  getBuyerOrders, getProducerOrders, confirmOrder, shipOrder, markDelivered,
+  getBuyerOrders, getProducerOrders, confirmOrder, shipOrder,
   cancelOrder, disputeOrder, computeOrderStats, B2BOrder, ORDER_STATUS_META,
   PAYMENT_STATUS_META, markOrderPaid, markOrderInvoiced, ONLINE_PAYMENT_ENABLED,
 } from '../../lib/orderService';
 import { printPurchaseOrder } from '../../lib/purchaseOrderGenerator';
 import { addPurchase } from '../../lib/buyerWorkspace';
 import { supabase } from '../../lib/supabase';
+import LotDossierPanel from '../../components/orders/LotDossierPanel';
+import ReceptionModal from '../../components/orders/ReceptionModal';
+import { parseLotDossierError, LOT_DOC_META } from '../../lib/lotDossier';
 
 export default function OrdersPage() {
   const { t, tx } = useI18n();
@@ -113,6 +116,8 @@ function OrderCard({ order: o, isProducer, onAction, buyerId }: {
   const meta = ORDER_STATUS_META[o.status];
   const [busy, setBusy] = useState(false);
   const [shipModal, setShipModal] = useState(false);
+  const [receptionModal, setReceptionModal] = useState(false);
+  const [dossierComplete, setDossierComplete] = useState(true);
 
   const act = async (fn: () => Promise<string | null>) => {
     setBusy(true);
@@ -121,10 +126,8 @@ function OrderCard({ order: o, isProducer, onAction, buyerId }: {
     if (err) alert(err); else onAction();
   };
 
-  /** Réception confirmée → enregistre aussi l'achat dans le Buyer Workspace. */
-  const receive = () => act(async () => {
-    const err = await markDelivered(o.id);
-    if (err) return err;
+  /** Réception validée (constat structuré déjà enregistré) → Buyer Workspace. */
+  const afterReception = async () => {
     try {
       let product;
       if (o.product_id) {
@@ -138,8 +141,9 @@ function OrderCard({ order: o, isProducer, onAction, buyerId }: {
         unitPrice: o.unit_price,
       });
     } catch { /* le suivi d'achats ne doit jamais bloquer la réception */ }
-    return null;
-  });
+    setReceptionModal(false);
+    onAction();
+  };
 
   const cancelWithReason = () => {
     const reason = prompt(tx('Motif de l\'annulation ?'));
@@ -230,8 +234,9 @@ function OrderCard({ order: o, isProducer, onAction, buyerId }: {
           </>
         )}
         {isProducer && o.status === 'processing' && (
-          <button onClick={() => setShipModal(true)} disabled={busy}
-            className="px-4 py-2 text-xs font-black rounded-xl bg-violet-600 text-white hover:bg-violet-700 inline-flex items-center gap-1.5 cursor-pointer">
+          <button onClick={() => setShipModal(true)} disabled={busy || !dossierComplete}
+            title={dossierComplete ? undefined : tx('Complétez d\'abord le dossier documentaire du lot ci-dessous.')}
+            className="px-4 py-2 text-xs font-black rounded-xl bg-violet-600 text-white hover:bg-violet-700 inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
             <Truck className="w-3.5 h-3.5" /> {t('ord.ship')}
           </button>
         )}
@@ -264,7 +269,7 @@ function OrderCard({ order: o, isProducer, onAction, buyerId }: {
         )}
         {!isProducer && o.status === 'shipped' && (
           <>
-            <button onClick={receive} disabled={busy}
+            <button onClick={() => setReceptionModal(true)} disabled={busy}
               className="px-4 py-2 text-xs font-black rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 inline-flex items-center gap-1.5 cursor-pointer">
               <CheckCircle2 className="w-3.5 h-3.5" /> {t('ord.confirmReceipt')}
             </button>
@@ -286,7 +291,25 @@ function OrderCard({ order: o, isProducer, onAction, buyerId }: {
         )}
       </div>
 
+      {/* Dossier documentaire du lot (couche 3 du Product Trust Pipeline) :
+          éditable par le producteur avant expédition, lecture seule ensuite/acheteur. */}
+      {['processing', 'shipped', 'delivered', 'disputed'].includes(o.status) && (
+        <LotDossierPanel
+          orderId={o.id}
+          canEdit={isProducer && o.status === 'processing'}
+          onDossierComplete={setDossierComplete}
+        />
+      )}
+
       {shipModal && <ShipModal orderId={o.id} onClose={() => setShipModal(false)} onDone={() => { setShipModal(false); onAction(); }} />}
+      {receptionModal && (
+        <ReceptionModal
+          orderId={o.id}
+          buyerId={buyerId}
+          onClose={() => setReceptionModal(false)}
+          onDone={() => void afterReception()}
+        />
+      )}
     </div>
   );
 }
@@ -302,7 +325,16 @@ function ShipModal({ orderId, onClose, onDone }: { orderId: string; onClose: () 
     setBusy(true);
     const err = await shipOrder(orderId, { trackingNumber: tracking, shippingMethod: method });
     setBusy(false);
-    if (err) alert(err); else onDone();
+    if (err) {
+      // Verrou SQL : paquet documentaire du lot incomplet → message lisible
+      const missing = parseLotDossierError(err);
+      if (missing) {
+        alert(tx('Expédition bloquée : le dossier documentaire du lot est incomplet.') + '\n— '
+          + missing.map(k => tx(LOT_DOC_META[k].label)).join('\n— '));
+      } else {
+        alert(err);
+      }
+    } else onDone();
   };
 
   return (

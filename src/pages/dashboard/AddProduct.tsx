@@ -11,6 +11,10 @@ import ImpactAssistant from '../../components/dashboard/ImpactAssistant';
 import { estimateFootprints } from '../../lib/impactEstimator';
 import { buildProductTranslations } from '../../lib/i18n/productAutoTranslate';
 import DescriptionTranslations, { type DescriptionTranslationsValue } from '../../components/dashboard/DescriptionTranslations';
+import ComplianceDossierEditor, { type ComplianceDraftMap } from '../../components/trust/ComplianceDossierEditor';
+import {
+  requiredComplianceKeys, saveComplianceItems, isDraftFilled, COMPLIANCE_META,
+} from '../../lib/productCompliance';
 
 const CERT_OPTIONS = ['Bio', 'Fairtrade', 'Ecocert', 'Rainforest Alliance', 'GlobalGAP'];
 const CURRENCIES = ['EUR', 'USD', 'MAD', 'XOF'];
@@ -53,6 +57,9 @@ export default function AddProduct() {
   // le producteur peut basculer en mode « ACV » pour saisir ses mesures.
   const [hasAcv, setHasAcv] = useState(false);
   const [descTranslations, setDescTranslations] = useState<DescriptionTranslationsValue>({});
+  // Couche 1 du Product Trust Pipeline : dossier de conformité produit.
+  // Sans dossier complet, le produit est créé en brouillon (verrou SQL).
+  const [compliance, setCompliance] = useState<ComplianceDraftMap>({});
 
   const [form, setForm] = useState({
     name: '',
@@ -368,7 +375,11 @@ export default function AddProduct() {
         emoji: '🌿',
         bg_color: '#dcfce7',
         image_url: imageUrl,
-        status: 'active',
+        // Couche 1 : la publication exige le dossier de conformité complet.
+        // On insère TOUJOURS en brouillon (les items n'existent pas encore),
+        // puis on sauvegarde les items et on tente l'activation — le verrou
+        // SQL enforce_product_compliance_gate fait foi.
+        status: 'draft',
         featured: false,
         top_seller: false,
         planting_date: toDateOrNull(form.planting_date),
@@ -458,7 +469,26 @@ export default function AddProduct() {
         }
       }
 
-      navigate('/dashboard/mes-produits?success=1');
+      // Couche 1 : sauvegarde du dossier de conformité puis tentative de
+      // publication. Dossier incomplet → le produit reste en brouillon.
+      let published = false;
+      if (newProductId) {
+        const complianceInput = {
+          product_type: form.product_type, name: form.name,
+          country: form.country, certifications: form.certifications,
+        };
+        const saveErr = await saveComplianceItems(newProductId, complianceInput, Object.values(compliance));
+        if (saveErr) console.warn('[Compliance] Erreur enregistrement du dossier:', saveErr);
+        const required = requiredComplianceKeys(complianceInput);
+        const allFilled = required.every(k => isDraftFilled(COMPLIANCE_META[k], compliance[k]));
+        if (allFilled && !saveErr) {
+          const { error: actErr } = await supabase.from('products')
+            .update({ status: 'active' }).eq('id', newProductId);
+          published = !actErr;
+        }
+      }
+
+      navigate(`/dashboard/mes-produits?success=${published ? '1' : 'draft'}`);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Une erreur inattendue est survenue.';
       setError(errorMessage);
@@ -1093,6 +1123,18 @@ export default function AddProduct() {
               </div>
             </div>
           </div>
+
+          {/* Dossier de conformité produit (couche 1 du Product Trust Pipeline).
+              Exigences dérivées de catégorie × origine × certifications ;
+              sans dossier complet le produit reste en brouillon (verrou SQL). */}
+          <ComplianceDossierEditor
+            product={{
+              product_type: form.product_type, name: form.name,
+              country: form.country, certifications: form.certifications,
+            }}
+            values={compliance}
+            onChange={setCompliance}
+          />
 
           {/* Submit Actions */}
           <div className="flex gap-4 pt-2">
