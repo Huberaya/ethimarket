@@ -12,6 +12,8 @@ import { DecisionPanel } from '../../components/admin/DecisionPanel';
 import { type VerificationChecklistState } from '../../components/admin/VerificationChecklist';
 import { LeafletMap } from '../../components/LeafletMap';
 import CertVerificationCard from '../../components/admin/CertVerificationCard';
+import { SourceVerificationPanel } from '../../components/admin/SourceVerificationPanel';
+import { ExportRoadmapPanel } from '../../components/admin/ExportRoadmapPanel';
 import {
   getEvidences, getPhotoChallenges,
   type VerificationEvidence as EvidenceRow, type PhotoChallenge as ChallengeRow,
@@ -394,6 +396,25 @@ export default function AdminVerificationDetail() {
           </div>
         </div>
       </div>
+
+      {/* VÉRIFICATION À LA SOURCE : registre du pays + labels résolus + WhatsApp */}
+      <SourceVerificationPanel
+        country={producer.country}
+        phone={producer.phone}
+        whatsapp={producer.whatsapp}
+        producerName={producer.name}
+        certLabels={[
+          ...certifications.map(c => c.cert_type),
+          ...(producer.certifications ?? []),
+        ].filter(Boolean) as string[]}
+      />
+
+      {/* ROUTE VERS L'EUROPE : phytosanitaire + logistique */}
+      <ExportRoadmapPanel
+        productTypes={(producer.product_types ?? []).length > 0 ? producer.product_types : [producer.name]}
+        isOrganic={[...certifications.map(c => c.cert_type), ...(producer.certifications ?? [])]
+          .some(c => /bio|organic|ecocert/i.test(String(c)))}
+      />
 
       {/* SECTION B: DOCUMENTS D'IDENTITÉ */}
       <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-4">
