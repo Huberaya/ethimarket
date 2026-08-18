@@ -712,6 +712,17 @@ const fr: Record<string, string> = {
   'pay.markInvoiced': 'Facture émise',
   'pay.markPaid': 'Virement reçu',
   'pay.payOnline': 'Payer en ligne',
+
+  // --- Défi photo de vérification ---
+  'pc.title': 'Défi photo de vérification 📸',
+  'pc.subtitle': 'Pour prouver que votre exploitation est réelle, photographiez le code ci-dessous sur votre site dans le délai indiqué.',
+  'pc.deadline': 'À soumettre avant le',
+  'pc.submit': 'Prendre / envoyer la photo',
+  'pc.underReview': 'Photo soumise — en cours d\'examen par l\'équipe',
+  'pc.passed': 'Défi réussi ! Preuve de terrain validée',
+  'pc.failed': 'Défi non validé',
+  'pc.expired': 'Défi expiré — contactez l\'équipe pour en relancer un',
+  'notif.photo_challenge': 'Défi photo de vérification : photographiez le code {challenge_code} sur votre exploitation avant expiration',
 };
 
 export default fr;

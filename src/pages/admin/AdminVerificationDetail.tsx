@@ -12,6 +12,10 @@ import { DecisionPanel } from '../../components/admin/DecisionPanel';
 import { type VerificationChecklistState } from '../../components/admin/VerificationChecklist';
 import { LeafletMap } from '../../components/LeafletMap';
 import CertVerificationCard from '../../components/admin/CertVerificationCard';
+import {
+  getEvidences, getPhotoChallenges,
+  type VerificationEvidence as EvidenceRow, type PhotoChallenge as ChallengeRow,
+} from '../../lib/verificationEvidence';
 
 export default function AdminVerificationDetail() {
   const { producerId } = useParams<{ producerId: string }>();
@@ -23,6 +27,8 @@ export default function AdminVerificationDetail() {
   const [certifications, setCertifications] = useState<VerificationCertification[]>([]);
   const [ethical, setEthical] = useState<VerificationEthicalCommitment | null>(null);
   const [history, setHistory] = useState<VerificationHistory[]>([]);
+  const [evidences, setEvidences] = useState<EvidenceRow[]>([]);
+  const [challenges, setChallenges] = useState<ChallengeRow[]>([]);
   const [knownBodies, setKnownBodies] = useState<CertificationBody[]>([]);
   
   const [loading, setLoading] = useState(true);
@@ -162,6 +168,14 @@ export default function AdminVerificationDetail() {
       console.warn('Admin fetch history error:', e);
     }
 
+    // 6bis. Preuves de vérification + défis photo
+    try {
+      setEvidences(await getEvidences(actualProducerId));
+      setChallenges(await getPhotoChallenges(actualProducerId));
+    } catch (e) {
+      console.warn('Admin fetch evidences error:', e);
+    }
+
     // 7. Fetch certification bodies
     try {
       const { data: bodies } = await supabase
@@ -181,6 +195,13 @@ export default function AdminVerificationDetail() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  const reloadEvidences = useCallback(async () => {
+    const actualProducerId = producer?.id || producerId;
+    if (!actualProducerId) return;
+    setEvidences(await getEvidences(actualProducerId));
+    setChallenges(await getPhotoChallenges(actualProducerId));
+  }, [producer?.id, producerId]);
 
   if (loading) {
     return (
@@ -613,6 +634,10 @@ export default function AdminVerificationDetail() {
 
       {/* SECTION G: DÉCISION FINALE */}
       <DecisionPanel
+        producerId={producer.id}
+        evidences={evidences}
+        challenges={challenges}
+        onEvidenceChanged={() => void reloadEvidences()}
         currentStatus={status}
         onApprove={(intNotes, prodComment, checklist) => updateProducerStatus('approved', intNotes, prodComment, checklist)}
         onReject={(intNotes, prodComment, checklist) => updateProducerStatus('rejected', intNotes, prodComment, checklist)}

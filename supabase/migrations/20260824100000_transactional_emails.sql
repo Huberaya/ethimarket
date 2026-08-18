@@ -55,13 +55,14 @@ CREATE POLICY "email_log_admin_read" ON email_log FOR SELECT TO authenticated
 -- ── 4. Interpolation {var} depuis le payload jsonb ──
 CREATE OR REPLACE FUNCTION render_email_template(tpl text, payload jsonb)
 RETURNS text LANGUAGE sql IMMUTABLE AS $$
-  SELECT replace(replace(replace(replace(replace(replace(tpl,
+  SELECT replace(replace(replace(replace(replace(replace(replace(tpl,
     '{product}',     coalesce(payload->>'product_name', '')),
     '{counterpart}', coalesce(payload->>'counterpart_name', '—')),
     '{orderNumber}', coalesce(payload->>'order_number', '')),
     '{quantity}',    coalesce(payload->>'quantity', '')),
     '{unit}',        coalesce(payload->>'unit', '')),
-    '{preview}',     coalesce(payload->>'preview', ''));
+    '{preview}',     coalesce(payload->>'preview', '')),
+    '{challenge_code}', coalesce(payload->>'challenge_code', ''));
 $$;
 
 -- ── 5. Corps HTML de l'e-mail (autonome, styles inline, RTL pour ar) ──

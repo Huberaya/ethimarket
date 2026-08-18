@@ -15,7 +15,7 @@ import { DICTS } from '../lib/i18n';
 const KINDS = [
   'quote_received', 'quote_offer', 'quote_accepted', 'quote_declined',
   'order_created', 'order_confirmed', 'order_shipped', 'order_delivered',
-  'order_disputed', 'order_cancelled', 'message_received',
+  'order_disputed', 'order_cancelled', 'message_received', 'photo_challenge',
 ] as const;
 const LOCALES = ['fr', 'en', 'es', 'pt', 'ar'] as const;
 
@@ -49,7 +49,7 @@ describe('email_texts.json — parité avec la cloche in-app', () => {
   });
 
   it('les placeholders utilisés sont uniquement ceux gérés par render_email_template', () => {
-    const allowed = new Set(['product', 'counterpart', 'orderNumber', 'quantity', 'unit', 'preview']);
+    const allowed = new Set(['product', 'counterpart', 'orderNumber', 'quantity', 'unit', 'preview', 'challenge_code']);
     for (const loc of LOCALES) {
       for (const kind of KINDS) {
         const found = [...seedJson[loc][kind].matchAll(/\{(\w+)\}/g)].map(m => m[1]);
@@ -64,7 +64,7 @@ describe('email_texts.json — parité avec la cloche in-app', () => {
 describe('email_texts.sql — seed applicable', () => {
   it('contient 55 upserts (11 kinds × 5 locales)', () => {
     const count = (seedSql.match(/INSERT INTO email_texts/g) ?? []).length;
-    expect(count).toBe(55);
+    expect(count).toBe(60);
   });
 
   it('idempotent (ON CONFLICT DO UPDATE)', () => {

@@ -11,6 +11,7 @@
     "order_disputed": "Litige ouvert sur la commande {orderNumber}",
     "order_cancelled": "Commande {orderNumber} annulée",
     "message_received": "Nouveau message de {counterpart} : « {preview} »",
+    "photo_challenge": "Défi photo de vérification : photographiez le code {challenge_code} sur votre exploitation avant expiration",
     "_cta": "Ouvrir EthiMarket",
     "_footer": "Vous recevez cet e-mail car une activité concerne votre compte EthiMarket.",
     "_greeting": "Bonjour"
@@ -27,6 +28,7 @@
     "order_disputed": "Dispute opened on order {orderNumber}",
     "order_cancelled": "Order {orderNumber} cancelled",
     "message_received": "New message from {counterpart}: \"{preview}\"",
+    "photo_challenge": "Verification photo challenge: photograph the code {challenge_code} on your farm before it expires",
     "_cta": "Open EthiMarket",
     "_footer": "You are receiving this email because of activity on your EthiMarket account.",
     "_greeting": "Hello"
@@ -43,6 +45,7 @@
     "order_disputed": "Litigio abierto en el pedido {orderNumber}",
     "order_cancelled": "Pedido {orderNumber} anulado",
     "message_received": "Nuevo mensaje de {counterpart}: «{preview}»",
+    "photo_challenge": "Desafío fotográfico de verificación: fotografíe el código {challenge_code} en su finca antes de que caduque",
     "_cta": "Abrir EthiMarket",
     "_footer": "Recibe este correo porque hay actividad en su cuenta EthiMarket.",
     "_greeting": "Hola"
@@ -59,6 +62,7 @@
     "order_disputed": "Litígio aberto na encomenda {orderNumber}",
     "order_cancelled": "Encomenda {orderNumber} anulada",
     "message_received": "Nova mensagem de {counterpart}: «{preview}»",
+    "photo_challenge": "Desafio fotográfico de verificação: fotografe o código {challenge_code} na sua exploração antes de expirar",
     "_cta": "Abrir EthiMarket",
     "_footer": "Recebe este e-mail porque há atividade na sua conta EthiMarket.",
     "_greeting": "Olá"
@@ -75,6 +79,7 @@
     "order_disputed": "فُتح نزاع على الطلبية {orderNumber}",
     "order_cancelled": "أُلغيت الطلبية {orderNumber}",
     "message_received": "رسالة جديدة من {counterpart}: «{preview}»",
+    "photo_challenge": "تحدي صورة التحقق: صوّر الرمز {challenge_code} في مزرعتك قبل انتهاء المهلة",
     "_cta": "فتح EthiMarket",
     "_footer": "تتلقى هذا البريد بسبب نشاط في حسابك على EthiMarket.",
     "_greeting": "مرحبًا"

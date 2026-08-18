@@ -11,6 +11,7 @@ INSERT INTO email_texts (kind, locale, body) VALUES ('order_delivered', 'fr', '{
 INSERT INTO email_texts (kind, locale, body) VALUES ('order_disputed', 'fr', 'Litige ouvert sur la commande {orderNumber}') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('order_cancelled', 'fr', 'Commande {orderNumber} annulée') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('message_received', 'fr', 'Nouveau message de {counterpart} : « {preview} »') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
+INSERT INTO email_texts (kind, locale, body) VALUES ('photo_challenge', 'fr', 'Défi photo de vérification : photographiez le code {challenge_code} sur votre exploitation avant expiration') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('quote_received', 'en', '{counterpart} requests a quote: {product} ({quantity} {unit})') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('quote_offer', 'en', '{counterpart} replied to your quote request for {product}') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('quote_accepted', 'en', '{counterpart} accepted your offer for {product}') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
@@ -22,6 +23,7 @@ INSERT INTO email_texts (kind, locale, body) VALUES ('order_delivered', 'en', '{
 INSERT INTO email_texts (kind, locale, body) VALUES ('order_disputed', 'en', 'Dispute opened on order {orderNumber}') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('order_cancelled', 'en', 'Order {orderNumber} cancelled') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('message_received', 'en', 'New message from {counterpart}: "{preview}"') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
+INSERT INTO email_texts (kind, locale, body) VALUES ('photo_challenge', 'en', 'Verification photo challenge: photograph the code {challenge_code} on your farm before it expires') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('quote_received', 'es', '{counterpart} solicita un presupuesto: {product} ({quantity} {unit})') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('quote_offer', 'es', '{counterpart} respondió a su solicitud de presupuesto de {product}') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('quote_accepted', 'es', '{counterpart} aceptó su oferta por {product}') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
@@ -33,6 +35,7 @@ INSERT INTO email_texts (kind, locale, body) VALUES ('order_delivered', 'es', '{
 INSERT INTO email_texts (kind, locale, body) VALUES ('order_disputed', 'es', 'Litigio abierto en el pedido {orderNumber}') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('order_cancelled', 'es', 'Pedido {orderNumber} anulado') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('message_received', 'es', 'Nuevo mensaje de {counterpart}: «{preview}»') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
+INSERT INTO email_texts (kind, locale, body) VALUES ('photo_challenge', 'es', 'Desafío fotográfico de verificación: fotografíe el código {challenge_code} en su finca antes de que caduque') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('quote_received', 'pt', '{counterpart} pede um orçamento: {product} ({quantity} {unit})') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('quote_offer', 'pt', '{counterpart} respondeu ao seu pedido de orçamento de {product}') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('quote_accepted', 'pt', '{counterpart} aceitou a sua oferta por {product}') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
@@ -44,6 +47,7 @@ INSERT INTO email_texts (kind, locale, body) VALUES ('order_delivered', 'pt', '{
 INSERT INTO email_texts (kind, locale, body) VALUES ('order_disputed', 'pt', 'Litígio aberto na encomenda {orderNumber}') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('order_cancelled', 'pt', 'Encomenda {orderNumber} anulada') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('message_received', 'pt', 'Nova mensagem de {counterpart}: «{preview}»') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
+INSERT INTO email_texts (kind, locale, body) VALUES ('photo_challenge', 'pt', 'Desafio fotográfico de verificação: fotografe o código {challenge_code} na sua exploração antes de expirar') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('quote_received', 'ar', '{counterpart} يطلب عرض سعر: {product} ({quantity} {unit})') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('quote_offer', 'ar', 'ردّ {counterpart} على طلب عرض السعر لـ {product}') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('quote_accepted', 'ar', 'قبل {counterpart} عرضك لـ {product}') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
@@ -55,3 +59,4 @@ INSERT INTO email_texts (kind, locale, body) VALUES ('order_delivered', 'ar', '�
 INSERT INTO email_texts (kind, locale, body) VALUES ('order_disputed', 'ar', 'فُتح نزاع على الطلبية {orderNumber}') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('order_cancelled', 'ar', 'أُلغيت الطلبية {orderNumber}') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
 INSERT INTO email_texts (kind, locale, body) VALUES ('message_received', 'ar', 'رسالة جديدة من {counterpart}: «{preview}»') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;
+INSERT INTO email_texts (kind, locale, body) VALUES ('photo_challenge', 'ar', 'تحدي صورة التحقق: صوّر الرمز {challenge_code} في مزرعتك قبل انتهاء المهلة') ON CONFLICT (kind, locale) DO UPDATE SET body = EXCLUDED.body;

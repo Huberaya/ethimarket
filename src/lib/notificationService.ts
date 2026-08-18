@@ -14,7 +14,8 @@ export type NotificationKind =
   | 'quote_received' | 'quote_offer' | 'quote_accepted' | 'quote_declined'
   | 'order_created' | 'order_confirmed' | 'order_shipped' | 'order_delivered'
   | 'order_disputed' | 'order_cancelled'
-  | 'message_received';
+  | 'message_received'
+  | 'photo_challenge';
 
 export interface UserNotification {
   id: string;
@@ -39,6 +40,7 @@ export const NOTIFICATION_EMOJI: Record<NotificationKind, string> = {
   order_disputed: '⚠️',
   order_cancelled: '🚫',
   message_received: '💬',
+  photo_challenge: '📸',
 };
 
 /**
@@ -60,6 +62,7 @@ export function notificationVars(n: UserNotification): Record<string, string> {
     quantity: s(p.quantity),
     unit: s(p.unit),
     preview: s(p.preview),
+    challenge_code: s(p.challenge_code),
   };
 }
 

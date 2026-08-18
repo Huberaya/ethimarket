@@ -712,6 +712,17 @@ const es: Record<string, string> = {
   'pay.markInvoiced': 'Factura emitida',
   'pay.markPaid': 'Pago recibido',
   'pay.payOnline': 'Pagar en línea',
+
+  // --- Défi photo de vérification ---
+  'pc.title': 'Desafío fotográfico de verificación 📸',
+  'pc.subtitle': 'Para demostrar que su explotación es real, fotografíe el código de abajo en su finca dentro del plazo.',
+  'pc.deadline': 'Enviar antes del',
+  'pc.submit': 'Tomar / enviar la foto',
+  'pc.underReview': 'Foto enviada — en revisión por el equipo',
+  'pc.passed': '¡Desafío superado! Prueba de terreno validada',
+  'pc.failed': 'Desafío no validado',
+  'pc.expired': 'Desafío caducado — contacte al equipo para relanzarlo',
+  'notif.photo_challenge': 'Desafío fotográfico de verificación: fotografíe el código {challenge_code} en su finca antes de que caduque',
 };
 
 export default es;

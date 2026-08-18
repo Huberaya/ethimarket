@@ -712,6 +712,17 @@ const en: Record<string, string> = {
   'pay.markInvoiced': 'Invoice sent',
   'pay.markPaid': 'Payment received',
   'pay.payOnline': 'Pay online',
+
+  // --- Défi photo de vérification ---
+  'pc.title': 'Verification photo challenge 📸',
+  'pc.subtitle': 'To prove your farm is real, photograph the code below on your site within the deadline.',
+  'pc.deadline': 'Submit before',
+  'pc.submit': 'Take / upload the photo',
+  'pc.underReview': 'Photo submitted — under review by the team',
+  'pc.passed': 'Challenge passed! Field proof validated',
+  'pc.failed': 'Challenge not validated',
+  'pc.expired': 'Challenge expired — contact the team to relaunch one',
+  'notif.photo_challenge': 'Verification photo challenge: photograph the code {challenge_code} on your farm before it expires',
 };
 
 export default en;

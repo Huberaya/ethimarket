@@ -712,6 +712,17 @@ const ar: Record<string, string> = {
   'pay.markInvoiced': 'صدرت الفاتورة',
   'pay.markPaid': 'استُلم التحويل',
   'pay.payOnline': 'الدفع عبر الإنترنت',
+
+  // --- Défi photo de vérification ---
+  'pc.title': 'تحدي الصورة للتحقق 📸',
+  'pc.subtitle': 'لإثبات أن مزرعتك حقيقية، صوّر الرمز أدناه في موقعك خلال المهلة المحددة.',
+  'pc.deadline': 'أرسل قبل',
+  'pc.submit': 'التقاط / إرسال الصورة',
+  'pc.underReview': 'أُرسلت الصورة — قيد المراجعة من الفريق',
+  'pc.passed': 'نجح التحدي! تم التحقق من إثبات الموقع',
+  'pc.failed': 'لم يُقبل التحدي',
+  'pc.expired': 'انتهت مهلة التحدي — تواصل مع الفريق لإعادة إطلاقه',
+  'notif.photo_challenge': 'تحدي صورة التحقق: صوّر الرمز {challenge_code} في مزرعتك قبل انتهاء المهلة',
 };
 
 export default ar;

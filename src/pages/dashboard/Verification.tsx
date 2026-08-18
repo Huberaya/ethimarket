@@ -12,6 +12,7 @@ import { LeafletMap } from '../../components/LeafletMap';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { MultiFileUpload } from '../../components/ui/MultiFileUpload';
 import { useI18n } from '../../lib/i18n';
+import PhotoChallengeCard from '../../components/dashboard/PhotoChallengeCard';
 
 type VerificationStatus = 'draft' | 'submitted' | 'under_review' | 'approved' | 'rejected' | 'suspended';
 
@@ -289,6 +290,10 @@ export default function Verification() {
           </div>
         )}
       </div>
+
+
+      {/* Défi photo géolocalisé (si l'admin en a lancé un) */}
+      {producer?.id && <PhotoChallengeCard producerId={producer.id} />}
 
       {/* Rejection Alert Box */}
       {vStatus === 'rejected' && (

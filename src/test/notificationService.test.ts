@@ -25,7 +25,7 @@ const N = (over: Partial<UserNotification>): UserNotification => ({
 const ALL_KINDS: NotificationKind[] = [
   'quote_received', 'quote_offer', 'quote_accepted', 'quote_declined',
   'order_created', 'order_confirmed', 'order_shipped', 'order_delivered',
-  'order_disputed', 'order_cancelled', 'message_received',
+  'order_disputed', 'order_cancelled', 'message_received', 'photo_challenge',
 ];
 
 describe('notificationLabelKey / emojis', () => {
