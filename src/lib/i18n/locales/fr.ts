@@ -723,6 +723,31 @@ const fr: Record<string, string> = {
   'pc.failed': 'Défi non validé',
   'pc.expired': 'Défi expiré — contactez l\'équipe pour en relancer un',
   'notif.photo_challenge': 'Défi photo de vérification : photographiez le code {challenge_code} sur votre exploitation avant expiration',
+
+  // --- Vitrine publique des vérifications ---
+  'tv.title': 'Producteur vérifié — protocole EthiMarket Verified',
+  'tv.summary': '{checks} contrôle(s) passé(s) · {criteria} critère(s) prouvé(s) sur 6',
+  'tv.criteriaTitle': 'Critères prouvés',
+  'tv.checksTitle': 'Derniers contrôles effectués',
+  'tv.disclaimer': 'Chaque contrôle est enregistré de façon immuable (méthode, date, auditeur). Les certifications sont vérifiées à la source auprès des registres publics des organismes émetteurs. Un certificat expiré dégrade automatiquement ce statut.',
+  'tv.critIdentity': 'Identité vérifiée',
+  'tv.critBusiness': 'Documents d\'entreprise conformes',
+  'tv.critCertification': 'Certification valide vérifiée à la source',
+  'tv.critFarm': 'Exploitation réelle confirmée',
+  'tv.critEthics': 'Engagements éthiques évalués',
+  'tv.critCharter': 'Charte éthique signée',
+  'tv.mRegistry': 'Registre public officiel consulté',
+  'tv.mIssuer': 'Confirmation de l\'organisme émetteur',
+  'tv.mVideo': 'Appel vidéo en direct',
+  'tv.mSelfie': 'Correspondance selfie / pièce d\'identité',
+  'tv.mPhone': 'Vérification téléphonique',
+  'tv.mChallenge': 'Défi photo géolocalisé réussi',
+  'tv.mExif': 'Analyse des métadonnées photo',
+  'tv.mSatellite': 'Contrôle satellite de la parcelle',
+  'tv.mReverse': 'Recherche d\'image inversée',
+  'tv.mPeer': 'Parrainage / référence confirmée',
+  'tv.mDocument': 'Examen approfondi du document',
+  'tv.mOther': 'Autre contrôle',
 };
 
 export default fr;

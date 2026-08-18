@@ -11,6 +11,7 @@ import {
 interface DecisionPanelProps {
   producerId: string;
   currentStatus: string;
+  declaredGps?: string | null;
   evidences: VerificationEvidence[];
   challenges: PhotoChallenge[];
   onEvidenceChanged: () => void;
@@ -29,6 +30,7 @@ const TRUST_LEVEL_META = {
 
 export function DecisionPanel({
   producerId,
+  declaredGps,
   evidences,
   challenges,
   onEvidenceChanged,
@@ -88,6 +90,7 @@ export function DecisionPanel({
         challenges={challenges}
         onChanged={onEvidenceChanged}
         disabled={loading}
+        declaredGps={declaredGps}
       />
 
       {/* Internal Notes */}

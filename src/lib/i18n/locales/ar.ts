@@ -723,6 +723,31 @@ const ar: Record<string, string> = {
   'pc.failed': 'لم يُقبل التحدي',
   'pc.expired': 'انتهت مهلة التحدي — تواصل مع الفريق لإعادة إطلاقه',
   'notif.photo_challenge': 'تحدي صورة التحقق: صوّر الرمز {challenge_code} في مزرعتك قبل انتهاء المهلة',
+
+  // --- Vitrine publique des vérifications ---
+  'tv.title': 'منتِج موثّق — بروتوكول EthiMarket Verified',
+  'tv.summary': '{checks} فحص/فحوص ناجحة · {criteria} معيار/معايير مثبتة من 6',
+  'tv.criteriaTitle': 'المعايير المثبتة',
+  'tv.checksTitle': 'آخر الفحوص المنجزة',
+  'tv.disclaimer': 'يُسجَّل كل فحص بشكل غير قابل للتغيير (الطريقة، التاريخ، المدقق). يتم التحقق من الشهادات من المصدر في السجلات العامة للهيئات المصدرة. الشهادة المنتهية تخفّض هذا الوضع تلقائيًا.',
+  'tv.critIdentity': 'تم التحقق من الهوية',
+  'tv.critBusiness': 'وثائق الشركة مطابقة',
+  'tv.critCertification': 'شهادة سارية تم التحقق منها من المصدر',
+  'tv.critFarm': 'تأكيد وجود المزرعة فعليًا',
+  'tv.critEthics': 'تقييم الالتزامات الأخلاقية',
+  'tv.critCharter': 'توقيع الميثاق الأخلاقي',
+  'tv.mRegistry': 'مراجعة سجل عام رسمي',
+  'tv.mIssuer': 'تأكيد الهيئة المصدرة',
+  'tv.mVideo': 'مكالمة فيديو مباشرة',
+  'tv.mSelfie': 'مطابقة السيلفي مع الهوية',
+  'tv.mPhone': 'تحقق هاتفي',
+  'tv.mChallenge': 'نجاح تحدي الصورة الجغرافي',
+  'tv.mExif': 'تحليل بيانات الصورة الوصفية',
+  'tv.mSatellite': 'فحص القطعة عبر الأقمار الصناعية',
+  'tv.mReverse': 'بحث عكسي عن الصورة',
+  'tv.mPeer': 'إشهاد نظير / مرجع مؤكد',
+  'tv.mDocument': 'فحص معمق للوثيقة',
+  'tv.mOther': 'فحص آخر',
 };
 
 export default ar;

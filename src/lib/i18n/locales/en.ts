@@ -723,6 +723,31 @@ const en: Record<string, string> = {
   'pc.failed': 'Challenge not validated',
   'pc.expired': 'Challenge expired — contact the team to relaunch one',
   'notif.photo_challenge': 'Verification photo challenge: photograph the code {challenge_code} on your farm before it expires',
+
+  // --- Vitrine publique des vérifications ---
+  'tv.title': 'Verified producer — EthiMarket Verified protocol',
+  'tv.summary': '{checks} check(s) passed · {criteria} criteria proven out of 6',
+  'tv.criteriaTitle': 'Proven criteria',
+  'tv.checksTitle': 'Latest checks performed',
+  'tv.disclaimer': 'Every check is recorded immutably (method, date, auditor). Certifications are verified at the source against the issuing bodies\' public registries. An expired certificate automatically downgrades this status.',
+  'tv.critIdentity': 'Identity verified',
+  'tv.critBusiness': 'Business documents compliant',
+  'tv.critCertification': 'Valid certification verified at source',
+  'tv.critFarm': 'Real farm confirmed',
+  'tv.critEthics': 'Ethical commitments assessed',
+  'tv.critCharter': 'Ethical charter signed',
+  'tv.mRegistry': 'Official public registry consulted',
+  'tv.mIssuer': 'Issuing body confirmation',
+  'tv.mVideo': 'Live video call',
+  'tv.mSelfie': 'Selfie / ID match',
+  'tv.mPhone': 'Phone verification',
+  'tv.mChallenge': 'Geolocated photo challenge passed',
+  'tv.mExif': 'Photo metadata analysis',
+  'tv.mSatellite': 'Satellite check of the plot',
+  'tv.mReverse': 'Reverse image search',
+  'tv.mPeer': 'Peer attestation / reference confirmed',
+  'tv.mDocument': 'In-depth document review',
+  'tv.mOther': 'Other check',
 };
 
 export default en;

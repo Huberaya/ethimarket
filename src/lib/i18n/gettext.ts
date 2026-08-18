@@ -9,6 +9,8 @@ import type { Locale } from './index';
 type Dict = Record<string, string>;
 
 const en: Dict = {
+  'À propos': 'About',
+
   'Description dans d\'autres langues (optionnel)': 'Description in other languages (optional)',
   'Si vous parlez ces langues, saisissez votre description : les acheteurs étrangers la verront dans leur langue. Sinon, la version française sera affichée.': 'If you speak these languages, enter your description: foreign buyers will see it in their language. Otherwise, the French version is shown.',
 
@@ -320,6 +322,8 @@ const en: Dict = {
 };
 
 const es: Dict = {
+  'À propos': 'Acerca de',
+
   'Description dans d\'autres langues (optionnel)': 'Descripción en otros idiomas (opcional)',
   'Si vous parlez ces langues, saisissez votre description : les acheteurs étrangers la verront dans leur langue. Sinon, la version française sera affichée.': 'Si habla estos idiomas, escriba su descripción: los compradores extranjeros la verán en su idioma. Si no, se mostrará la versión francesa.',
 
@@ -618,6 +622,8 @@ const es: Dict = {
 };
 
 const pt: Dict = {
+  'À propos': 'Sobre',
+
   'Description dans d\'autres langues (optionnel)': 'Descrição noutras línguas (opcional)',
   'Si vous parlez ces langues, saisissez votre description : les acheteurs étrangers la verront dans leur langue. Sinon, la version française sera affichée.': 'Se fala estas línguas, escreva a sua descrição: os compradores estrangeiros vê-la-ão na sua língua. Caso contrário, é mostrada a versão francesa.',
 
@@ -916,6 +922,8 @@ const pt: Dict = {
 };
 
 const ar: Dict = {
+  'À propos': 'حول',
+
   'Description dans d\'autres langues (optionnel)': 'الوصف بلغات أخرى (اختياري)',
   'Si vous parlez ces langues, saisissez votre description : les acheteurs étrangers la verront dans leur langue. Sinon, la version française sera affichée.': 'إذا كنت تتحدث هذه اللغات، أدخل وصفك: سيراه المشترون الأجانب بلغتهم. وإلا، تُعرض النسخة الفرنسية.',
 

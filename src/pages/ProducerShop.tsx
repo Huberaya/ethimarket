@@ -12,6 +12,7 @@ import { LeafletMap } from '../components/LeafletMap';
 import { supabase, type Producer, type Product } from '../lib/supabase';
 import { useI18n } from '../lib/i18n';
 import { producerDescription } from '../lib/i18n/dbLocalized';
+import ProducerVerificationBadge from '../components/trust/ProducerVerificationBadge';
 import ScoreBadge from '../components/ScoreBadge';
 
 function Skeleton() {
@@ -314,7 +315,7 @@ export default function ProducerShop() {
             <div className="flex">
               {([
                 { id: 'produits', label: `Produits (${products.length})` },
-                { id: 'apropos',  label: 'À propos' },
+                { id: 'apropos',  label: tx('À propos') },
               ] as const).map(t => (
                 <button
                   key={t.id}
@@ -364,6 +365,11 @@ export default function ProducerShop() {
                     <p className="font-black text-xl">{producer.name}</p>
                     <p className="text-white/70 text-sm">{producer.country_flag} {producer.country}</p>
                   </div>
+                </div>
+
+                {/* Vitrine des vérifications EthiMarket Verified */}
+                <div className="mb-6">
+                  <ProducerVerificationBadge producerId={producer.id} />
                 </div>
 
                 <h2 className="font-black text-gray-900 text-xl mb-4">{tx('Notre histoire')}</h2>

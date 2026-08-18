@@ -635,6 +635,7 @@ export default function AdminVerificationDetail() {
       {/* SECTION G: DÉCISION FINALE */}
       <DecisionPanel
         producerId={producer.id}
+        declaredGps={producer.latitude != null && producer.longitude != null ? `${producer.latitude}, ${producer.longitude}` : null}
         evidences={evidences}
         challenges={challenges}
         onEvidenceChanged={() => void reloadEvidences()}

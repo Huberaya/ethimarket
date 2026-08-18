@@ -723,6 +723,31 @@ const es: Record<string, string> = {
   'pc.failed': 'Desafío no validado',
   'pc.expired': 'Desafío caducado — contacte al equipo para relanzarlo',
   'notif.photo_challenge': 'Desafío fotográfico de verificación: fotografíe el código {challenge_code} en su finca antes de que caduque',
+
+  // --- Vitrine publique des vérifications ---
+  'tv.title': 'Productor verificado — protocolo EthiMarket Verified',
+  'tv.summary': '{checks} control(es) superado(s) · {criteria} criterio(s) probado(s) de 6',
+  'tv.criteriaTitle': 'Criterios probados',
+  'tv.checksTitle': 'Últimos controles realizados',
+  'tv.disclaimer': 'Cada control se registra de forma inmutable (método, fecha, auditor). Las certificaciones se verifican en la fuente, en los registros públicos de los organismos emisores. Un certificado caducado degrada automáticamente este estado.',
+  'tv.critIdentity': 'Identidad verificada',
+  'tv.critBusiness': 'Documentos de empresa conformes',
+  'tv.critCertification': 'Certificación válida verificada en la fuente',
+  'tv.critFarm': 'Explotación real confirmada',
+  'tv.critEthics': 'Compromisos éticos evaluados',
+  'tv.critCharter': 'Carta ética firmada',
+  'tv.mRegistry': 'Registro público oficial consultado',
+  'tv.mIssuer': 'Confirmación del organismo emisor',
+  'tv.mVideo': 'Videollamada en directo',
+  'tv.mSelfie': 'Correspondencia selfie / documento',
+  'tv.mPhone': 'Verificación telefónica',
+  'tv.mChallenge': 'Desafío fotográfico geolocalizado superado',
+  'tv.mExif': 'Análisis de metadatos de la foto',
+  'tv.mSatellite': 'Control satelital de la parcela',
+  'tv.mReverse': 'Búsqueda inversa de imagen',
+  'tv.mPeer': 'Padrinazgo / referencia confirmada',
+  'tv.mDocument': 'Examen detallado del documento',
+  'tv.mOther': 'Otro control',
 };
 
 export default es;

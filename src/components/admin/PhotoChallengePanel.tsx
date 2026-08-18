@@ -10,6 +10,7 @@ import { Camera, Plus, Loader2, CheckCircle2, XCircle, Clock, ExternalLink } fro
 import {
   PhotoChallenge, createPhotoChallenge, reviewPhotoChallenge, isChallengeExpired,
 } from '../../lib/verificationEvidence';
+import { parseExif, analyzeChallengePhoto, parseGpsString, type ExifSignal } from '../../lib/exifAnalyzer';
 
 const STATUS_META: Record<PhotoChallenge['status'], { label: string; cls: string }> = {
   pending: { label: 'En attente du producteur', cls: 'bg-blue-100 text-blue-800 border-blue-200' },
@@ -24,13 +25,30 @@ const DEFAULT_INSTRUCTIONS =
   + "La photo doit être prise avec un téléphone (GPS activé) et montrer l'environnement de l'exploitation.";
 
 export function PhotoChallengePanel({
-  producerId, challenges, onChanged, disabled = false,
+  producerId, challenges, onChanged, disabled = false, declaredGps,
 }: {
   producerId: string;
   challenges: PhotoChallenge[];
   onChanged: () => void;
   disabled?: boolean;
+  /** Coordonnées GPS déclarées par le producteur ("lat, lon") pour la contre-vérification EXIF */
+  declaredGps?: string | null;
 }) {
+  const [exifResults, setExifResults] = useState<Record<string, ExifSignal[] | 'loading' | 'error'>>({});
+
+  const runExif = async (c: PhotoChallenge) => {
+    if (!c.photo_url) return;
+    setExifResults(prev => ({ ...prev, [c.id]: 'loading' }));
+    try {
+      const resp = await fetch(c.photo_url);
+      const buf = await resp.arrayBuffer();
+      const exif = parseExif(buf);
+      const signals = analyzeChallengePhoto(exif, new Date(c.created_at), parseGpsString(declaredGps));
+      setExifResults(prev => ({ ...prev, [c.id]: signals }));
+    } catch {
+      setExifResults(prev => ({ ...prev, [c.id]: 'error' }));
+    }
+  };
   const [creating, setCreating] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [instructions, setInstructions] = useState(DEFAULT_INSTRUCTIONS);
@@ -124,7 +142,35 @@ export function PhotoChallengePanel({
                     className="inline-flex items-center gap-1 text-[11px] font-bold text-brand-700 hover:underline">
                     <ExternalLink className="w-3 h-3" /> Voir la photo soumise
                   </a>
+                  <button type="button" onClick={() => void runExif(c)}
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-200 px-2.5 py-1 rounded-lg cursor-pointer">
+                    🔬 Analyser les EXIF
+                  </button>
                   {c.submitted_at && <span className="text-[10px] text-gray-400">soumise le {new Date(c.submitted_at).toLocaleString('fr-FR')}</span>}
+                </div>
+              )}
+
+              {/* Signaux EXIF */}
+              {exifResults[c.id] === 'loading' && (
+                <p className="text-[11px] text-gray-400 mt-2 inline-flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" /> Analyse en cours…</p>
+              )}
+              {exifResults[c.id] === 'error' && (
+                <p className="text-[11px] text-red-600 mt-2">Impossible de lire la photo (CORS ou fichier inaccessible) — ouvrez-la et vérifiez manuellement.</p>
+              )}
+              {Array.isArray(exifResults[c.id]) && (
+                <div className="mt-2 space-y-1">
+                  {(exifResults[c.id] as ExifSignal[]).map((sig, i) => (
+                    <p key={i} className={`text-[11px] rounded-lg px-2.5 py-1.5 border ${
+                      sig.severity === 'good' ? 'text-emerald-800 bg-emerald-50 border-emerald-100'
+                      : sig.severity === 'warning' ? 'text-red-700 bg-red-50 border-red-100'
+                      : 'text-gray-600 bg-gray-50 border-gray-100'
+                    }`}>
+                      {sig.severity === 'good' ? '✅' : sig.severity === 'warning' ? '🚨' : 'ℹ️'} {sig.detail}
+                    </p>
+                  ))}
+                  <p className="text-[10px] text-gray-400 italic">
+                    Les signaux EXIF sont des indices, pas un verdict : l'absence de métadonnées est courante (WhatsApp les supprime).
+                  </p>
                 </div>
               )}
 
