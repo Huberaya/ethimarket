@@ -37,6 +37,7 @@ const ar: Record<string, string> = {
   'footer.linkPricing': 'الأسعار والاشتراكات',
   'footer.linkBlog': 'المدونة والأخبار',
   'footer.linkMission': 'مهمتنا',
+  'footer.linkLogistics': 'لوجستياتنا',
   'footer.linkTeam': 'فريقنا',
   'footer.linkCertifications': 'الشهادات',
   'footer.linkPress': 'الصحافة',

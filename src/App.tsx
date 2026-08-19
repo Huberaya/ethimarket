@@ -16,6 +16,7 @@ const BlogArticle = lazy(() => import('./pages/BlogArticle'));
 const Contact = lazy(() => import('./pages/Contact'));
 const DevenirVendeur = lazy(() => import('./pages/DevenirVendeur'));
 const NotreMission = lazy(() => import('./pages/NotreMission'));
+const NotreLogistique = lazy(() => import('./pages/NotreLogistique'));
 const TrustCenter = lazy(() => import('./pages/TrustCenter'));
 const LotTrace = lazy(() => import('./pages/LotTrace'));
 const Tarifs = lazy(() => import('./pages/InstitutionalPages').then(m => ({ default: m.Tarifs })));
@@ -98,6 +99,7 @@ export default function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/devenir-vendeur" element={<DevenirVendeur />} />
         <Route path="/notre-mission" element={<NotreMission />} />
+        <Route path="/notre-logistique" element={<NotreLogistique />} />
         <Route path="/trust-center" element={<TrustCenter />} />
         <Route path="/trace/:orderId" element={<LotTrace />} />
         <Route path="/producteurs" element={<Producers />} />

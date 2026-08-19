@@ -18,6 +18,7 @@ const FOOTER_SECTIONS = [
     titleKey: 'footer.about',
     links: [
       { key: 'footer.linkMission', href: '/notre-mission' },
+      { key: 'footer.linkLogistics', href: '/notre-logistique' },
       { key: 'footer.linkTeam', href: '/notre-equipe' },
       { key: 'footer.linkCertifications', href: '/certifications' },
       { key: 'footer.linkPress', href: '/presse' },

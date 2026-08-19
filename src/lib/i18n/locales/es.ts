@@ -37,6 +37,7 @@ const es: Record<string, string> = {
   'footer.linkPricing': 'Tarifas y planes',
   'footer.linkBlog': 'Blog y noticias',
   'footer.linkMission': 'Nuestra misión',
+  'footer.linkLogistics': 'Nuestra logística',
   'footer.linkTeam': 'Nuestro equipo',
   'footer.linkCertifications': 'Certificaciones',
   'footer.linkPress': 'Prensa',
