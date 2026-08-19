@@ -13,6 +13,7 @@ import { supabase, type Producer, type Product } from '../lib/supabase';
 import { useI18n } from '../lib/i18n';
 import { producerDescription } from '../lib/i18n/dbLocalized';
 import ProducerVerificationBadge from '../components/trust/ProducerVerificationBadge';
+import ProducerQualityBadge from '../components/trust/ProducerQualityBadge';
 import ScoreBadge from '../components/ScoreBadge';
 
 function Skeleton() {
@@ -370,6 +371,8 @@ export default function ProducerShop() {
                 {/* Vitrine des vérifications EthiMarket Verified */}
                 <div className="mb-6">
                   <ProducerVerificationBadge producerId={producer.id} />
+                  {/* Historique qualité dynamique (Phase 3) — n'apparaît qu'avec des faits */}
+                  <ProducerQualityBadge producerId={producer.id} />
                 </div>
 
                 <h2 className="font-black text-gray-900 text-xl mb-4">{tx('Notre histoire')}</h2>

@@ -25,6 +25,7 @@ import { supabase } from '../../lib/supabase';
 import LotDossierPanel from '../../components/orders/LotDossierPanel';
 import LotAnalysisPanel from '../../components/orders/LotAnalysisPanel';
 import ReceptionModal from '../../components/orders/ReceptionModal';
+import TraceQrButton from '../../components/orders/TraceQrButton';
 import { parseLotDossierError, LOT_DOC_META } from '../../lib/lotDossier';
 
 export default function OrdersPage() {
@@ -207,6 +208,11 @@ function OrderCard({ order: o, isProducer, onAction, buyerId }: {
           className="px-4 py-2 text-xs font-bold rounded-xl border border-gray-200 text-gray-700 hover:border-brand-400 inline-flex items-center gap-1.5 cursor-pointer">
           <FileDown className="w-3.5 h-3.5" /> {t('ord.downloadPO')}
         </button>
+
+        {/* QR de traçabilité publique — dès que le lot est parti (Phase 3) */}
+        {['shipped', 'delivered'].includes(o.status) && (
+          <TraceQrButton orderId={o.id} orderNumber={o.order_number} />
+        )}
 
         {isProducer && o.status === 'new' && (
           <>

@@ -17,6 +17,7 @@ const Contact = lazy(() => import('./pages/Contact'));
 const DevenirVendeur = lazy(() => import('./pages/DevenirVendeur'));
 const NotreMission = lazy(() => import('./pages/NotreMission'));
 const TrustCenter = lazy(() => import('./pages/TrustCenter'));
+const LotTrace = lazy(() => import('./pages/LotTrace'));
 const Tarifs = lazy(() => import('./pages/InstitutionalPages').then(m => ({ default: m.Tarifs })));
 const NotreEquipe = lazy(() => import('./pages/InstitutionalPages').then(m => ({ default: m.NotreEquipe })));
 const CertificationsPage = lazy(() => import('./pages/InstitutionalPages').then(m => ({ default: m.CertificationsPage })));
@@ -51,6 +52,7 @@ const AdminOrders = lazy(() => import('./pages/admin/Orders'));
 const AdminDisputes = lazy(() => import('./pages/admin/Disputes'));
 const AdminIncidents = lazy(() => import('./pages/admin/Incidents'));
 const AdminAnalyses = lazy(() => import('./pages/admin/Analyses'));
+const AdminRasffAlerts = lazy(() => import('./pages/admin/RasffAlerts'));
 const AdminFinances = lazy(() => import('./pages/admin/Finances'));
 const AdminUsers = lazy(() => import('./pages/admin/Users'));
 const AdminReports = lazy(() => import('./pages/admin/Reports'));
@@ -96,6 +98,7 @@ export default function App() {
         <Route path="/devenir-vendeur" element={<DevenirVendeur />} />
         <Route path="/notre-mission" element={<NotreMission />} />
         <Route path="/trust-center" element={<TrustCenter />} />
+        <Route path="/trace/:orderId" element={<LotTrace />} />
         <Route path="/producteurs" element={<Producers />} />
         <Route path="/conditions-utilisation" element={<Legal />} />
         <Route path="/confidentialite" element={<Legal />} />
@@ -151,6 +154,7 @@ export default function App() {
           <Route path="disputes" element={<AdminDisputes />} />
           <Route path="incidents" element={<AdminIncidents />} />
           <Route path="analyses" element={<AdminAnalyses />} />
+          <Route path="rasff" element={<AdminRasffAlerts />} />
           <Route path="finances" element={<AdminFinances />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="configuration" element={<AdminReports />} />
