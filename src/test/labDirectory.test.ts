@@ -164,3 +164,18 @@ describe('lotAnalyses — traduction des erreurs SQL', () => {
     expect(explainAnalysisError('duplicate key')).toBe('duplicate key');
   });
 });
+
+describe('lotAnalyses — annuaire des laboratoires (tri)', () => {
+  it('les labos contre-vérifiés passent avant pending puis caution', async () => {
+    // tri pur répliqué depuis getDirectoryLabs (rank verified<pending<caution)
+    const rank = { verified: 0, pending: 1, caution: 2, blacklisted: 3 } as const;
+    const labs = [
+      { name: 'B Lab', trust_level: 'pending' as const },
+      { name: 'C Lab', trust_level: 'caution' as const },
+      { name: 'A Lab', trust_level: 'verified' as const },
+      { name: 'D Lab', trust_level: 'verified' as const },
+    ];
+    const sorted = labs.sort((a, b) => rank[a.trust_level] - rank[b.trust_level] || a.name.localeCompare(b.name));
+    expect(sorted.map(l => l.name)).toEqual(['A Lab', 'D Lab', 'B Lab', 'C Lab']);
+  });
+});

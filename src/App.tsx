@@ -53,6 +53,7 @@ const AdminDisputes = lazy(() => import('./pages/admin/Disputes'));
 const AdminIncidents = lazy(() => import('./pages/admin/Incidents'));
 const AdminAnalyses = lazy(() => import('./pages/admin/Analyses'));
 const AdminRasffAlerts = lazy(() => import('./pages/admin/RasffAlerts'));
+const AdminLaboratories = lazy(() => import('./pages/admin/Laboratories'));
 const AdminFinances = lazy(() => import('./pages/admin/Finances'));
 const AdminUsers = lazy(() => import('./pages/admin/Users'));
 const AdminReports = lazy(() => import('./pages/admin/Reports'));
@@ -155,6 +156,7 @@ export default function App() {
           <Route path="incidents" element={<AdminIncidents />} />
           <Route path="analyses" element={<AdminAnalyses />} />
           <Route path="rasff" element={<AdminRasffAlerts />} />
+          <Route path="laboratoires" element={<AdminLaboratories />} />
           <Route path="finances" element={<AdminFinances />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="configuration" element={<AdminReports />} />

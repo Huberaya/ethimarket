@@ -47,6 +47,7 @@ const NAV_GROUPS: NavGroup[] = [
       { to: '/admin/litiges', label: 'Litiges', icon: AlertTriangle },
       { to: '/admin/incidents', label: 'Incidents qualité', icon: AlertTriangle },
       { to: '/admin/analyses', label: 'Analyses labo', icon: ShieldCheck },
+      { to: '/admin/laboratoires', label: 'Laboratoires', icon: Building2 },
       { to: '/admin/rasff', label: 'Veille RASFF', icon: AlertTriangle },
       { to: '/admin/finances', label: 'Finances', icon: Wallet },
       { to: '/admin/configuration', label: 'Configuration', icon: Settings },

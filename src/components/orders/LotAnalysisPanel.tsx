@@ -21,7 +21,7 @@ import {
 } from '../../lib/labDirectory';
 import {
   getOrderAnalyses, requestAnalysis, markSampleSent, markReportReceived,
-  explainAnalysisError, type LotAnalysis,
+  explainAnalysisError, getDirectoryLabs, type LotAnalysis, type DirectoryLab,
 } from '../../lib/lotAnalyses';
 import { FileUpload } from '../ui/FileUpload';
 
@@ -40,7 +40,8 @@ export default function LotAnalysisPanel({
   const [productInfo, setProductInfo] = useState<{ product_type: string | null; country: string | null; certifications: string[] | null } | null>(null);
   const [showPicker, setShowPicker] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [drafts, setDrafts] = useState<Record<string, { lab: string; report: string; file: string }>>({});
+  const [drafts, setDrafts] = useState<Record<string, { lab: string; labId: string; report: string; file: string }>>({});
+  const [directoryLabs, setDirectoryLabs] = useState<DirectoryLab[]>([]);
 
   const originCountry = productInfo?.country ?? null;
   const isOrganic = (productInfo?.certifications ?? []).some(c => /bio|organic|ecocert/i.test(c));
@@ -60,6 +61,13 @@ export default function LotAnalysisPanel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId, productId]);
 
+  // Annuaire interne : labos du pays d'origine (une fois le pays connu)
+  useEffect(() => {
+    if (productInfo?.country && isProducer) {
+      void getDirectoryLabs(productInfo.country).then(setDirectoryLabs);
+    }
+  }, [productInfo?.country, isProducer]);
+
   if (analyses === null || productInfo === null) return null;
   // Rien à montrer si aucune analyse en cours ET aucune recommandation
   if (analyses.length === 0 && recos.length === 0) return null;
@@ -77,8 +85,8 @@ export default function LotAnalysisPanel({
       label: r.label, hazard: 'reason' in r ? null : undefined,
     }));
 
-  const draft = (id: string) => drafts[id] ?? { lab: '', report: '', file: '' };
-  const setDraft = (id: string, patch: Partial<{ lab: string; report: string; file: string }>) =>
+  const draft = (id: string) => drafts[id] ?? { lab: '', labId: '', report: '', file: '' };
+  const setDraft = (id: string, patch: Partial<{ lab: string; labId: string; report: string; file: string }>) =>
     setDrafts(d => ({ ...d, [id]: { ...draft(id), ...patch } }));
 
   return (
@@ -160,14 +168,36 @@ export default function LotAnalysisPanel({
 
                 {/* Producteur : avancer le circuit */}
                 {isProducer && a.status === 'requested' && (
-                  <div className="mt-2 flex gap-2 flex-wrap items-center">
-                    <input value={d.lab} onChange={e => setDraft(a.id, { lab: e.target.value })}
-                      placeholder={tx('Nom du laboratoire choisi')}
-                      className="flex-1 min-w-40 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 outline-none focus:ring-1 focus:ring-indigo-400" />
-                    <button onClick={() => run(() => markSampleSent(a.id, d.lab, originCountry ?? ''))} disabled={busy}
-                      className="px-3 py-1.5 text-[11px] font-black rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer">
-                      📦 {tx('Échantillon envoyé')}
-                    </button>
+                  <div className="mt-2 space-y-2">
+                    {directoryLabs.length > 0 && (
+                      <select
+                        value={d.labId}
+                        onChange={e => {
+                          const lab = directoryLabs.find(l => l.id === e.target.value);
+                          setDraft(a.id, { labId: e.target.value, lab: lab ? lab.name : '' });
+                        }}
+                        className="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 outline-none bg-white cursor-pointer focus:ring-1 focus:ring-indigo-400">
+                        <option value="">{tx('— Choisir un labo de la base EthiMarket —')}</option>
+                        {directoryLabs.map(l => (
+                          <option key={l.id} value={l.id}>
+                            {l.trust_level === 'verified' ? '✅ ' : l.trust_level === 'caution' ? '⚠️ ' : ''}
+                            {l.name}{l.city ? ` (${l.city})` : ''}{l.accreditation_body ? ` — ${l.accreditation_body}` : ''}
+                          </option>
+                        ))}
+                        <option value="__other__">{tx('Autre laboratoire (saisie libre)')}</option>
+                      </select>
+                    )}
+                    <div className="flex gap-2 flex-wrap items-center">
+                      {(directoryLabs.length === 0 || d.labId === '__other__') && (
+                        <input value={d.lab} onChange={e => setDraft(a.id, { lab: e.target.value })}
+                          placeholder={tx('Nom du laboratoire choisi')}
+                          className="flex-1 min-w-40 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 outline-none focus:ring-1 focus:ring-indigo-400" />
+                      )}
+                      <button onClick={() => run(() => markSampleSent(a.id, d.lab, originCountry ?? '', d.labId && d.labId !== '__other__' ? d.labId : null))} disabled={busy}
+                        className="px-3 py-1.5 text-[11px] font-black rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer">
+                        📦 {tx('Échantillon envoyé')}
+                      </button>
+                    </div>
                   </div>
                 )}
                 {isProducer && a.status === 'sample_sent' && (

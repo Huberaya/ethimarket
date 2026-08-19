@@ -25,6 +25,7 @@ type Row = LotAnalysis & {
   producers?: { name: string } | null;
   products?: { name: string } | null;
   orders?: { order_number: string | null } | null;
+  laboratories?: { name: string; trust_level: string; accreditation_body: string | null; accreditation_url: string | null } | null;
 };
 
 export default function AdminAnalyses() {
@@ -39,7 +40,7 @@ export default function AdminAnalyses() {
   const load = useCallback(async () => {
     const { data } = await supabase
       .from('lot_analyses')
-      .select('*, producers(name), products(name), orders(order_number)')
+      .select('*, producers(name), products(name), orders(order_number), laboratories(name, trust_level, accreditation_body, accreditation_url)')
       .order('created_at', { ascending: false });
     setRows((data as Row[]) ?? []);
     setLoading(false);
@@ -150,6 +151,28 @@ export default function AdminAnalyses() {
                 </a>
               )}
             </div>
+
+            {/* Le labo vient-il de notre annuaire contre-vérifié ? */}
+            {selected.laboratories ? (
+              <div className={`rounded-xl border p-3 mb-4 ${selected.laboratories.trust_level === 'verified' ? 'border-emerald-200 bg-emerald-50/50' : selected.laboratories.trust_level === 'caution' ? 'border-orange-200 bg-orange-50/50' : 'border-amber-200 bg-amber-50/50'}`}>
+                <p className="text-xs font-black text-gray-800">
+                  {selected.laboratories.trust_level === 'verified' ? '✅ Labo de notre base — accréditation déjà contre-vérifiée au registre'
+                    : selected.laboratories.trust_level === 'caution' ? '⚠️ Labo de notre base — marqué « vigilance », redoublez de contrôles'
+                    : '⏳ Labo de notre base — accréditation PAS ENCORE contre-vérifiée'}
+                </p>
+                <p className="text-[11px] text-gray-500 mt-0.5">
+                  {selected.laboratories.name}{selected.laboratories.accreditation_body ? ` · ${selected.laboratories.accreditation_body}` : ''}
+                  {selected.laboratories.accreditation_url && (
+                    <a href={selected.laboratories.accreditation_url} target="_blank" rel="noopener noreferrer" className="ml-1.5 font-bold text-brand-700 hover:underline">registre ↗</a>
+                  )}
+                </p>
+              </div>
+            ) : (
+              <div className="rounded-xl border border-red-200 bg-red-50/50 p-3 mb-4">
+                <p className="text-xs font-black text-red-800">🔍 Labo HORS de notre base — vérification complète obligatoire</p>
+                <p className="text-[11px] text-red-700/80 mt-0.5">Suivez les 4 étapes ci-dessous, puis ajoutez ce labo dans l'annuaire (page Laboratoires) pour capitaliser la vérification.</p>
+              </div>
+            )}
 
             <div className="rounded-xl border border-indigo-100 bg-indigo-50/40 p-4 mb-4">
               <p className="text-xs font-black text-indigo-900 mb-2">🔎 Étapes de vérification</p>

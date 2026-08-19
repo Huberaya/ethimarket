@@ -18,6 +18,7 @@ export interface LotAnalysis {
   status: AnalysisStatus;
   lab_name: string | null;
   lab_country: string | null;
+  laboratory_id: string | null;
   report_number: string | null;
   report_url: string | null;
   admin_note: string | null;
@@ -51,12 +52,45 @@ export async function requestAnalysis(input: {
 }
 
 /** Producteur : l'échantillon est parti chez le labo choisi. */
-export async function markSampleSent(id: string, labName: string, labCountry: string): Promise<string | null> {
+export async function markSampleSent(
+  id: string, labName: string, labCountry: string, laboratoryId?: string | null,
+): Promise<string | null> {
   if (!labName.trim()) return 'Indiquez le laboratoire choisi.';
   const { error } = await supabase.from('lot_analyses').update({
     status: 'sample_sent', lab_name: labName.trim(), lab_country: labCountry.trim() || null,
+    laboratory_id: laboratoryId ?? null,
   }).eq('id', id);
   return error?.message ?? null;
+}
+
+// -------------------- Annuaire des laboratoires --------------------
+
+export interface DirectoryLab {
+  id: string;
+  name: string;
+  network: string | null;
+  country: string;
+  city: string | null;
+  trust_level: 'verified' | 'pending' | 'caution' | 'blacklisted';
+  accreditation_body: string | null;
+  analysis_scopes: string[];
+}
+
+/**
+ * Labos actifs de l'annuaire interne pour un pays (les blacklistés
+ * sont exclus d'office), les contre-vérifiés d'abord.
+ */
+export async function getDirectoryLabs(country: string | null | undefined): Promise<DirectoryLab[]> {
+  let q = supabase.from('laboratories')
+    .select('id, name, network, country, city, trust_level, accreditation_body, analysis_scopes')
+    .eq('is_active', true)
+    .neq('trust_level', 'blacklisted');
+  if (country) q = q.eq('country', country);
+  const { data } = await q.order('trust_level', { ascending: false }).order('name');
+  const labs = (data ?? []) as DirectoryLab[];
+  // verified d'abord, puis pending, puis caution
+  const rank = { verified: 0, pending: 1, caution: 2, blacklisted: 3 } as const;
+  return labs.sort((a, b) => rank[a.trust_level] - rank[b.trust_level] || a.name.localeCompare(b.name));
 }
 
 /** Producteur : le rapport (COA) est arrivé. */
