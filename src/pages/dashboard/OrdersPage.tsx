@@ -23,6 +23,7 @@ import { printPurchaseOrder } from '../../lib/purchaseOrderGenerator';
 import { addPurchase } from '../../lib/buyerWorkspace';
 import { supabase } from '../../lib/supabase';
 import LotDossierPanel from '../../components/orders/LotDossierPanel';
+import LotAnalysisPanel from '../../components/orders/LotAnalysisPanel';
 import ReceptionModal from '../../components/orders/ReceptionModal';
 import { parseLotDossierError, LOT_DOC_META } from '../../lib/lotDossier';
 
@@ -298,6 +299,20 @@ function OrderCard({ order: o, isProducer, onAction, buyerId }: {
           orderId={o.id}
           canEdit={isProducer && o.status === 'processing'}
           onDossierComplete={setDossierComplete}
+        />
+      )}
+
+      {/* Analyses de laboratoire du lot (couche 4, Phase 2) :
+          demande par l'acheteur ou le producteur, circuit avancé
+          par le producteur, verdict admin. */}
+      {['processing', 'shipped', 'delivered', 'disputed'].includes(o.status) && (
+        <LotAnalysisPanel
+          orderId={o.id}
+          productId={o.product_id}
+          producerId={o.producer_id}
+          productName={o.product_name}
+          isProducer={isProducer}
+          userId={buyerId}
         />
       )}
 

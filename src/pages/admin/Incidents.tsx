@@ -23,7 +23,7 @@ interface Incident {
   producer_id: string | null;
   product_id: string | null;
   order_id: string | null;
-  source: 'dispute' | 'reception' | 'admin';
+  source: 'dispute' | 'reception' | 'admin' | 'analysis';
   note: string | null;
   status: 'open' | 'resolved';
   created_at: string;
@@ -37,6 +37,7 @@ const SOURCE_META: Record<Incident['source'], { icon: typeof AlertOctagon; label
   dispute: { icon: MessageSquareWarning, label: 'Litige acheteur', cls: 'bg-red-100 text-red-700' },
   reception: { icon: PackageX, label: 'Réception non conforme', cls: 'bg-amber-100 text-amber-700' },
   admin: { icon: ShieldAlert, label: 'Signalement interne', cls: 'bg-gray-100 text-gray-700' },
+  analysis: { icon: ShieldAlert, label: 'COA rejeté', cls: 'bg-purple-100 text-purple-700' },
 };
 
 export default function AdminIncidents() {
