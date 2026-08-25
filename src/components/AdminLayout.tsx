@@ -4,7 +4,7 @@ import {
   LayoutDashboard, ShieldCheck, Award, Package, ShoppingCart,
   AlertTriangle, Wallet, Users, Bell, Menu, X,
   LogOut, ChevronDown, Leaf, Settings, Building2,
-  ClipboardCheck, Globe, FileText
+  ClipboardCheck, Globe, FileText, Activity
 } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { supabase, type AdminNotification } from '../lib/supabase';
@@ -50,6 +50,7 @@ const NAV_GROUPS: NavGroup[] = [
       { to: '/admin/laboratoires', label: 'Laboratoires', icon: Building2 },
       { to: '/admin/rasff', label: 'Veille RASFF', icon: AlertTriangle },
       { to: '/admin/finances', label: 'Finances', icon: Wallet },
+      { to: '/admin/sante', label: 'Santé plateforme', icon: Activity },
       { to: '/admin/configuration', label: 'Configuration', icon: Settings },
     ]
   }
@@ -125,7 +126,7 @@ export default function AdminLayout() {
             <p className="font-black text-gray-900 text-sm leading-tight">EthiMarket</p>
             <p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">Administration</p>
           </div>
-          <button onClick={() => setSidebarOpen(false)} className="ml-auto lg:hidden text-gray-400">
+          <button onClick={() => setSidebarOpen(false)} className="ml-auto lg:hidden text-gray-400" aria-label="Fermer le menu">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -191,7 +192,7 @@ export default function AdminLayout() {
       <div className="flex-1 min-w-0 flex flex-col">
         {/* Top bar */}
         <header className="sticky top-0 z-20 bg-white border-b border-gray-100 h-16 flex items-center gap-3 px-4 sm:px-6">
-          <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-gray-500">
+          <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-gray-500" aria-label="Ouvrir le menu">
             <Menu className="w-5 h-5" />
           </button>
 
@@ -199,7 +200,7 @@ export default function AdminLayout() {
 
           {/* Notifications */}
           <div className="relative">
-            <button onClick={() => { setNotifOpen(o => !o); if (!notifOpen && unreadCount > 0) markAllRead(); }} className="relative w-10 h-10 rounded-xl hover:bg-gray-100 flex items-center justify-center transition-colors">
+            <button onClick={() => { setNotifOpen(o => !o); if (!notifOpen && unreadCount > 0) markAllRead(); }} className="relative w-10 h-10 rounded-xl hover:bg-gray-100 flex items-center justify-center transition-colors" aria-label="Notifications">
               <Bell className="w-5 h-5 text-gray-600" />
               {unreadCount > 0 && (
                 <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">

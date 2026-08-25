@@ -139,22 +139,23 @@ export default function Login() {
             )}
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t('login.email')}</label>
-              <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+              <label htmlFor="login-email" className="block text-sm font-semibold text-gray-700 mb-1.5">{t('login.email')}</label>
+              <input id="login-email" type="email" required autoComplete="email" value={email} onChange={e => setEmail(e.target.value)}
                 placeholder="vous@entreprise.com"
                 className="w-full px-4 py-3 text-sm border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-brand-500 outline-none transition-colors bg-gray-50 focus:bg-white" />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-sm font-semibold text-gray-700">{t('login.password')}</label>
+                <label htmlFor="login-password" className="text-sm font-semibold text-gray-700">{t('login.password')}</label>
                 <Link to="/mot-de-passe-oublie" className="text-xs text-brand-600 hover:text-brand-700 font-semibold hover:underline">{t('login.forgot')}</Link>
               </div>
               <div className="relative">
-                <input type={showPw ? 'text' : 'password'} required value={password} onChange={e => setPassword(e.target.value)}
+                <input id="login-password" type={showPw ? 'text' : 'password'} required autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full px-4 py-3 pr-12 text-sm border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-brand-500 outline-none transition-colors bg-gray-50 focus:bg-white" />
                 <button type="button" onClick={() => setShowPw(s => !s)}
+                  aria-label={showPw ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                   {showPw ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
                 </button>

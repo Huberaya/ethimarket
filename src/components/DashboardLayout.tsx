@@ -160,7 +160,7 @@ export default function DashboardLayout() {
             </div>
             <span className="font-black text-brand-800 text-lg">EthiMarket</span>
           </Link>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden p-1.5 hover:bg-gray-100 rounded-lg">
+          <button onClick={() => setSidebarOpen(false)} className="lg:hidden p-1.5 hover:bg-gray-100 rounded-lg" aria-label="Fermer le menu">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -219,7 +219,7 @@ export default function DashboardLayout() {
       <div className="flex-1 flex flex-col min-w-0">
         <header className="bg-white border-b border-gray-100 px-6 py-3.5 flex items-center justify-between gap-4 flex-shrink-0 sticky top-0 z-30">
           <div className="flex items-center gap-4">
-            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 hover:bg-gray-100 rounded-xl transition-colors">
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 hover:bg-gray-100 rounded-xl transition-colors" aria-label="Ouvrir le menu">
               <Menu className="w-5 h-5 text-gray-600" />
             </button>
             <div className="hidden sm:flex items-center gap-2 text-xs text-gray-500">

@@ -13,6 +13,7 @@ import { type VerificationChecklistState } from '../../components/admin/Verifica
 import { LeafletMap } from '../../components/LeafletMap';
 import CertVerificationCard from '../../components/admin/CertVerificationCard';
 import { SourceVerificationPanel } from '../../components/admin/SourceVerificationPanel';
+import AuditGuidePanel from '../../components/admin/AuditGuidePanel';
 import { ExportRoadmapPanel } from '../../components/admin/ExportRoadmapPanel';
 import {
   getEvidences, getPhotoChallenges,
@@ -348,6 +349,9 @@ export default function AdminVerificationDetail() {
         title={`Audit Producteur : ${producer.name}`}
         subtitle={`Examen de conformité Bureau Veritas • ID : ${producer.id.slice(0, 8)}`}
       />
+
+      {/* Guide d'audit intégré (condensé de la fiche pas-à-pas) */}
+      <AuditGuidePanel />
 
       {/* SECTION A: RESUME DU PRODUCTEUR */}
       <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm">
