@@ -41,22 +41,24 @@ export const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
             id={`product-card-${prod.id}`}
             className="group relative bg-white rounded-2xl border border-neutral-200 hover:border-emerald-500 hover:shadow-xl hover:shadow-emerald-950/5 transition-all duration-200 flex flex-col overflow-hidden"
           >
-            {/* Top Media / Thumbnail */}
+            {/* Top Media / Thumbnail — cliquable vers la fiche produit */}
             <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden">
-              {prod.image_url ? (
-                <img
-                  src={prod.image_url}
-                  alt={productName(prod, locale)}
-                  className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-5xl bg-emerald-50 text-emerald-800">
-                  {prod.emoji || '📦'}
-                </div>
-              )}
+              <Link to={`/produits/${prod.slug}`} aria-label={productName(prod, locale)} className="block w-full h-full">
+                {prod.image_url ? (
+                  <img
+                    src={prod.image_url}
+                    alt={productName(prod, locale)}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-5xl bg-emerald-50 text-emerald-800">
+                    {prod.emoji || '📦'}
+                  </div>
+                )}
+              </Link>
 
-              {/* Badges on Top of Image */}
-              <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
+              {/* Badges on Top of Image (informatifs : ne bloquent pas le clic) */}
+              <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 pointer-events-none">
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold bg-white/95 text-emerald-900 shadow-md backdrop-blur-sm">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Score {score}/100</span>

@@ -69,17 +69,19 @@ export const SearchResultsTable: React.FC<SearchResultsTableProps> = ({
                 {/* Product Name & Producer */}
                 <td className="p-3">
                   <div className="flex items-center gap-3">
-                    {prod.image_url ? (
-                      <img
-                        src={prod.image_url}
-                        alt={productName(prod, locale)}
-                        className="w-10 h-10 rounded-lg object-cover bg-neutral-100 shrink-0 border border-neutral-200"
-                      />
-                    ) : (
-                      <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-lg shrink-0">
-                        {prod.emoji || '📦'}
-                      </div>
-                    )}
+                    <Link to={`/produits/${prod.slug}`} aria-label={productName(prod, locale)} className="shrink-0">
+                      {prod.image_url ? (
+                        <img
+                          src={prod.image_url}
+                          alt={productName(prod, locale)}
+                          className="w-10 h-10 rounded-lg object-cover bg-neutral-100 border border-neutral-200 hover:ring-2 hover:ring-emerald-400 transition"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-lg hover:ring-2 hover:ring-emerald-400 transition">
+                          {prod.emoji || '📦'}
+                        </div>
+                      )}
+                    </Link>
                     <div>
                       <Link
                         to={`/produits/${prod.slug}`}
