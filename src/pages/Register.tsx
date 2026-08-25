@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Leaf, Check, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, Leaf, Check, ArrowRight, ArrowLeft, ShieldCheck, Globe2, BadgeCheck } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
 import { supabase } from '../lib/supabase';
 import { COUNTRIES } from '../lib/countries';
@@ -9,30 +9,37 @@ import { useI18n } from '../lib/i18n';
 
 type Role = 'producer' | 'buyer' | 'distributor';
 
+/**
+ * Cartes de rôle illustrées (images générées, hébergées en local).
+ * La redirection post-inscription est cohérente avec le rôle :
+ *   producer     → /dashboard/verification (parcours vendeur)
+ *   buyer        → /catalogue (parcours acheteur : il vient acheter)
+ *   distributor  → /catalogue
+ */
 const ROLES = [
   {
     id: 'producer' as Role,
-    emoji: '🌾',
+    image: '/images/register/role-producer.jpg',
     titleKey: 'register.roleProducer',
     descKey: 'register.roleProducerDesc',
-    color: 'border-brand-400 bg-brand-50',
-    dot: 'bg-brand-500',
+    ring: 'ring-brand-500',
+    badge: 'bg-brand-500',
   },
   {
     id: 'buyer' as Role,
-    emoji: '🏪',
+    image: '/images/register/role-buyer.jpg',
     titleKey: 'register.roleBuyer',
     descKey: 'register.roleBuyerDesc',
-    color: 'border-blue-400 bg-blue-50',
-    dot: 'bg-blue-500',
+    ring: 'ring-blue-500',
+    badge: 'bg-blue-500',
   },
   {
     id: 'distributor' as Role,
-    emoji: '🏭',
+    image: '/images/register/role-distributor.jpg',
     titleKey: 'register.roleDistributor',
     descKey: 'register.roleDistributorDesc',
-    color: 'border-violet-400 bg-violet-50',
-    dot: 'bg-violet-500',
+    ring: 'ring-violet-500',
+    badge: 'bg-violet-500',
   },
 ];
 
@@ -44,6 +51,11 @@ function pwStrength(pw: string): { labelKey: string; color: string; pct: string 
   if (pw.length < 10) return { labelKey: 'register.pwMedium',  color: 'bg-amber-400', pct: '55%' };
   if (!/[A-Z]/.test(pw) || !/[0-9]/.test(pw)) return { labelKey: 'register.pwGood', color: 'bg-blue-400', pct: '75%' };
   return { labelKey: 'register.pwStrong', color: 'bg-brand-500', pct: '100%' };
+}
+
+/** Destination post-inscription, cohérente avec le rôle. */
+export function postRegisterPath(role: Role | null): string {
+  return role === 'producer' ? '/dashboard/verification' : '/catalogue';
 }
 
 export default function Register() {
@@ -60,7 +72,7 @@ export default function Register() {
   const [agreed,    setAgreed]    = useState(false);
   const [loading,   setLoading]   = useState(false);
   const [error,     setError]     = useState('');
-  const { t } = useI18n();
+  const { t, tx } = useI18n();
   const navigate = useNavigate();
 
   const strength = pwStrength(password);
@@ -133,7 +145,8 @@ export default function Register() {
     }
 
     setLoading(false);
-    navigate(role === 'producer' ? '/dashboard/verification' : '/dashboard');
+    // Redirection cohérente : vendeur → parcours vendeur, acheteur → catalogue
+    navigate(postRegisterPath(role));
   };
 
   const fieldClass = "w-full px-4 py-3 text-sm border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-brand-500 outline-none transition-colors bg-gray-50 focus:bg-white";
@@ -144,14 +157,14 @@ export default function Register() {
         title="Inscription - Rejoindre EthiMarket | EthiMarket"
         description="Créez votre compte producteur ou acheteur sur EthiMarket. Accédez au marché mondial des produits bio et équitables."
       />
-      {/* Side image */}
+      {/* Side hero */}
       <div className="hidden xl:block xl:w-[38%] relative">
         <img
-          src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=60"
+          src="/images/register/side-hero.jpg"
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-900/80 to-brand-800/60" />
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-950/85 via-brand-900/60 to-brand-800/40" />
         <div className="relative z-10 flex flex-col h-full p-12">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-9 h-9 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
@@ -161,16 +174,21 @@ export default function Register() {
           </Link>
           <div className="mt-auto mb-12">
             <h3 className="text-3xl font-black text-white mb-4">{t('register.joinTitle')}</h3>
-            <p className="text-white/60 leading-relaxed">
+            <p className="text-white/70 leading-relaxed mb-8">
               {t('register.joinSubtitle')}
             </p>
-            <div className="flex items-center gap-2 mt-6">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="w-8 h-8 rounded-full bg-brand-400/40 border-2 border-white/20 flex items-center justify-center text-white text-xs font-bold">
-                  {String.fromCharCode(65 + i)}
+            {/* Arguments prouvables — cohérents avec le reste du site */}
+            <div className="space-y-3">
+              {[
+                { Icon: BadgeCheck, text: tx('Producteurs vérifiés aux registres officiels, preuves publiées') },
+                { Icon: ShieldCheck, text: tx('Paiement direct : votre argent ne transite jamais par nous') },
+                { Icon: Globe2, text: tx('Boutiques et produits traduits en 5 langues automatiquement') },
+              ].map(({ Icon, text }, i) => (
+                <div key={i} className="flex items-start gap-3 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3">
+                  <Icon className="w-4 h-4 text-brand-300 shrink-0 mt-0.5" />
+                  <span className="text-white/90 text-sm leading-snug">{text}</span>
                 </div>
               ))}
-              <span className="text-white/60 text-sm ml-2">{t('register.network')}</span>
             </div>
           </div>
         </div>
@@ -210,43 +228,34 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Step 1 */}
+            {/* Step 1 — choix du rôle en cartes illustrées */}
             {step === 1 && (
               <div>
-                <button className="w-full flex items-center justify-center gap-3 border-2 border-gray-200 rounded-xl py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all mb-5">
-                  <svg className="w-5 h-5" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                  </svg>
-                  {t('login.google')}
-                </button>
-
-                <div className="relative mb-5">
-                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
-                  <div className="relative flex justify-center"><span className="bg-white px-4 text-xs text-gray-500 font-medium">{t('register.or')}</span></div>
-                </div>
-
-                <p className="text-sm font-bold text-gray-700 mb-3">{t('register.youAre')} <span className="text-gray-400 font-normal">{t('register.chooseRole')}</span></p>
-                <div className="space-y-3">
+                <p className="text-sm font-bold text-gray-700 mb-4">{t('register.youAre')} <span className="text-gray-400 font-normal">{t('register.chooseRole')}</span></p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {ROLES.map(r => (
                     <button
                       key={r.id}
                       onClick={() => setRole(r.id)}
-                      className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 text-left transition-all duration-200 ${
-                        role === r.id ? r.color : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                      aria-pressed={role === r.id}
+                      className={`relative group rounded-2xl overflow-hidden border-2 text-left transition-all duration-200 cursor-pointer ${
+                        role === r.id
+                          ? `border-transparent ring-2 ${r.ring} shadow-lg -translate-y-0.5`
+                          : 'border-gray-200 hover:border-gray-300 hover:shadow-md hover:-translate-y-0.5'
                       }`}
                     >
-                      <span className="text-3xl">{r.emoji}</span>
-                      <div className="flex-1">
-                        <p className="font-bold text-gray-900 text-sm">{t(r.titleKey)}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">{t(r.descKey)}</p>
+                      <div className="relative h-28 sm:h-32 overflow-hidden">
+                        <img src={r.image} alt="" loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        {role === r.id && (
+                          <div className={`absolute top-2 right-2 w-6 h-6 ${r.badge} rounded-full flex items-center justify-center shadow-md`}>
+                            <Check className="w-3.5 h-3.5 text-white" />
+                          </div>
+                        )}
                       </div>
-                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
-                        role === r.id ? `${r.dot} border-transparent` : 'border-gray-300'
-                      }`}>
-                        {role === r.id && <Check className="w-3 h-3 text-white" />}
+                      <div className="p-3">
+                        <p className="font-black text-gray-900 text-sm leading-tight">{t(r.titleKey)}</p>
+                        <p className="text-[11px] text-gray-500 mt-1 leading-snug">{t(r.descKey)}</p>
                       </div>
                     </button>
                   ))}
@@ -265,6 +274,18 @@ export default function Register() {
             {/* Step 2 */}
             {step === 2 && (
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Rappel du rôle choisi */}
+                {role && (
+                  <button type="button" onClick={() => setStep(1)}
+                    className="w-full flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-left hover:border-gray-300 cursor-pointer">
+                    <img src={ROLES.find(r => r.id === role)?.image} alt="" className="w-9 h-9 rounded-lg object-cover" />
+                    <span className="text-xs text-gray-600">
+                      <span className="font-black text-gray-900">{t(ROLES.find(r => r.id === role)!.titleKey)}</span>
+                      <span className="text-gray-400"> — {tx('modifier')}</span>
+                    </span>
+                  </button>
+                )}
+
                 {error && (
                   <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
                     {error}
@@ -274,25 +295,26 @@ export default function Register() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label htmlFor="reg-firstname" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.firstName')} *</label>
-                    <input required id="reg-firstname" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="Jean" className={fieldClass} />
+                    <input required id="reg-firstname" autoComplete="given-name" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="Jean" className={fieldClass} />
                   </div>
                   <div>
                     <label htmlFor="reg-lastname" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.lastName')} *</label>
-                    <input required id="reg-lastname" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Dupont" className={fieldClass} />
+                    <input required id="reg-lastname" autoComplete="family-name" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Dupont" className={fieldClass} />
                   </div>
                 </div>
 
                 <div>
                   <label htmlFor="reg-email" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.emailPro')} *</label>
-                  <input type="email" required id="reg-email" value={email} onChange={e => setEmail(e.target.value)} placeholder="vous@entreprise.com" className={fieldClass} />
+                  <input type="email" required id="reg-email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="vous@entreprise.com" className={fieldClass} />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.password')} *</label>
+                  <label htmlFor="reg-password" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.password')} *</label>
                   <div className="relative">
-                    <input type={showPw ? 'text' : 'password'} required value={password} onChange={e => setPassword(e.target.value)}
+                    <input id="reg-password" type={showPw ? 'text' : 'password'} required autoComplete="new-password" value={password} onChange={e => setPassword(e.target.value)}
                       placeholder={t('register.passwordMin')} className={`${fieldClass} pr-12`} />
                     <button type="button" onClick={() => setShowPw(s => !s)}
+                      aria-label={showPw ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
                       className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                       {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -308,8 +330,8 @@ export default function Register() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.confirmPassword')} *</label>
-                  <input type="password" required value={confirmPw} onChange={e => setConfirmPw(e.target.value)}
+                  <label htmlFor="reg-confirmpw" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.confirmPassword')} *</label>
+                  <input id="reg-confirmpw" type="password" required autoComplete="new-password" value={confirmPw} onChange={e => setConfirmPw(e.target.value)}
                     placeholder={t('register.repeatPassword')} className={`${fieldClass} ${confirmPw && confirmPw !== password ? 'border-red-400' : ''}`} />
                   {confirmPw && confirmPw !== password && <p className="text-xs text-red-500 mt-1">{t('register.pwMismatch')}</p>}
                 </div>
@@ -317,11 +339,11 @@ export default function Register() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label htmlFor="reg-phone" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.phone')}</label>
-                    <input type="tel" id="reg-phone" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+33 6 ..." className={fieldClass} />
+                    <input type="tel" id="reg-phone" autoComplete="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+33 6 ..." className={fieldClass} />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.country')} *</label>
-                    <select value={country} onChange={e => setCountry(e.target.value)}
+                    <label htmlFor="reg-country" className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">{t('register.country')} *</label>
+                    <select id="reg-country" value={country} onChange={e => setCountry(e.target.value)}
                       className={`${fieldClass} appearance-none cursor-pointer`}>
                       {COUNTRIES_LIST.map(c => <option key={c}>{c}</option>)}
                     </select>
@@ -333,9 +355,9 @@ export default function Register() {
                     className="w-4 h-4 mt-0.5 rounded accent-brand-500 flex-shrink-0" />
                   <span className="text-sm text-gray-600 leading-relaxed">
                     {t('register.agree1')}{' '}
-                    <a href="#" className="text-brand-600 font-semibold hover:underline">{t('register.agreeTerms')}</a>
+                    <Link to="/conditions-utilisation" className="text-brand-600 font-semibold hover:underline">{t('register.agreeTerms')}</Link>
                     {' '}{t('register.agree2')}{' '}
-                    <a href="#" className="text-brand-600 font-semibold hover:underline">{t('register.agreePrivacy')}</a>
+                    <Link to="/confidentialite" className="text-brand-600 font-semibold hover:underline">{t('register.agreePrivacy')}</Link>
                     {' '}{t('register.agree3')}
                   </span>
                 </label>

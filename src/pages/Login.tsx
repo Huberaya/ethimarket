@@ -19,10 +19,24 @@ export default function Login() {
     e.preventDefault();
     setError('');
     setLoading(true);
-    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error: err } = await supabase.auth.signInWithPassword({ email, password });
+    if (err) { setLoading(false); setError(t('login.error')); return; }
+
+    // Redirection cohérente avec le rôle :
+    //   producteur → espace vendeur (produits/commandes)
+    //   acheteur/distributeur → espace achats
+    let dest = '/dashboard/mes-achats';
+    const userId = data.user?.id;
+    if (userId) {
+      const [{ data: prof }, { data: prod }] = await Promise.all([
+        supabase.from('profiles').select('role, is_admin').eq('id', userId).maybeSingle(),
+        supabase.from('producers').select('id').eq('user_id', userId).maybeSingle(),
+      ]);
+      if (prof?.is_admin) dest = '/admin';
+      else if (prof?.role === 'producer' || prod) dest = '/dashboard';
+    }
     setLoading(false);
-    if (err) setError(t('login.error'));
-    else navigate('/dashboard');
+    navigate(dest);
   };
 
   return (
