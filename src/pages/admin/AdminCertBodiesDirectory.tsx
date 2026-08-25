@@ -165,7 +165,7 @@ export default function AdminCertBodiesDirectory() {
         has_whatsapp: filterHasWhatsapp ? true : undefined,
         has_phone: filterHasPhone ? true : undefined,
         has_form: filterHasForm ? true : undefined
-      });
+      }, 1, 500); // annuaire complet : pas de pagination sous 500 organismes
 
       if (res.error) {
         setError(res.error);
