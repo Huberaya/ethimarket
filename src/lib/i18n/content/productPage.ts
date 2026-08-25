@@ -142,7 +142,7 @@ const fr: ProductPageContent = {
     items: [
       { q: "Comment vérifier l'authenticité du certificat bio ?", a: 'Notre équipe contacte directement Ecocert pour vérifier chaque certificat. Vous pouvez aussi vérifier vous-même sur ecocert.com avec le numéro fourni.' },
       { q: "Que se passe-t-il si le produit reçu n'est pas conforme ?", a: 'Vous avez 7 jours pour signaler un problème. Le paiement reste bloqué. Nous investiguons sous 48h. Vous êtes intégralement remboursé si non-conformité prouvée.' },
-      { q: 'Combien de temps entre la commande et la livraison ?', a: "Selon l'option choisie : DHL Express (5-7 jours), UPS (10-14 jours), Maritime (30-45 jours)." },
+      { q: 'Combien de temps entre la commande et la livraison ?', a: "Selon le mode d'expédition convenu avec le producteur : express (environ 5-7 jours), messagerie internationale (10-15 jours) ou maritime groupé (30-45 jours). Le délai estimé figure sur le devis." },
       { q: 'Puis-je commander un échantillon avant ?', a: 'Oui, pour la plupart des producteurs. Contactez-les directement via la messagerie.' },
       { q: 'Comment sont calculés les frais de douane ?', a: 'Automatiquement selon le pays destination et le type de produit. Détails transparents avant paiement.' },
     ],
@@ -251,7 +251,7 @@ const en: ProductPageContent = {
     items: [
       { q: 'How can I verify the authenticity of the organic certificate?', a: 'Our team contacts Ecocert directly to verify each certificate. You can also check it yourself on ecocert.com with the provided number.' },
       { q: 'What happens if the received product is not compliant?', a: 'You have 7 days to report an issue. The payment stays on hold. We investigate within 48h. You are fully refunded if non-compliance is proven.' },
-      { q: 'How long between order and delivery?', a: 'Depending on the chosen option: DHL Express (5-7 days), UPS (10-14 days), Sea freight (30-45 days).' },
+      { q: 'How long between order and delivery?', a: 'Depending on the shipping mode agreed with the producer: express (about 5-7 days), international courier (10-15 days) or consolidated sea freight (30-45 days). The estimated lead time is stated on the quote.' },
       { q: 'Can I order a sample first?', a: 'Yes, for most producers. Contact them directly through the messaging system.' },
       { q: 'How are customs fees calculated?', a: 'Automatically based on the destination country and product type. Transparent details before payment.' },
     ],
@@ -360,7 +360,7 @@ const es: ProductPageContent = {
     items: [
       { q: '¿Cómo verificar la autenticidad del certificado orgánico?', a: 'Nuestro equipo contacta directamente a Ecocert para verificar cada certificado. También puede verificarlo usted mismo en ecocert.com con el número proporcionado.' },
       { q: '¿Qué pasa si el producto recibido no es conforme?', a: 'Tiene 7 días para reportar un problema. El pago queda retenido. Investigamos en 48h. Se le reembolsa íntegramente si se prueba la no conformidad.' },
-      { q: '¿Cuánto tiempo entre el pedido y la entrega?', a: 'Según la opción elegida: DHL Express (5-7 días), UPS (10-14 días), Marítimo (30-45 días).' },
+      { q: '¿Cuánto tiempo entre el pedido y la entrega?', a: 'Según el modo de envío acordado con el productor: exprés (unos 5-7 días), mensajería internacional (10-15 días) o marítimo agrupado (30-45 días). El plazo estimado figura en el presupuesto.' },
       { q: '¿Puedo pedir una muestra antes?', a: 'Sí, para la mayoría de los productores. Contáctelos directamente por la mensajería.' },
       { q: '¿Cómo se calculan los gastos de aduana?', a: 'Automáticamente según el país de destino y el tipo de producto. Detalles transparentes antes del pago.' },
     ],
@@ -469,7 +469,7 @@ const pt: ProductPageContent = {
     items: [
       { q: 'Como verificar a autenticidade do certificado orgânico?', a: 'Nossa equipe contata diretamente a Ecocert para verificar cada certificado. Você também pode verificar em ecocert.com com o número fornecido.' },
       { q: 'O que acontece se o produto recebido não estiver conforme?', a: 'Você tem 7 dias para relatar um problema. O pagamento fica retido. Investigamos em 48h. Você é totalmente reembolsado se a não conformidade for comprovada.' },
-      { q: 'Quanto tempo entre o pedido e a entrega?', a: 'Conforme a opção escolhida: DHL Express (5-7 dias), UPS (10-14 dias), Marítimo (30-45 dias).' },
+      { q: 'Quanto tempo entre o pedido e a entrega?', a: 'Conforme o modo de envio acordado com o produtor: expresso (cerca de 5-7 dias), correio internacional (10-15 dias) ou marítimo agrupado (30-45 dias). O prazo estimado consta do orçamento.' },
       { q: 'Posso pedir uma amostra antes?', a: 'Sim, para a maioria dos produtores. Contate-os diretamente pela mensageria.' },
       { q: 'Como são calculadas as taxas alfandegárias?', a: 'Automaticamente conforme o país de destino e o tipo de produto. Detalhes transparentes antes do pagamento.' },
     ],
@@ -578,7 +578,7 @@ const ar: ProductPageContent = {
     items: [
       { q: 'كيف أتحقق من أصالة الشهادة العضوية؟', a: 'فريقنا يتصل مباشرة بـ Ecocert للتحقق من كل شهادة. يمكنك أيضاً التحقق بنفسك على ecocert.com بالرقم المقدم.' },
       { q: 'ماذا يحدث إذا كان المنتج المستلم غير مطابق؟', a: 'لديك 7 أيام للإبلاغ عن مشكلة. يبقى الدفع محجوزاً. نحقق خلال 48 ساعة. تُسترد أموالك بالكامل إذا ثبت عدم المطابقة.' },
-      { q: 'كم من الوقت بين الطلب والتسليم؟', a: 'حسب الخيار المختار: DHL Express (5-7 أيام)، UPS (10-14 يوماً)، بحري (30-45 يوماً).' },
+      { q: 'كم من الوقت بين الطلب والتسليم؟', a: 'حسب وضع الشحن المتفق عليه مع المنتِج: سريع (نحو 5-7 أيام)، بريد دولي (10-15 يوماً) أو بحري مجمَّع (30-45 يوماً). الأجل التقديري مذكور في عرض السعر.' },
       { q: 'هل يمكنني طلب عينة أولاً؟', a: 'نعم، لدى معظم المنتجين. اتصل بهم مباشرة عبر المراسلة.' },
       { q: 'كيف تُحسب الرسوم الجمركية؟', a: 'تلقائياً حسب بلد الوجهة ونوع المنتج. تفاصيل شفافة قبل الدفع.' },
     ],

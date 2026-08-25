@@ -143,7 +143,9 @@ export default function DevenirVendeur() {
         </div>
       </section>
 
-      {/* TÉMOIGNAGES */}
+      {/* TÉMOIGNAGES — masqués tant qu'il n'y a pas de vrais témoignages
+          (politique EthiMarket : aucune preuve sociale inventée) */}
+      {c.testimonials.length > 0 && (
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
@@ -171,6 +173,7 @@ export default function DevenirVendeur() {
           </div>
         </div>
       </section>
+      )}
 
       {/* FAQ VENDEURS */}
       <section className="py-24 bg-gray-50">
