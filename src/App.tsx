@@ -45,6 +45,7 @@ const OrdersPage = lazy(() => import('./pages/dashboard/OrdersPage'));
 const OrganizationPage = lazy(() => import('./pages/dashboard/OrganizationPage'));
 const Verification = lazy(() => import('./pages/dashboard/Verification'));
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
+const AdminCockpit = lazy(() => import('./pages/admin/Cockpit'));
 const AdminProducers = lazy(() => import('./pages/admin/Producers'));
 const AdminVerificationsPage = lazy(() => import('./pages/admin/Verifications'));
 const AdminVerificationDetail = lazy(() => import('./pages/admin/AdminVerificationDetail'));
@@ -143,7 +144,8 @@ export default function App() {
 
         {/* Admin routes (protected by admin role) */}
         <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
-          <Route index element={<AdminDashboard />} />
+          <Route index element={<AdminCockpit />} />
+          <Route path="apercu" element={<AdminDashboard />} />
           <Route path="producteurs" element={<AdminProducers />} />
           <Route path="verifications" element={<AdminVerificationsPage />} />
           <Route path="verification/:producerId" element={<AdminVerificationDetail />} />
