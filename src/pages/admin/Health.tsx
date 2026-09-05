@@ -12,6 +12,12 @@ import { AdminPageHeader } from '../../components/AdminLayout';
  * Lecture seule — tout vient de get_platform_health() (admin only).
  */
 
+interface ClientErrors {
+  total_7d: number;
+  distinct_7d: number;
+  recent: { message: string; source: string | null; page: string | null; count: number; last_seen_at: string }[];
+}
+
 interface Health {
   emails: {
     by_status: Record<string, number>;
@@ -47,11 +53,17 @@ export default function AdminHealth() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
+  const [clientErrors, setClientErrors] = useState<ClientErrors | null>(null);
+
   const load = useCallback(async () => {
     setLoading(true);
-    const { data, error: err } = await supabase.rpc('get_platform_health');
+    const [{ data, error: err }, { data: ce }] = await Promise.all([
+      supabase.rpc('get_platform_health'),
+      supabase.rpc('get_platform_health_client_errors'),
+    ]);
     if (err) setError(err.message);
     else setHealth(data as Health);
+    if (ce) setClientErrors(ce as ClientErrors);
     setLoading(false);
   }, []);
 
@@ -127,6 +139,40 @@ export default function AdminHealth() {
             <Tile label="Dernière alerte" value={health.rasff.last_alert_at ? new Date(health.rasff.last_alert_at).toLocaleDateString('fr-FR') : '—'} />
           </div>
         </div>
+      </div>
+
+      {/* Erreurs front (monitoring maison, zéro tracker) */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-5 mt-6">
+        <h3 className="font-black text-gray-900 flex items-center gap-2 mb-1">
+          <AlertTriangle className={`w-4 h-4 ${clientErrors && clientErrors.total_7d > 0 ? 'text-amber-600' : 'text-brand-600'}`} />
+          Erreurs front (7 derniers jours)
+        </h3>
+        <p className="text-[11px] text-gray-400 mb-3">
+          Erreurs JavaScript non interceptées, captées par la plateforme elle-même — dédupliquées, sans donnée personnelle, purgées à 90 jours.
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+          <Tile label="Occurrences (7 j)" value={clientErrors?.total_7d ?? 0} warn={(clientErrors?.total_7d ?? 0) > 0} />
+          <Tile label="Erreurs distinctes (7 j)" value={clientErrors?.distinct_7d ?? 0} warn={(clientErrors?.distinct_7d ?? 0) > 0} />
+        </div>
+        {(clientErrors?.recent?.length ?? 0) === 0 ? (
+          <p className="text-xs text-emerald-700 font-bold flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5" /> Aucune erreur enregistrée — rien à faire.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {clientErrors!.recent.map((e, i) => (
+              <div key={i} className="rounded-xl border border-amber-100 bg-amber-50/40 px-3.5 py-2.5">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <p className="text-xs font-bold text-gray-800 break-all">{e.message}</p>
+                  <span className="text-[10px] font-black text-amber-700 bg-white border border-amber-200 px-2 py-0.5 rounded-full shrink-0">×{e.count}</span>
+                </div>
+                <p className="text-[10px] text-gray-400 mt-1">
+                  {e.page ?? '—'}{e.source ? ` · ${e.source}` : ''} · vu le {new Date(e.last_seen_at).toLocaleString('fr-FR')}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* E-mails */}

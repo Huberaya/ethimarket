@@ -4,7 +4,10 @@ import App from './App.tsx';
 import { AuthProvider } from './lib/auth';
 import { I18nProvider } from './lib/i18n';
 import ErrorBoundary from './components/ErrorBoundary';
+import { installErrorMonitor } from './lib/errorMonitor';
 import './index.css';
+
+installErrorMonitor();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
