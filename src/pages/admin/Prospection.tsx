@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import {
   Loader2, X, Target, Search, Plus, Phone, Mail, Globe as GlobeIcon,
   ChevronRight, BookOpen, ChevronDown, ChevronUp, CalendarClock,
-  Package, Lightbulb, Compass, ArrowRight,
+  Package, Lightbulb, Compass, ArrowRight, MessageSquareText, Copy, Check, Send,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { AdminPageHeader } from '../../components/AdminLayout';
 import { SEGMENT_PITCHES, WAVE1_PRODUCTS, productMatch } from '../../lib/strategyData';
+import { messagesFor, mailtoHref, type OutreachMessage } from '../../lib/outreachTemplates';
 
 /**
  * CRM de prospection (docs/STRATEGIE_GO_TO_MARKET.md).
@@ -101,6 +102,8 @@ export default function AdminProspection() {
   const [touches, setTouches] = useState<Touch[]>([]);
   const [touchNote, setTouchNote] = useState('');
   const [touchChannel, setTouchChannel] = useState('email');
+  const [openMessage, setOpenMessage] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [showAdd, setShowAdd] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -145,6 +148,25 @@ export default function AdminProspection() {
     });
     setTouchNote('');
     setBusy(false);
+    void openProspect(selected);
+  };
+
+  const copyMessage = async (m: OutreachMessage) => {
+    const text = m.subject ? `Objet : ${m.subject}\n\n${m.body}` : m.body;
+    try { await navigator.clipboard.writeText(text); } catch { /* clipboard indisponible */ }
+    setCopiedId(m.id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  /** Journalise l'envoi dans le journal des contacts (immuable). */
+  const logSend = async (m: OutreachMessage) => {
+    if (!selected) return;
+    const { data: u } = await supabase.auth.getUser();
+    await supabase.from('prospect_touches').insert({
+      prospect_id: selected.id, channel: 'email',
+      note: `Modèle « ${m.label} » ouvert dans la messagerie`,
+      created_by: u.user?.id ?? null,
+    });
     void openProspect(selected);
   };
 
@@ -467,6 +489,45 @@ export default function AdminProspection() {
                 <p className="text-xs text-gray-600 leading-relaxed mt-1.5 italic">« {SEGMENT_PITCHES[selected.segment].hook} »</p>
               </div>
             )}
+
+            {/* Messages prêts à envoyer */}
+            <p className="text-[11px] font-black text-gray-500 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+              <MessageSquareText className="w-3.5 h-3.5" /> Messages prêts à envoyer
+            </p>
+            <div className="space-y-1.5 mb-4">
+              {messagesFor(selected).map(m => (
+                <div key={m.id} className="rounded-xl border border-gray-200 overflow-hidden">
+                  <button onClick={() => setOpenMessage(o => o === m.id ? null : m.id)}
+                    className="w-full flex items-center justify-between px-3 py-2 text-left bg-gray-50 hover:bg-gray-100 cursor-pointer">
+                    <span className="text-xs font-black text-gray-700 flex items-center gap-1.5">
+                      {m.channel === 'email' ? <Mail className="w-3 h-3 text-brand-500" /> : <Phone className="w-3 h-3 text-brand-500" />}
+                      {m.label}
+                    </span>
+                    {openMessage === m.id ? <ChevronUp className="w-3.5 h-3.5 text-gray-400" /> : <ChevronDown className="w-3.5 h-3.5 text-gray-400" />}
+                  </button>
+                  {openMessage === m.id && (
+                    <div className="p-3 bg-white">
+                      {m.subject && <p className="text-[11px] text-gray-500 mb-1.5"><b>Objet :</b> {m.subject}</p>}
+                      <pre className="text-[11px] text-gray-700 whitespace-pre-wrap font-sans leading-relaxed max-h-52 overflow-y-auto bg-gray-50 rounded-lg p-2.5 border border-gray-100">{m.body}</pre>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <button onClick={() => void copyMessage(m)}
+                          className="inline-flex items-center gap-1.5 text-[11px] font-black px-3 py-1.5 rounded-lg bg-gray-900 text-white cursor-pointer">
+                          {copiedId === m.id ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                          {copiedId === m.id ? 'Copié !' : 'Copier'}
+                        </button>
+                        {m.channel === 'email' && selected.email && (
+                          <a href={mailtoHref(selected.email, m)} onClick={() => void logSend(m)}
+                            className="inline-flex items-center gap-1.5 text-[11px] font-black px-3 py-1.5 rounded-lg bg-brand-600 text-white">
+                            <Send className="w-3 h-3" /> Ouvrir dans ma messagerie
+                          </a>
+                        )}
+                        <p className="text-[10px] text-gray-400 self-center">Personnalisez les [crochets] avant envoi.</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
 
             {/* Pipeline de statut */}
             <p className="text-[11px] font-black text-gray-500 uppercase tracking-wide mb-1.5">Statut</p>
