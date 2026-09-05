@@ -59,6 +59,7 @@ const AdminLaboratories = lazy(() => import('./pages/admin/Laboratories'));
 const AdminHealth = lazy(() => import('./pages/admin/Health'));
 const AdminGrowth = lazy(() => import('./pages/admin/Growth'));
 const AdminProspection = lazy(() => import('./pages/admin/Prospection'));
+const AdminStrategy = lazy(() => import('./pages/admin/Strategy'));
 const AdminFinances = lazy(() => import('./pages/admin/Finances'));
 const AdminUsers = lazy(() => import('./pages/admin/Users'));
 const AdminReports = lazy(() => import('./pages/admin/Reports'));
@@ -169,6 +170,7 @@ export default function App() {
           <Route path="sante" element={<AdminHealth />} />
           <Route path="croissance" element={<AdminGrowth />} />
           <Route path="prospection" element={<AdminProspection />} />
+          <Route path="strategie" element={<AdminStrategy />} />
           <Route path="finances" element={<AdminFinances />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="configuration" element={<AdminReports />} />
