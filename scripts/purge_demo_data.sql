@@ -11,7 +11,7 @@
 --     en cascade (produits, certifications, preuves, défis photo,
 --     avis, devis, commandes, incidents, analyses)
 --   • les avis (reviews) restants liés aux produits démo
---   • les 10 articles de blog de démonstration
+--   • (les articles de blog sont CONSERVÉS : contenu réel depuis août 2026)
 --   • les devis/quotes de test restants
 --
 -- Ce que le script PRÉSERVE :
@@ -118,8 +118,11 @@ DELETE FROM producers WHERE user_id IS NULL;
 
 -- ─────────────────────────────────────────────────────────────
 -- 2. Contenus éditoriaux de démonstration
+--    ⚠️ Les ARTICLES DE BLOG sont CONSERVÉS : depuis août 2026
+--    ce sont de vrais contenus éditoriaux sourcés (guides
+--    certification, Fairtrade/RA, portraits de filières…),
+--    pas des données de démo.
 -- ─────────────────────────────────────────────────────────────
-DELETE FROM articles;          -- 10 articles de blog fictifs
 DELETE FROM reviews;           -- avis restants (tous fictifs)
 DELETE FROM quote_requests;    -- devis de test restants
 
