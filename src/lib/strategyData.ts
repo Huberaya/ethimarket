@@ -123,6 +123,32 @@ export interface SegmentPitch {
   hook: string; // l'accroche d'attaque en une phrase
 }
 
+/** Segments côté acheteurs vs côté producteurs (pipelines du CRM). */
+export const BUYER_SEGMENTS = [
+  'torrefacteur', 'epicerie_bio', 'biocoop', 'restaurant', 'epicerie_en_ligne',
+  'chocolatier', 'cosmetique', 'grossiste', 'centrale', 'food_service', 'industriel',
+] as const;
+export const PRODUCER_SEGMENTS = [
+  'cafe', 'vanille', 'argane', 'cacao', 'safran', 'epices', 'miel', 'quinoa', 'karite',
+] as const;
+
+/**
+ * Matching produit → segments : pour chaque produit de la vague 1, quels
+ * segments producteurs le fournissent et quels segments acheteurs l'achètent
+ * (inversion de SEGMENT_PITCHES). C'est la base du « si un producteur café
+ * s'inscrit, voici les acheteurs à activer ».
+ */
+export function productMatch(short: string): { buyerSegments: string[]; producerSegments: string[] } {
+  const buyerSegments: string[] = [];
+  const producerSegments: string[] = [];
+  for (const [seg, pitch] of Object.entries(SEGMENT_PITCHES)) {
+    if (!pitch.products.includes(short)) continue;
+    if ((BUYER_SEGMENTS as readonly string[]).includes(seg)) buyerSegments.push(seg);
+    else if ((PRODUCER_SEGMENTS as readonly string[]).includes(seg)) producerSegments.push(seg);
+  }
+  return { buyerSegments, producerSegments };
+}
+
 /**
  * Le pont CRM ↔ produits : pour chaque segment de prospection, quels
  * produits pousser et avec quel argument (dérivé des §4.2, 6.2 et 9.1).
@@ -149,7 +175,7 @@ export const SEGMENT_PITCHES: Record<string, SegmentPitch> = {
     hook: 'Vanille et safran authentifiés lot par lot — l\u2019histoire se raconte sur la carte.',
   },
   epicerie_en_ligne: {
-    products: ['Vanille Bourbon', 'Safran Taliouine', 'Café torréfié'],
+    products: ['Vanille Bourbon', 'Safran Taliouine', 'Café torréfié', 'Sencha Japon'],
     angle: 'Le contenu de traçabilité enrichit la fiche produit — différenciation e-commerce immédiate.',
     hook: 'Chaque lot a une page de traçabilité publique à lier depuis vos fiches produits.',
   },
@@ -189,7 +215,7 @@ export const SEGMENT_PITCHES: Record<string, SegmentPitch> = {
   argane: { products: ['Argane alimentaire', 'Argane cosmétique'], angle: 'Filière d\u2019ancrage n°3 — coopératives féminines IGP Agadir/Essaouira.', hook: 'Deux débouchés (alimentaire + cosmétique) sur un même lot vérifié.' },
   cacao: { products: ['Cacao Ghana'], angle: 'Vague 2 — GPS parcelles EUDR = l\u2019argument qui ouvre les portes bean-to-bar.', hook: 'Vos parcelles géolocalisées deviennent un avantage commercial EUDR.' },
   safran: { products: ['Safran Taliouine'], angle: 'AOP Taliouine, ISO 3632 — l\u2019anti-fraude est l\u2019argument.', hook: 'Chaque gramme authentifié ISO 3632 : le safran prouvé se vend mieux.' },
-  epices: { products: ['Sencha Japon'], angle: 'Vague 2 (M4-M9) — COA EtO gérés par notre annuaire labos.', hook: 'Conformité UE 2019/1793 gérée par la plateforme.' },
+  epices: { products: ['Sencha Japon', 'Safran Taliouine'], angle: 'Vague 2 (M4-M9) — COA EtO gérés par notre annuaire labos.', hook: 'Conformité UE 2019/1793 gérée par la plateforme.' },
   miel: { products: ['Miel de thym'], angle: 'Vague 1 étendue — UE, pas de douane, certificat sanitaire pipeline.', hook: 'Circuit court UE avec documents sanitaires automatisés.' },
   quinoa: { products: ['Quinoa Pérou'], angle: 'Vague 1 étendue — volume et panier épiceries.', hook: 'Accès au réseau d\u2019épiceries bio françaises vérifié BioLatina.' },
   karite: { products: ['Argane cosmétique'], angle: 'Vague 2 cosmétique ingrédient — même logique que l\u2019argane.', hook: 'Ingrédient tracé pour marques indie européennes.' },

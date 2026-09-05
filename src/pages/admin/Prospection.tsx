@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { AdminPageHeader } from '../../components/AdminLayout';
-import { SEGMENT_PITCHES, WAVE1_PRODUCTS } from '../../lib/strategyData';
+import { SEGMENT_PITCHES, WAVE1_PRODUCTS, productMatch } from '../../lib/strategyData';
 
 /**
  * CRM de prospection (docs/STRATEGIE_GO_TO_MARKET.md).
@@ -91,7 +91,8 @@ export default function AdminProspection() {
   const [prospects, setProspects] = useState<Prospect[]>([]);
   const [stats, setStats] = useState<{ due_today: number; reply_rate_pct: number } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [kind, setKind] = useState<'buyer' | 'producer'>('buyer');
+  const [kind, setKind] = useState<'buyer' | 'producer' | 'products'>('buyer');
+  const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [phase, setPhase] = useState<number>(1);
   const [filterStatus, setFilterStatus] = useState('all');
   const [search, setSearch] = useState('');
@@ -201,6 +202,7 @@ export default function AdminProspection() {
       />
 
       {/* Funnel du pipeline */}
+      {kind !== 'products' && (
       <div className="mb-5 bg-white rounded-2xl border-2 border-gray-100 p-4">
         <div className="flex items-end gap-2">
           {FUNNEL_STEPS.map((s, i) => {
@@ -221,6 +223,7 @@ export default function AdminProspection() {
           </div>
         </div>
       </div>
+      )}
 
       {/* Bandeau actions du jour */}
       {stats && stats.due_today > 0 && (
@@ -235,13 +238,14 @@ export default function AdminProspection() {
       {/* Sélecteur pipeline + phase */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <div className="flex rounded-xl border-2 border-gray-200 overflow-hidden">
-          {(['buyer', 'producer'] as const).map(k => (
+          {(['buyer', 'producer', 'products'] as const).map(k => (
             <button key={k} onClick={() => setKind(k)}
               className={`px-5 py-2.5 text-sm font-black cursor-pointer ${kind === k ? 'bg-brand-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
-              {k === 'buyer' ? '🛒 Acheteurs' : '🌾 Producteurs'}
+              {k === 'buyer' ? '🛒 Acheteurs' : k === 'producer' ? '🌾 Producteurs' : '📦 Produits cibles'}
             </button>
           ))}
         </div>
+        {kind !== 'products' && (
         <div className="flex gap-2">
           {[1, 2, 3].map(ph => {
             const list = phaseCounts(ph);
@@ -255,9 +259,86 @@ export default function AdminProspection() {
             );
           })}
         </div>
+        )}
         {stats && <span className="text-xs text-gray-400 ml-auto">Taux de réponse global : <b className="text-gray-600">{stats.reply_rate_pct}%</b></span>}
       </div>
 
+      {/* ===================== Vue Produits cibles : matching offre ↔ demande */}
+      {kind === 'products' && (
+        <div className="space-y-2">
+          <div className="rounded-2xl border-2 border-indigo-100 bg-indigo-50/40 px-5 py-3.5 text-xs text-gray-700 leading-relaxed">
+            <b>Le matching offre ↔ demande, produit par produit.</b> Pour chaque produit de la vague 1 : les producteurs qui peuvent le fournir et les acheteurs à activer dès qu'un producteur s'inscrit. Cliquez sur un produit pour voir les deux côtés du marché — puis sur une cible pour ouvrir sa fiche.
+          </div>
+          {WAVE1_PRODUCTS.map(w => {
+            const { buyerSegments, producerSegments } = productMatch(w.short);
+            const supply = prospects.filter(p => p.kind === 'producer' && producerSegments.includes(p.segment));
+            const demand = prospects.filter(p => p.kind === 'buyer' && buyerSegments.includes(p.segment));
+            const supplyOn = supply.filter(p => ['inscrit', 'actif'].includes(p.status));
+            const demandOn = demand.filter(p => ['inscrit', 'actif'].includes(p.status));
+            const open = selectedProduct === w.short;
+            const matchReady = supplyOn.length > 0 && demand.length > 0;
+            return (
+              <div key={w.short} className={`bg-white rounded-2xl border-2 ${matchReady ? 'border-emerald-300' : 'border-gray-100'}`}>
+                <button onClick={() => setSelectedProduct(open ? null : w.short)}
+                  className="w-full text-left px-4 py-3 flex items-center gap-3 cursor-pointer">
+                  <span className={`shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black ${w.active ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'}`}>
+                    {w.score}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-black text-gray-900 text-sm">{w.name}</span>
+                      {w.active
+                        ? <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">POUSSÉ</span>
+                        : <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">M4+</span>}
+                      {matchReady && <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white">⚡ MATCH POSSIBLE</span>}
+                    </div>
+                    <p className="text-[11px] text-gray-400 mt-0.5">{w.target} · {w.price} · {w.recurrence}</p>
+                  </div>
+                  <div className="shrink-0 flex items-center gap-4 text-center">
+                    <div>
+                      <p className={`text-sm font-black tabular-nums ${supplyOn.length ? 'text-emerald-600' : 'text-gray-800'}`}>{supplyOn.length}/{supply.length}</p>
+                      <p className="text-[9px] font-black text-gray-400 uppercase">🌾 Offre</p>
+                    </div>
+                    <div>
+                      <p className={`text-sm font-black tabular-nums ${demandOn.length ? 'text-emerald-600' : 'text-gray-800'}`}>{demandOn.length}/{demand.length}</p>
+                      <p className="text-[9px] font-black text-gray-400 uppercase">🛒 Demande</p>
+                    </div>
+                  </div>
+                  {open ? <ChevronUp className="w-4 h-4 text-gray-300 shrink-0" /> : <ChevronDown className="w-4 h-4 text-gray-300 shrink-0" />}
+                </button>
+                {open && (
+                  <div className="px-4 pb-4 grid md:grid-cols-2 gap-3">
+                    {([['🌾 Producteurs (offre)', supply], ['🛒 Acheteurs à activer (demande)', demand]] as const).map(([title, list]) => (
+                      <div key={title} className="rounded-xl bg-gray-50 border border-gray-100 p-3">
+                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-wide mb-2">{title} — {list.length}</p>
+                        {list.length === 0 && <p className="text-xs text-gray-400">Aucune cible dans le CRM pour ce produit.</p>}
+                        <div className="space-y-1 max-h-56 overflow-y-auto pr-1">
+                          {[...list].sort((a, b) => {
+                            const rank = (s: string) => ['actif', 'inscrit', 'en_discussion', 'relance', 'contacte', 'a_contacter', 'refus', 'stop'].indexOf(s);
+                            return rank(a.status) - rank(b.status);
+                          }).map(p => {
+                            const st = STATUS_META[p.status] ?? STATUS_META.a_contacter;
+                            return (
+                              <button key={p.id} onClick={() => void openProspect(p)}
+                                className="w-full text-left flex items-center gap-2 bg-white rounded-lg border border-gray-100 px-2.5 py-1.5 hover:border-brand-200 cursor-pointer">
+                                <span className="min-w-0 flex-1 text-[11px] font-bold text-gray-800 truncate">{p.name}</span>
+                                {(p.phone || p.email) && <Phone className="w-3 h-3 text-emerald-500 shrink-0" />}
+                                <span className={`shrink-0 text-[9px] font-black px-1.5 py-0.5 rounded-full border ${st.cls}`}>{st.label}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {kind !== 'products' && (<>
       {/* Playbook de la phase */}
       <div className="mb-5 rounded-2xl border-2 border-indigo-100 bg-indigo-50/40">
         <button onClick={() => setPlaybookOpen(o => !o)} className="w-full flex items-center justify-between px-5 py-3.5 text-left cursor-pointer">
@@ -342,6 +423,7 @@ export default function AdminProspection() {
           })}
         </div>
       )}
+      </>)}
 
       {/* Fiche prospect */}
       {selected && (
