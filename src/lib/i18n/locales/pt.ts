@@ -34,6 +34,7 @@ const pt: Record<string, string> = {
   'footer.linkCatalogue': 'Catálogo de produtos',
   'footer.linkProducers': 'Produtores certificados',
   'footer.linkBecomeSeller': 'Tornar-se vendedor',
+  'footer.linkForPros': 'Para profissionais',
   'footer.linkPricing': 'Preços e planos',
   'footer.linkBlog': 'Blog e notícias',
   'footer.linkMission': 'Nossa missão',

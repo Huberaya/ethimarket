@@ -34,6 +34,7 @@ const ar: Record<string, string> = {
   'footer.linkCatalogue': 'كتالوج المنتجات',
   'footer.linkProducers': 'منتجون معتمدون',
   'footer.linkBecomeSeller': 'كن بائعاً',
+  'footer.linkForPros': 'للمهنيين',
   'footer.linkPricing': 'الأسعار والاشتراكات',
   'footer.linkBlog': 'المدونة والأخبار',
   'footer.linkMission': 'مهمتنا',

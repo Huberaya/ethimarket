@@ -13,6 +13,7 @@
 // (mention portée sur le bon de commande).
 // =============================================================
 
+import { track } from './analytics';
 import { supabase } from './supabase';
 import type { QuoteRequest } from './quoteService';
 
@@ -199,6 +200,7 @@ export async function createOrderFromQuote(quote: QuoteRequest, buyerId: string)
     }
     return { orderId: null, orderNumber: null, error: error.message };
   }
+  track('order_created');
   return {
     orderId: (data as { id?: string } | null)?.id ?? null,
     orderNumber: (data as { order_number?: string } | null)?.order_number ?? null,

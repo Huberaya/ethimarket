@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabase';
 import { COUNTRIES } from '../lib/countries';
 import { sanitizeProducerPayload } from '../lib/dbHelpers';
 import { useI18n } from '../lib/i18n';
+import { track } from '../lib/analytics';
 
 type Role = 'producer' | 'buyer' | 'distributor';
 
@@ -146,6 +147,7 @@ export default function Register() {
 
     setLoading(false);
     // Redirection cohérente : vendeur → parcours vendeur, acheteur → catalogue
+    track('signup');
     navigate(postRegisterPath(role));
   };
 

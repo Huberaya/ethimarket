@@ -1,4 +1,5 @@
 // =============================================================
+import { track } from '../../lib/analytics';
 // EthiMarket — Modale de demande de devis (fiche produit)
 // Pré-remplie avec la quantité et le prix du palier atteint.
 // Crée une quote_request formelle (statut : Envoyée) + suivi
@@ -64,7 +65,7 @@ export default function QuoteRequestModal({
     });
     setSending(false);
     if (err) setError(err);
-    else setSentId(quoteId);
+    else { track('quote_requested'); setSentId(quoteId); }
   };
 
   return (

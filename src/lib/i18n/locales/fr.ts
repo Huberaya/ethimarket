@@ -34,6 +34,7 @@ const fr: Record<string, string> = {
   'footer.linkCatalogue': 'Catalogue produits',
   'footer.linkProducers': 'Producteurs certifiés',
   'footer.linkBecomeSeller': 'Devenir vendeur',
+  'footer.linkForPros': 'Espace professionnels',
   'footer.linkPricing': 'Tarifs & abonnements',
   'footer.linkBlog': 'Blog & actualités',
   'footer.linkMission': 'Notre mission',

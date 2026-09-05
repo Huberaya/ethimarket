@@ -17,6 +17,7 @@ const Contact = lazy(() => import('./pages/Contact'));
 const DevenirVendeur = lazy(() => import('./pages/DevenirVendeur'));
 const NotreMission = lazy(() => import('./pages/NotreMission'));
 const NotreLogistique = lazy(() => import('./pages/NotreLogistique'));
+const PourLesProfessionnels = lazy(() => import('./pages/PourLesProfessionnels'));
 const TrustCenter = lazy(() => import('./pages/TrustCenter'));
 const LotTrace = lazy(() => import('./pages/LotTrace'));
 const Tarifs = lazy(() => import('./pages/InstitutionalPages').then(m => ({ default: m.Tarifs })));
@@ -56,6 +57,7 @@ const AdminAnalyses = lazy(() => import('./pages/admin/Analyses'));
 const AdminRasffAlerts = lazy(() => import('./pages/admin/RasffAlerts'));
 const AdminLaboratories = lazy(() => import('./pages/admin/Laboratories'));
 const AdminHealth = lazy(() => import('./pages/admin/Health'));
+const AdminGrowth = lazy(() => import('./pages/admin/Growth'));
 const AdminFinances = lazy(() => import('./pages/admin/Finances'));
 const AdminUsers = lazy(() => import('./pages/admin/Users'));
 const AdminReports = lazy(() => import('./pages/admin/Reports'));
@@ -67,6 +69,7 @@ const AdminCertBodiesDirectory = lazy(() => import('./pages/admin/AdminCertBodie
 const AdminCertBodyDetail = lazy(() => import('./pages/admin/AdminCertBodyDetail'));
 const AdminMessageTemplates = lazy(() => import('./pages/admin/AdminMessageTemplates'));
 import BackToTop from './components/BackToTop';
+import PageviewTracker from './components/PageviewTracker';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
 import AdminLayout from './components/AdminLayout';
@@ -77,6 +80,7 @@ import AdminRoute from './components/AdminRoute';
 export default function App() {
   return (
     <BrowserRouter>
+      <PageviewTracker />
       <BackToTop />
       <a href="#main-content" className="skip-link">Aller au contenu principal</a>
       <Suspense fallback={
@@ -101,6 +105,7 @@ export default function App() {
         <Route path="/devenir-vendeur" element={<DevenirVendeur />} />
         <Route path="/notre-mission" element={<NotreMission />} />
         <Route path="/notre-logistique" element={<NotreLogistique />} />
+        <Route path="/pour-les-professionnels" element={<PourLesProfessionnels />} />
         <Route path="/trust-center" element={<TrustCenter />} />
         <Route path="/trace/:orderId" element={<LotTrace />} />
         <Route path="/producteurs" element={<Producers />} />
@@ -161,6 +166,7 @@ export default function App() {
           <Route path="rasff" element={<AdminRasffAlerts />} />
           <Route path="laboratoires" element={<AdminLaboratories />} />
           <Route path="sante" element={<AdminHealth />} />
+          <Route path="croissance" element={<AdminGrowth />} />
           <Route path="finances" element={<AdminFinances />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="configuration" element={<AdminReports />} />

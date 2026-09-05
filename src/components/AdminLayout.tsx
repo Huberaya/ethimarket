@@ -4,7 +4,7 @@ import {
   LayoutDashboard, ShieldCheck, Award, Package, ShoppingCart,
   AlertTriangle, Wallet, Users, Bell, Menu, X,
   LogOut, ChevronDown, Leaf, Settings, Building2,
-  ClipboardCheck, Globe, FileText, Activity
+  ClipboardCheck, Globe, FileText, Activity, TrendingUp
 } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { supabase, type AdminNotification } from '../lib/supabase';
@@ -50,6 +50,7 @@ const NAV_GROUPS: NavGroup[] = [
       { to: '/admin/laboratoires', label: 'Laboratoires', icon: Building2 },
       { to: '/admin/rasff', label: 'Veille RASFF', icon: AlertTriangle },
       { to: '/admin/finances', label: 'Finances', icon: Wallet },
+      { to: '/admin/croissance', label: 'Croissance', icon: TrendingUp },
       { to: '/admin/sante', label: 'Santé plateforme', icon: Activity },
       { to: '/admin/configuration', label: 'Configuration', icon: Settings },
     ]

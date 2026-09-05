@@ -10,6 +10,7 @@ const FOOTER_SECTIONS = [
       { key: 'footer.linkCatalogue', href: '/catalogue' },
       { key: 'footer.linkProducers', href: '/producteurs' },
       { key: 'footer.linkBecomeSeller', href: '/devenir-vendeur' },
+      { key: 'footer.linkForPros', href: '/pour-les-professionnels' },
       { key: 'footer.linkPricing', href: '/tarifs' },
       { key: 'footer.linkBlog', href: '/blog' },
     ],
