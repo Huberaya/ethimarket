@@ -1,12 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import {
   Compass, Rocket, PhoneCall, Truck, Boxes, ShieldCheck,
   ClipboardCheck, Wrench, CreditCard, FileText, Scale, BookOpen,
-  ListTree, X, type LucideIcon,
+  ListTree, X, LayoutDashboard, TrendingUp, Package, Map as MapIcon,
+  Wallet, Megaphone, Ban, ArrowRight, type LucideIcon,
 } from 'lucide-react';
 import { AdminPageHeader } from '../../components/AdminLayout';
 import { renderMarkdown, extractHeadings } from '../../lib/markdown';
+import {
+  ProductScoreChart, MarketFunnelChart, GmvScenarioChart,
+  PhaseTimeline, MarketStatTiles, UnitEconomicsTiles, AcquisitionChannelChart,
+} from '../../components/StrategyCharts';
 
 // Les documents sont embarqués dans le bundle au build : toujours à jour
 // avec le repo, zéro appel réseau, zéro coût (politique du projet).
@@ -158,8 +163,107 @@ const GROUPS: DocGroup[] = [
 
 const ALL_DOCS = GROUPS.flatMap(g => g.docs);
 
+/** Bloc de section de la synthèse visuelle. */
+function VizSection({ icon: Icon, title, decision, children }: {
+  icon: LucideIcon; title: string; decision?: string; children: React.ReactNode;
+}) {
+  return (
+    <section className="bg-white rounded-2xl border-2 border-gray-100 p-5">
+      <div className="flex items-start justify-between gap-3 mb-3 flex-wrap">
+        <h3 className="flex items-center gap-2 text-sm font-black text-gray-900">
+          <Icon className="w-4 h-4 text-brand-600" /> {title}
+        </h3>
+        {decision && (
+          <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-gray-900 text-white">
+            DÉCISION : {decision}
+          </span>
+        )}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+const NO_GO = [
+  'Produits frais', 'Cosmétique fini', 'Compléments alimentaires',
+  'Alcool', 'Artisanat non-alimentaire', 'Longue traîne (M1-M9)',
+];
+
+/** Synthèse visuelle : les décisions du plan en graphiques. */
+function StrategyOverview({ openPlan }: { openPlan: () => void }) {
+  return (
+    <div className="space-y-4">
+      {/* La décision centrale */}
+      <div className="rounded-2xl bg-gray-900 text-white p-5 sm:p-6">
+        <p className="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-2">La décision centrale</p>
+        <p className="text-base sm:text-lg font-black leading-snug">
+          L'infrastructure de confiance du commerce équitable Sud→Europe : <span className="text-emerald-400">B2B d'abord</span> (torréfacteurs, épiceries, chocolatiers), <span className="text-emerald-400">Nantes comme laboratoire</span> — pas Paris — et le B2C en vitrine différée (M10+).
+        </p>
+        <div className="flex flex-wrap gap-2 mt-3">
+          {['« Paris d\u2019abord » rejeté', '« B2C au lancement » rejeté', 'Gel des features non-revenus', 'Marque : « Prouvé, pas promis. »'].map(t => (
+            <span key={t} className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-white/10 border border-white/15">{t}</span>
+          ))}
+        </div>
+        <button onClick={openPlan} className="mt-4 inline-flex items-center gap-1.5 text-xs font-black text-emerald-400 hover:text-emerald-300 cursor-pointer">
+          Lire le plan complet <ArrowRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      {/* Marché */}
+      <VizSection icon={TrendingUp} title="Le marché — pourquoi maintenant">
+        <MarketStatTiles />
+      </VizSection>
+
+      <div className="grid lg:grid-cols-2 gap-4 items-stretch">
+        <VizSection icon={MapIcon} title="TAM / SAM / SOM" decision="SOM Y3 = 2-7 M€ GMV/an">
+          <MarketFunnelChart />
+        </VizSection>
+        <VizSection icon={Wallet} title="Unit economics cibles (année 1)" decision="LTV/CAC ≥ 4">
+          <UnitEconomicsTiles />
+        </VizSection>
+      </div>
+
+      {/* Produits */}
+      <VizSection icon={Package} title="Les 12 produits de lancement, scorés /100" decision="Seuls les n°1-6 sont poussés">
+        <ProductScoreChart />
+        <div className="mt-3 pt-3 border-t border-gray-100">
+          <p className="flex items-center gap-1.5 text-[11px] font-black text-red-600 mb-1.5"><Ban className="w-3.5 h-3.5" /> À NE PAS lancer (discipline de focus, §7)</p>
+          <div className="flex flex-wrap gap-1.5">
+            {NO_GO.map(p => (
+              <span key={p} className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-red-50 text-red-600 border border-red-100 line-through">{p}</span>
+            ))}
+          </div>
+        </div>
+      </VizSection>
+
+      {/* Phases + scénarios */}
+      <VizSection icon={Rocket} title="La pénétration par vagues (36 mois)" decision="Nantes → France+BE → Europe N-O">
+        <PhaseTimeline />
+      </VizSection>
+
+      <VizSection icon={TrendingUp} title="Scénarios GMV mensuel — trajectoire vers M12" decision="Objectif réaliste 40 k€/mois">
+        <GmvScenarioChart />
+      </VizSection>
+
+      {/* Acquisition */}
+      <VizSection icon={Megaphone} title="Canaux d'acquisition — les 100 premiers clients" decision="Outbound + terrain, pub écartée avant M9">
+        <AcquisitionChannelChart />
+        <div className="mt-3 pt-3 border-t border-gray-100 flex flex-wrap gap-2">
+          <Link to="/admin/prospection" className="inline-flex items-center gap-1.5 text-[11px] font-black text-brand-700 bg-brand-50 border border-brand-100 px-3 py-1.5 rounded-lg hover:bg-brand-100">
+            <PhoneCall className="w-3.5 h-3.5" /> Ouvrir le CRM (70 cibles) <ArrowRight className="w-3 h-3" />
+          </Link>
+          <Link to="/admin/croissance" className="inline-flex items-center gap-1.5 text-[11px] font-black text-gray-700 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-100">
+            <LayoutDashboard className="w-3.5 h-3.5" /> Suivre les KPI <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+      </VizSection>
+    </div>
+  );
+}
+
 export default function AdminStrategy() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const view = searchParams.get('vue') === 'docs' || searchParams.get('doc') ? 'docs' : 'synthese';
   const slug = searchParams.get('doc') ?? 'plan-strategique';
   const doc = ALL_DOCS.find(d => d.slug === slug) ?? ALL_DOCS[0];
   const [tocOpen, setTocOpen] = useState(false);
@@ -171,7 +275,7 @@ export default function AdminStrategy() {
     // remonter en haut à chaque changement de document
     window.scrollTo({ top: 0 });
     setTocOpen(false);
-  }, [slug]);
+  }, [slug, view]);
 
   const selectDoc = (s: string) => setSearchParams({ doc: s });
 
@@ -179,10 +283,25 @@ export default function AdminStrategy() {
     <div>
       <AdminPageHeader
         title="Stratégie"
-        subtitle="Tous les documents fondateurs, dans le produit — toujours synchronisés avec le dépôt"
-        badgeText={`${ALL_DOCS.length} documents`}
+        subtitle="Les décisions du plan fondateur, en visuel — et les 14 documents de référence"
+        badgeText={view === 'synthese' ? 'Synthèse' : `${ALL_DOCS.length} documents`}
       />
 
+      {/* Onglets */}
+      <div className="flex rounded-xl border-2 border-gray-200 overflow-hidden w-fit mb-5">
+        <button onClick={() => setSearchParams({})}
+          className={`px-5 py-2.5 text-sm font-black cursor-pointer ${view === 'synthese' ? 'bg-brand-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
+          📊 Synthèse visuelle
+        </button>
+        <button onClick={() => setSearchParams({ vue: 'docs' })}
+          className={`px-5 py-2.5 text-sm font-black cursor-pointer ${view === 'docs' ? 'bg-brand-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
+          📚 Documents
+        </button>
+      </div>
+
+      {view === 'synthese' && <StrategyOverview openPlan={() => setSearchParams({ doc: 'plan-strategique' })} />}
+
+      {view === 'docs' && (
       <div className="grid lg:grid-cols-[260px_1fr] gap-6 items-start">
         {/* Bibliothèque */}
         <aside className="lg:sticky lg:top-20 space-y-5">
@@ -260,6 +379,7 @@ export default function AdminStrategy() {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }

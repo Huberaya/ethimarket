@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Loader2, X, Target, Search, Plus, Phone, Mail, Globe as GlobeIcon,
   ChevronRight, BookOpen, ChevronDown, ChevronUp, CalendarClock,
+  Package, Lightbulb, Compass, ArrowRight,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { AdminPageHeader } from '../../components/AdminLayout';
+import { SEGMENT_PITCHES, WAVE1_PRODUCTS } from '../../lib/strategyData';
 
 /**
  * CRM de prospection (docs/STRATEGIE_GO_TO_MARKET.md).
@@ -172,6 +175,17 @@ export default function AdminProspection() {
   const pb = PHASE_PLAYBOOK[phase];
   const today = new Date().toISOString().slice(0, 10);
 
+  // Funnel du pipeline courant (kind, toutes phases confondues)
+  const FUNNEL_STEPS: { key: string[]; label: string; color: string }[] = [
+    { key: ['a_contacter'], label: 'À contacter', color: '#94a3b8' },
+    { key: ['contacte', 'relance'], label: 'Contactés', color: '#38bdf8' },
+    { key: ['en_discussion'], label: 'En discussion', color: '#f59e0b' },
+    { key: ['inscrit'], label: 'Inscrits', color: '#34d399' },
+    { key: ['actif'], label: 'Actifs', color: '#10b981' },
+  ];
+  const kindProspects = prospects.filter(p => p.kind === kind);
+  const funnelMax = Math.max(1, ...FUNNEL_STEPS.map(s => kindProspects.filter(p => s.key.includes(p.status)).length));
+
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 text-brand-500 animate-spin" /></div>;
 
   return (
@@ -179,7 +193,34 @@ export default function AdminProspection() {
       <AdminPageHeader
         title="Prospection"
         subtitle="Le plan de conquête, cible par cible — acheteurs et producteurs, par phase"
+        actions={
+          <Link to="/admin/strategie" className="inline-flex items-center gap-1.5 text-[11px] font-black text-gray-600 bg-white border-2 border-gray-200 px-3 py-2 rounded-xl hover:border-brand-300">
+            <Compass className="w-3.5 h-3.5" /> Stratégie <ArrowRight className="w-3 h-3" />
+          </Link>
+        }
       />
+
+      {/* Funnel du pipeline */}
+      <div className="mb-5 bg-white rounded-2xl border-2 border-gray-100 p-4">
+        <div className="flex items-end gap-2">
+          {FUNNEL_STEPS.map((s, i) => {
+            const n = kindProspects.filter(p => s.key.includes(p.status)).length;
+            const h = 14 + (n / funnelMax) * 52;
+            return (
+              <div key={s.label} className="flex-1 flex flex-col items-center gap-1 min-w-0">
+                <span className="text-sm font-black tabular-nums" style={{ color: s.color }}>{n}</span>
+                <div className="w-full rounded-t-lg transition-all" style={{ height: `${h}px`, background: s.color, opacity: 0.85 }} />
+                <span className="text-[9px] font-black text-gray-500 uppercase tracking-wide truncate w-full text-center">{s.label}</span>
+                {i < FUNNEL_STEPS.length - 1 && <span className="sr-only">→</span>}
+              </div>
+            );
+          })}
+          <div className="hidden sm:flex flex-col items-center justify-center pl-3 ml-1 border-l border-gray-100 self-stretch">
+            <span className="text-lg font-black text-gray-900 tabular-nums">{stats?.reply_rate_pct ?? 0}%</span>
+            <span className="text-[9px] font-black text-gray-400 uppercase">Taux de réponse</span>
+          </div>
+        </div>
+      </div>
 
       {/* Bandeau actions du jour */}
       {stats && stats.due_today > 0 && (
@@ -280,6 +321,19 @@ export default function AdminProspection() {
                     {p.contact_name ? ` · ${p.contact_name}` : ''}
                     {p.next_action ? ` · → ${p.next_action}` : ''}
                   </p>
+                  {SEGMENT_PITCHES[p.segment] && (
+                    <div className="flex flex-wrap items-center gap-1 mt-1">
+                      <Package className="w-3 h-3 text-brand-400" />
+                      {SEGMENT_PITCHES[p.segment].products.slice(0, 3).map(pr => (
+                        <span key={pr} className="text-[9px] font-black px-1.5 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-100">{pr}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="shrink-0 hidden md:flex items-center gap-1.5 text-gray-300">
+                  {p.phone && <Phone className="w-3.5 h-3.5 text-emerald-500" aria-label="téléphone connu" />}
+                  {p.email && <Mail className="w-3.5 h-3.5 text-emerald-500" aria-label="e-mail connu" />}
+                  {p.website && <GlobeIcon className="w-3.5 h-3.5 text-emerald-500" aria-label="site connu" />}
                 </div>
                 {overdue && <span className="shrink-0 text-[10px] font-black text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">⏰ {p.next_action_date}</span>}
                 <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
@@ -309,6 +363,28 @@ export default function AdminProspection() {
               {selected.website && <a href={selected.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-700 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg"><GlobeIcon className="w-3.5 h-3.5" />site</a>}
               {!selected.email && !selected.phone && <span className="text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg font-bold">⚠️ Coordonnées à qualifier avant contact</span>}
             </div>
+
+            {/* Angle d'attaque produit (pont avec le plan stratégique) */}
+            {SEGMENT_PITCHES[selected.segment] && (
+              <div className="mb-4 rounded-xl border-2 border-brand-100 bg-brand-50/40 p-3.5">
+                <p className="flex items-center gap-1.5 text-[11px] font-black text-brand-800 uppercase tracking-wide mb-2">
+                  <Lightbulb className="w-3.5 h-3.5" /> Quoi vendre, avec quel angle
+                </p>
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {SEGMENT_PITCHES[selected.segment].products.map(short => {
+                    const prod = WAVE1_PRODUCTS.find(w => w.short === short);
+                    return (
+                      <span key={short} title={prod ? `${prod.name} — ${prod.price} · score ${prod.score}/100` : short}
+                        className="text-[10px] font-black px-2.5 py-1 rounded-full bg-white text-brand-800 border border-brand-200">
+                        {short}{prod ? ` · ${prod.score}` : ''}
+                      </span>
+                    );
+                  })}
+                </div>
+                <p className="text-xs text-gray-700 leading-relaxed"><b>Angle :</b> {SEGMENT_PITCHES[selected.segment].angle}</p>
+                <p className="text-xs text-gray-600 leading-relaxed mt-1.5 italic">« {SEGMENT_PITCHES[selected.segment].hook} »</p>
+              </div>
+            )}
 
             {/* Pipeline de statut */}
             <p className="text-[11px] font-black text-gray-500 uppercase tracking-wide mb-1.5">Statut</p>
