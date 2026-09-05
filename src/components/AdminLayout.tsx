@@ -25,6 +25,8 @@ const NAV_GROUPS: NavGroup[] = [
   {
     items: [
       { to: '/admin', label: 'Tableau de bord', icon: LayoutDashboard, end: true },
+      { to: '/admin/croissance', label: 'Croissance', icon: TrendingUp },
+      { to: '/admin/sante', label: 'Santé plateforme', icon: Activity },
       { to: '/admin/producteurs', label: 'Producteurs', icon: Users },
       { to: '/admin/verifications', label: 'Vérifications', icon: ShieldCheck },
       { to: '/admin/organismes', label: 'Organismes certif.', icon: Building2 },
@@ -50,8 +52,6 @@ const NAV_GROUPS: NavGroup[] = [
       { to: '/admin/laboratoires', label: 'Laboratoires', icon: Building2 },
       { to: '/admin/rasff', label: 'Veille RASFF', icon: AlertTriangle },
       { to: '/admin/finances', label: 'Finances', icon: Wallet },
-      { to: '/admin/croissance', label: 'Croissance', icon: TrendingUp },
-      { to: '/admin/sante', label: 'Santé plateforme', icon: Activity },
       { to: '/admin/configuration', label: 'Configuration', icon: Settings },
     ]
   }
