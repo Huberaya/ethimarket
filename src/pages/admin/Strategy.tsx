@@ -16,6 +16,7 @@ import {
 // Les documents sont embarqués dans le bundle au build : toujours à jour
 // avec le repo, zéro appel réseau, zéro coût (politique du projet).
 import planStrategique from '../../../docs/PLAN_STRATEGIQUE_ETHIMARKET.md?raw';
+import planConquete from '../../../docs/PLAN_CONQUETE_FRANCE_EUROPE_MONDE.md?raw';
 import goToMarket from '../../../docs/STRATEGIE_GO_TO_MARKET.md?raw';
 import kitProspection from '../../../docs/KIT_PROSPECTION.md?raw';
 import strategieLogistique from '../../../docs/STRATEGIE_LOGISTIQUE.md?raw';
@@ -55,6 +56,13 @@ const GROUPS: DocGroup[] = [
         icon: Compass,
         content: planStrategique,
         authority: 'Document de référence — en cas de conflit, ce plan prévaut',
+      },
+      {
+        slug: 'plan-conquete',
+        title: 'Plan de conquête France · Europe · Monde',
+        description: 'L\u2019approfondissement des phases 2-4 : marchés chiffrés, cibles nommées, calendrier ferme jusqu\u2019à Biofach 2027 et au-delà.',
+        icon: Rocket,
+        content: planConquete,
       },
       {
         slug: 'go-to-market',
@@ -283,7 +291,7 @@ export default function AdminStrategy() {
     <div>
       <AdminPageHeader
         title="Stratégie"
-        subtitle="Les décisions du plan fondateur, en visuel — et les 14 documents de référence"
+        subtitle="Les décisions du plan fondateur, en visuel — et les 15 documents de référence"
         badgeText={view === 'synthese' ? 'Synthèse' : `${ALL_DOCS.length} documents`}
       />
 
