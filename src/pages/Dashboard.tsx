@@ -7,6 +7,7 @@ import {
 import { useAuth } from '../lib/auth';
 import BuyerCockpit from '../components/dashboard/BuyerCockpit';
 import BuyerOnboarding from '../components/dashboard/BuyerOnboarding';
+import ProducerOnboarding from '../components/dashboard/ProducerOnboarding';
 import { supabase, type Product } from '../lib/supabase';
 import { useI18n } from '../lib/i18n';
 
@@ -190,6 +191,14 @@ export default function Dashboard() {
             </div>
           )}
         </>
+      )}
+
+      {/* Guide de démarrage producteur (auto-coché, disparaît une fois complet) */}
+      {!loading && (
+        <ProducerOnboarding
+          productCount={productCount}
+          activeProductCount={products.filter(p => p.status === 'active').length}
+        />
       )}
 
       {/* Welcome banner for new producers */}
