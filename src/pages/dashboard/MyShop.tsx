@@ -4,6 +4,7 @@ import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import { saveProducerFields } from '../../lib/dbHelpers';
 import { useI18n } from '../../lib/i18n';
+import VerifiedBadgePanel from '../../components/dashboard/VerifiedBadgePanel';
 
 const COUNTRIES = [
   'France', 'Belgique', 'Suisse', 'Canada', 'Maroc', 'Éthiopie', 'Iran', 'Madagascar',
@@ -231,6 +232,11 @@ export default function MyShop() {
           {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Enregistrement...</> : <><Save className="w-4 h-4" /> Enregistrer les modifications</>}
         </button>
       </form>
+
+      {/* Badge « Producteur vérifié » — growth loop des preuves */}
+      <div className="max-w-3xl mt-5">
+        <VerifiedBadgePanel slug={producer.slug} verified={producer.verified === true || producer.verification_status === 'approved'} />
+      </div>
     </div>
   );
 }
