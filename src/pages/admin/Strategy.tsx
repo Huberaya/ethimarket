@@ -17,6 +17,9 @@ import {
 // avec le repo, zéro appel réseau, zéro coût (politique du projet).
 import planStrategique from '../../../docs/PLAN_STRATEGIQUE_ETHIMARKET.md?raw';
 import planConquete from '../../../docs/PLAN_CONQUETE_FRANCE_EUROPE_MONDE.md?raw';
+import unitEconomics from '../../../docs/UNIT_ECONOMICS.md?raw';
+import onePagerInvest from '../../../docs/ONE_PAGER_INVESTISSEURS.md?raw';
+import onePagerOng from '../../../docs/ONE_PAGER_ONG_PARTENAIRES.md?raw';
 import goToMarket from '../../../docs/STRATEGIE_GO_TO_MARKET.md?raw';
 import kitProspection from '../../../docs/KIT_PROSPECTION.md?raw';
 import strategieLogistique from '../../../docs/STRATEGIE_LOGISTIQUE.md?raw';
@@ -63,6 +66,27 @@ const GROUPS: DocGroup[] = [
         description: 'L\u2019approfondissement des phases 2-4 : marchés chiffrés, cibles nommées, calendrier ferme jusqu\u2019à Biofach 2027 et au-delà.',
         icon: Rocket,
         content: planConquete,
+      },
+      {
+        slug: 'unit-economics',
+        title: 'Unit economics détaillée',
+        description: 'Le modèle chiffré hypothèse par hypothèse : paniers, LTV par étage, CAC par canal, point mort, cohorte type, jalons de validation.',
+        icon: Wallet,
+        content: unitEconomics,
+      },
+      {
+        slug: 'one-pager-investisseurs',
+        title: 'One-pager investisseurs',
+        description: 'Le pitch pré-amorçage en une page : problème, marché, modèle, moat, demande.',
+        icon: FileText,
+        content: onePagerInvest,
+      },
+      {
+        slug: 'one-pager-ong',
+        title: 'One-pager ONG & partenaires',
+        description: 'Pour les réseaux de producteurs (CLAC, Fairtrade Africa…) et agences (CBI, Enabel) : ce que la plateforme fait pour une coopérative.',
+        icon: FileText,
+        content: onePagerOng,
       },
       {
         slug: 'go-to-market',
@@ -291,7 +315,7 @@ export default function AdminStrategy() {
     <div>
       <AdminPageHeader
         title="Stratégie"
-        subtitle="Les décisions du plan fondateur, en visuel — et les 15 documents de référence"
+        subtitle="Les décisions du plan fondateur, en visuel — et les 18 documents de référence"
         badgeText={view === 'synthese' ? 'Synthèse' : `${ALL_DOCS.length} documents`}
       />
 
