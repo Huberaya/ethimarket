@@ -59,14 +59,19 @@ interface Prospect {
 
 interface Touch { id: string; channel: string; note: string; created_at: string }
 
-// Catalogue France (BANCO/OSM + SIRENE, nettoyé des hors-sujet) — consultation seule.
-// Les catalogues Europe/Amérique du Nord sont en quarantaine (data_quarantine/) :
-// e-mails déduits des domaines (non vérifiés) et hors périmètre du plan de conquête
-// (garde-fou PLAN_CONQUETE : pas d'extension sans jalon).
+// Viviers en consultation, nettoyés des hors-sujet (décision du 7 sept. 2026) :
+// phase 1 = France (BANCO/OSM + SIRENE : identités légales vérifiées),
+// phase 2 = Europe, phase 3 = Monde (Overture Maps : e-mails déduits des
+// domaines des sites — à VÉRIFIER avant tout envoi, avertissement affiché).
 const CATALOGUE_URLS: Record<number, string> = {
   1: '/data/prospects-france-5000.json',
+  2: '/data/prospects-europe-phase2.json',
+  3: '/data/prospects-north-america-phase3.json',
 };
-const CATALOGUE_TOTALS: Record<number, number> = { 1: 4946 };
+const CATALOGUE_TOTALS: Record<number, number> = { 1: 4898, 2: 12798, 3: 12533 };
+const CATALOGUE_LABELS: Record<number, string> = { 1: 'Vivier France', 2: 'Vivier Europe', 3: 'Vivier Monde' };
+/** Les e-mails des viviers 2-3 sont déduits des domaines : jamais « vérifiés ». */
+const CATALOGUE_EMAILS_DERIVED: Record<number, boolean> = { 1: false, 2: true, 3: true };
 
 const STATUS_META: Record<string, { label: string; cls: string }> = {
   a_contacter: { label: 'À contacter', cls: 'bg-gray-100 text-gray-700 border-gray-200' },
@@ -158,10 +163,12 @@ export default function AdminProspection() {
     // Dédoublonnage aussi par SIREN promu (noté dans source) et par nom+ville,
     // car les colonnes external_id/siren n'existent pas encore en base.
     const promotedSirens = new Set(databaseProspects.map(p => (p.source?.match(/siren:(\d{9})/) ?? [])[1]).filter(Boolean));
+    const promotedExtIds = new Set(databaseProspects.map(p => (p.source?.match(/ext:([\w-]+)/) ?? [])[1]).filter(Boolean));
     const dbNameCity = new Set(databaseProspects.map(p => `${p.name}|${p.city ?? ''}`.toLowerCase()));
     const missingFromDatabase = catalogue.filter(p =>
       !databaseKeys.has(p.external_id) && !databaseKeys.has(p.siren ? `siren:${p.siren}` : null)
       && !(p.siren && promotedSirens.has(p.siren))
+      && !(p.external_id && promotedExtIds.has(p.external_id))
       && !dbNameCity.has(`${p.name}|${p.city ?? ''}`.toLowerCase()));
     const merged = [...databaseProspects, ...missingFromDatabase].sort((a, b) =>
       a.country.localeCompare(b.country, 'fr', { sensitivity: 'base' }) ||
@@ -234,11 +241,13 @@ export default function AdminProspection() {
       kind: p.kind, phase: p.phase, segment: p.segment, name: p.name,
       city: p.city, country: p.country, contact_name: p.contact_name,
       email: p.email, phone: p.phone, website: p.website,
-      source: `${p.source ?? 'catalogue-france'} | promu:vivier${p.siren ? ` | siren:${p.siren}` : ''}`,
-      notes: [p.legal_name ? `Raison sociale : ${p.legal_name}.` : null,
+      source: `${p.source ?? 'catalogue'} | promu:vivier${p.siren ? ` | siren:${p.siren}` : ''}${p.external_id ? ` | ext:${p.external_id}` : ''}`,
+      notes: [CATALOGUE_EMAILS_DERIVED[p.phase] && p.email ? '⚠️ E-MAIL DÉDUIT du domaine du site (vivier Overture) — À VÉRIFIER avant tout envoi.' : null,
+        p.legal_name ? `Raison sociale : ${p.legal_name}.` : null,
         p.siret ? `SIRET ${p.siret}.` : null,
         p.address ? `Adresse : ${p.address}.` : null,
-        p.legal_source_url ? `Source légale : ${p.legal_source_url}` : null].filter(Boolean).join(' ') || null,
+        p.legal_source_url ? `Source légale : ${p.legal_source_url}` : null,
+        p.contact_source_url ? `Source contact : ${p.contact_source_url}` : null].filter(Boolean).join(' ') || null,
     });
     setBusy(false);
     if (!error) { setSelected(null); setView('crm'); await load(); }
@@ -324,7 +333,7 @@ export default function AdminProspection() {
         }
       />
 
-      {/* Sélecteur de vue : pipeline CRM actionnable vs vivier France en consultation */}
+      {/* Sélecteur de vue : pipeline CRM actionnable vs vivier de la phase en consultation */}
       {kind === 'buyer' && catalogueCount > 0 && (
         <div className="mb-5 flex flex-wrap items-center gap-3">
           <div className="flex rounded-xl border-2 border-gray-200 overflow-hidden">
@@ -334,12 +343,14 @@ export default function AdminProspection() {
             </button>
             <button onClick={() => { setView('catalogue'); setSelectedWave(null); setFilterCountry('all'); setFilterRegion('all'); setFilterCity('all'); setFilterSegment('all'); }}
               className={`px-4 py-2 text-xs font-black cursor-pointer ${view === 'catalogue' ? 'bg-brand-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
-              <Database className="w-3 h-3 inline mr-1 -mt-0.5" />Vivier France ({catalogueCount.toLocaleString('fr-FR')})
+              <Database className="w-3 h-3 inline mr-1 -mt-0.5" />{CATALOGUE_LABELS[phase] ?? 'Vivier'} ({catalogueCount.toLocaleString('fr-FR')})
             </button>
           </div>
           {view === 'catalogue' && (
             <p className="text-[11px] text-gray-500 flex-1 min-w-60">
-              Vivier en consultation (BANCO/OSM + SIRENE, nettoyé) — repérez une cible, vérifiez ses coordonnées, puis ajoutez-la au pipeline pour la travailler.
+              {CATALOGUE_EMAILS_DERIVED[phase]
+                ? <>Vivier en consultation (Overture Maps, nettoyé). <b className="text-amber-700">⚠️ E-mails déduits des domaines des sites — à vérifier avant tout envoi.</b> Repérez une cible, vérifiez ses coordonnées, puis ajoutez-la au pipeline.</>
+                : <>Vivier en consultation (BANCO/OSM + SIRENE, nettoyé) — repérez une cible, vérifiez ses coordonnées, puis ajoutez-la au pipeline pour la travailler.</>}
             </p>
           )}
         </div>
@@ -707,7 +718,11 @@ export default function AdminProspection() {
             </p>
             {selected.catalog_only && (
               <div className="mb-4 flex flex-wrap items-center gap-3 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-                <p className="text-[11px] font-bold text-amber-800 flex-1 min-w-52">Fiche du vivier France (consultation). Vérifiez les coordonnées puis basculez-la dans votre pipeline pour la travailler.</p>
+                <p className="text-[11px] font-bold text-amber-800 flex-1 min-w-52">
+                  Fiche du {CATALOGUE_LABELS[selected.phase] ?? 'vivier'} (consultation).
+                  {CATALOGUE_EMAILS_DERIVED[selected.phase] ? ' ⚠️ E-mail déduit du domaine du site — à vérifier avant envoi.' : ''}
+                  {' '}Vérifiez les coordonnées puis basculez-la dans votre pipeline pour la travailler.
+                </p>
                 <button onClick={() => void promoteToPipeline(selected)} disabled={busy}
                   className="inline-flex items-center gap-1.5 text-[11px] font-black px-3 py-1.5 rounded-lg bg-brand-600 text-white cursor-pointer disabled:opacity-40">
                   <Plus className="w-3 h-3" /> Ajouter au pipeline
