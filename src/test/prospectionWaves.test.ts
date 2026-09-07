@@ -69,6 +69,16 @@ describe('getWaves — structure', () => {
     expect(waveOf(mk({ city: 'Dinard (48 r. Levavasseur)' }), waves)?.label).toContain('Brest');
   });
 
+  it('vagues 12-13 : Sarthe/Vendée en semaine 4, Laval et bassin briochin en semaines 5-6', () => {
+    const waves = getWaves('buyer', 1);
+    expect(waveOf(mk({ city: 'Challans (passage Carnot)' }), waves)?.label).toContain('Vendée');
+    expect(waveOf(mk({ city: 'Sablé-sur-Sarthe (rte du Mans)' }), waves)?.label).toContain('Le Mans');
+    expect(waveOf(mk({ city: 'La Ferté-Bernard (31 bis r. de l\u2019Huisne)' }), waves)?.label).toContain('Le Mans');
+    expect(waveOf(mk({ city: 'Laval (8 r. Bir Hakeim)' }), waves)?.label).toContain('Laval');
+    expect(waveOf(mk({ city: 'Saint-Brieuc (2 r. Michelet)' }), waves)?.label).toContain('Laval');
+    expect(waveOf(mk({ city: 'Saint-Cast-le-Guildo (5 r. de la Noé)' }), waves)?.label).toContain('Laval');
+  });
+
   it('phase 1 producteurs : Éthiopie d\u2019abord (filière n°1)', () => {
     expect(getWaves('producer', 1)[0].label).toContain('Éthiopie');
   });
