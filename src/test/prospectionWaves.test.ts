@@ -88,6 +88,14 @@ describe('getWaves — structure', () => {
     expect(waveOf(mk({ city: "Dolus-d'Oléron (ZC La Bassée, RD 734)" }), waves)?.label).toContain('Caen');
   });
 
+  it('vague 16 : la Cornouaille rejoint la vague Brest', () => {
+    const waves = getWaves('buyer', 1);
+    expect(waveOf(mk({ city: 'Concarneau (6 r. des Écoles)' }), waves)?.label).toContain('Brest');
+    expect(waveOf(mk({ city: "Pont-l'Abbé (3-5 r. Carnot)" }), waves)?.label).toContain('Brest');
+    expect(waveOf(mk({ city: 'Carhaix-Plouguer (29 r. Général Lambert)' }), waves)?.label).toContain('Brest');
+    expect(waveOf(mk({ city: 'Landerneau (50 quai Léon)' }), waves)?.label).toContain('Brest');
+  });
+
   it('phase 1 producteurs : Éthiopie d\u2019abord (filière n°1)', () => {
     expect(getWaves('producer', 1)[0].label).toContain('Éthiopie');
   });
