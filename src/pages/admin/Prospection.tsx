@@ -59,12 +59,14 @@ interface Prospect {
 
 interface Touch { id: string; channel: string; note: string; created_at: string }
 
+// Catalogue France (BANCO/OSM + SIRENE, nettoyé des hors-sujet) — consultation seule.
+// Les catalogues Europe/Amérique du Nord sont en quarantaine (data_quarantine/) :
+// e-mails déduits des domaines (non vérifiés) et hors périmètre du plan de conquête
+// (garde-fou PLAN_CONQUETE : pas d'extension sans jalon).
 const CATALOGUE_URLS: Record<number, string> = {
   1: '/data/prospects-france-5000.json',
-  2: '/data/prospects-europe-phase2.json',
-  3: '/data/prospects-north-america-phase3.json',
 };
-const CATALOGUE_TOTALS: Record<number, number> = { 1: 5000, 2: 13000, 3: 13000 };
+const CATALOGUE_TOTALS: Record<number, number> = { 1: 4946 };
 
 const STATUS_META: Record<string, { label: string; cls: string }> = {
   a_contacter: { label: 'À contacter', cls: 'bg-gray-100 text-gray-700 border-gray-200' },
@@ -98,13 +100,13 @@ const PHASE_PLAYBOOK: Record<number, { title: string; buyers: string; producers:
   },
   2: {
     title: 'Phase 2 — Croissance : la répétabilité (M4-M9)',
-    buyers: 'Conquête Europe sur 6 marchés prioritaires : Belgique, Pays-Bas, Allemagne, Suisse, Espagne et Italie. Cibles : magasins bio, épiceries spécialisées, concept stores, horeca, beauté, mode responsable, distributeurs et entreprises RSE. Activer pays par pays et ville par ville, après contrôle du registre national et de la TVA.',
+    buyers: '30 magasins Biocoop (entrer par le magasin, pas la centrale) + 8 grossistes régionaux + 15 chocolatiers (argument EUDR cacao) + Belgique/Suisse romande + 8 marques cosmétiques indie. Levier nouveau : la preuve sociale de la phase 1 (témoignages sur /pour-les-professionnels).',
     producers: '+12 coopératives : cacao Ghana (GPS EUDR prêts), épices Inde/Sri Lanka (notre annuaire labos COA), miel Grèce, quinoa Pérou. Début de sélectivité : score qualité exigé.',
     exit: 'Sortie de phase : GMV ≥25 k€/mois ×3 mois, ≥25 acheteurs actifs, rétention M2 ≥40%, ≥20 producteurs vérifiés, hub 3PL signé.',
   },
   3: {
     title: 'Phase 3 — Échelle : la référence (M10+)',
-    buyers: 'Conquête Amérique du Nord : États-Unis et Canada. Priorité aux magasins bio, épiceries spécialisées, concept stores responsables, horeca, distributeurs/importateurs et entreprises ESG des grands bassins urbains. Avant activation : vérifier l’entité légale, le statut et la conformité CAN-SPAM/CASL.',
+    buyers: 'Centrales spécialisées (dossier référencement avec nos données de taux de service), Allemagne (1er marché bio UE, via hub Benelux), food-service, industriels bean-to-bar. Ouverture B2C réelle via le hub 3PL. Levier : casebook clients + presse (le QR de traçabilité est un sujet).',
     producers: 'Corridors de groupage actifs = recrutement massif (50+ producteurs). Extension Amérique latine (cacao fin, café Colombie) et Asie du Sud-Est. Programme ambassadeurs : les producteurs phase 1 parrainent.',
     exit: 'Ce n\'est plus une phase, c\'est le régime de croisière : on pilote au KPI (/admin/croissance).',
   },
@@ -146,7 +148,9 @@ export default function AdminProspection() {
     const [{ data }, { data: st }, catalogue] = await Promise.all([
       supabase.from('prospects').select('*').order('next_action_date', { ascending: true, nullsFirst: false }).order('name'),
       supabase.rpc('get_prospection_stats'),
-      fetch(CATALOGUE_URLS[phase]).then(r => r.ok ? r.json() as Promise<Prospect[]> : []).catch(() => [] as Prospect[]),
+      CATALOGUE_URLS[phase]
+        ? fetch(CATALOGUE_URLS[phase]).then(r => r.ok ? r.json() as Promise<Prospect[]> : []).catch(() => [] as Prospect[])
+        : Promise.resolve([] as Prospect[]),
     ]);
     const databaseProspects = (data as Prospect[]) ?? [];
     const databaseKeys = new Set(databaseProspects.flatMap(p => [p.external_id, p.siren ? `siren:${p.siren}` : null].filter(Boolean)));
@@ -292,7 +296,7 @@ export default function AdminProspection() {
           <Database className="w-5 h-5 text-brand-700 shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-black text-brand-900">
-              {phase === 1 ? 'Base France' : phase === 2 ? 'Base Europe' : phase === 3 ? 'Base Amérique du Nord' : `Base phase ${phase}`} chargée : {prospects.filter(p => p.catalog_only && p.phase === phase).length.toLocaleString('fr-FR')} acheteurs, classés par pays puis par ville
+              Base France chargée : {prospects.filter(p => p.catalog_only && p.phase === phase).length.toLocaleString('fr-FR')} acheteurs (sources publiques BANCO/OSM + SIRENE, nettoyée des hors-sujet), classés par ville
             </p>
             <p className="text-[11px] text-brand-800 mt-0.5">Les fiches sont visibles immédiatement depuis le catalogue embarqué. Appliquez la migration Supabase du dépôt pour activer la modification des statuts et le journal de contact sur ces fiches.</p>
           </div>
