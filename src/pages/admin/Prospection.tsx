@@ -123,6 +123,7 @@ export default function AdminProspection() {
   const [stats, setStats] = useState<{ due_today: number; reply_rate_pct: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [kind, setKind] = useState<'buyer' | 'producer' | 'products'>('buyer');
+  const [view, setView] = useState<'crm' | 'catalogue'>('crm');
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [phase, setPhase] = useState<number>(1);
   const [filterStatus, setFilterStatus] = useState('all');
@@ -154,7 +155,14 @@ export default function AdminProspection() {
     ]);
     const databaseProspects = (data as Prospect[]) ?? [];
     const databaseKeys = new Set(databaseProspects.flatMap(p => [p.external_id, p.siren ? `siren:${p.siren}` : null].filter(Boolean)));
-    const missingFromDatabase = catalogue.filter(p => !databaseKeys.has(p.external_id) && !databaseKeys.has(p.siren ? `siren:${p.siren}` : null));
+    // Dédoublonnage aussi par SIREN promu (noté dans source) et par nom+ville,
+    // car les colonnes external_id/siren n'existent pas encore en base.
+    const promotedSirens = new Set(databaseProspects.map(p => (p.source?.match(/siren:(\d{9})/) ?? [])[1]).filter(Boolean));
+    const dbNameCity = new Set(databaseProspects.map(p => `${p.name}|${p.city ?? ''}`.toLowerCase()));
+    const missingFromDatabase = catalogue.filter(p =>
+      !databaseKeys.has(p.external_id) && !databaseKeys.has(p.siren ? `siren:${p.siren}` : null)
+      && !(p.siren && promotedSirens.has(p.siren))
+      && !dbNameCity.has(`${p.name}|${p.city ?? ''}`.toLowerCase()));
     const merged = [...databaseProspects, ...missingFromDatabase].sort((a, b) =>
       a.country.localeCompare(b.country, 'fr', { sensitivity: 'base' }) ||
       (a.city ?? 'ZZZZ').localeCompare(b.city ?? 'ZZZZ', 'fr', { sensitivity: 'base' }) || a.name.localeCompare(b.name, 'fr')
@@ -219,6 +227,23 @@ export default function AdminProspection() {
     void openProspect(selected);
   };
 
+  /** Bascule une fiche du vivier France (catalog_only) dans le pipeline CRM. */
+  const promoteToPipeline = async (p: Prospect) => {
+    setBusy(true);
+    const { error } = await supabase.from('prospects').insert({
+      kind: p.kind, phase: p.phase, segment: p.segment, name: p.name,
+      city: p.city, country: p.country, contact_name: p.contact_name,
+      email: p.email, phone: p.phone, website: p.website,
+      source: `${p.source ?? 'catalogue-france'} | promu:vivier${p.siren ? ` | siren:${p.siren}` : ''}`,
+      notes: [p.legal_name ? `Raison sociale : ${p.legal_name}.` : null,
+        p.siret ? `SIRET ${p.siret}.` : null,
+        p.address ? `Adresse : ${p.address}.` : null,
+        p.legal_source_url ? `Source légale : ${p.legal_source_url}` : null].filter(Boolean).join(' ') || null,
+    });
+    setBusy(false);
+    if (!error) { setSelected(null); setView('crm'); await load(); }
+  };
+
   const addProspect = async () => {
     if (!form.name.trim()) return;
     setBusy(true);
@@ -233,9 +258,14 @@ export default function AdminProspection() {
     setBusy(false); setShowAdd(false); setForm(EMPTY_FORM); load();
   };
 
+  // Vue CRM = pipeline actionnable (fiches en base) ; vue Catalogue = vivier
+  // France en consultation (fiches catalog_only). Séparées pour que le travail
+  // qualifié ne soit pas noyé dans les 4 900 fiches du vivier.
+  const inView = useCallback((p: Prospect) => view === 'catalogue' ? !!p.catalog_only : !p.catalog_only, [view]);
+
   // Vagues du plan de tournée (kind='products' n'a pas de vagues)
   const waves = kind !== 'products' ? getWaves(kind, phase) : [];
-  const phaseProspects = prospects.filter(p => p.kind === kind && p.phase === phase);
+  const phaseProspects = prospects.filter(p => p.kind === kind && p.phase === phase && inView(p));
   const wStats = kind !== 'products' ? waveStats(phaseProspects, waves) : [];
   const cities = kind !== 'products' ? distinctCities(phaseProspects) : [];
   const countries = [...new Set(phaseProspects.map(p => p.country))].sort((a, b) => a.localeCompare(b, 'fr'));
@@ -245,6 +275,7 @@ export default function AdminProspection() {
 
   const filtered = prospects.filter(p => {
     if (p.kind !== kind || p.phase !== phase) return false;
+    if (!inView(p)) return false;
     if (filterStatus !== 'all' && p.status !== filterStatus) return false;
     if (filterCountry !== 'all' && p.country !== filterCountry) return false;
     if (filterCity !== 'all' && normalizeCity(p.city) !== filterCity) return false;
@@ -262,7 +293,7 @@ export default function AdminProspection() {
   const visibleProspects = filtered.slice((Math.min(page, pageCount) - 1) * PAGE_SIZE, Math.min(page, pageCount) * PAGE_SIZE);
   useEffect(() => { setPage(1); }, [kind, phase, filterStatus, filterCountry, filterCity, filterRegion, filterSegment, selectedWave, search]);
 
-  const phaseCounts = (ph: number) => prospects.filter(p => p.kind === kind && p.phase === ph);
+  const phaseCounts = (ph: number) => prospects.filter(p => p.kind === kind && p.phase === ph && inView(p));
   const pb = PHASE_PLAYBOOK[phase];
   const today = new Date().toISOString().slice(0, 10);
 
@@ -274,8 +305,10 @@ export default function AdminProspection() {
     { key: ['inscrit'], label: 'Inscrits', color: '#34d399' },
     { key: ['actif'], label: 'Actifs', color: '#10b981' },
   ];
-  const kindProspects = prospects.filter(p => p.kind === kind);
+  // Le funnel ne compte QUE le pipeline CRM (jamais le catalogue en consultation)
+  const kindProspects = prospects.filter(p => p.kind === kind && !p.catalog_only);
   const funnelMax = Math.max(1, ...FUNNEL_STEPS.map(s => kindProspects.filter(p => s.key.includes(p.status)).length));
+  const catalogueCount = prospects.filter(p => p.catalog_only).length;
 
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 text-brand-500 animate-spin" /></div>;
 
@@ -291,20 +324,29 @@ export default function AdminProspection() {
         }
       />
 
-      {prospects.some(p => p.catalog_only && p.phase === phase) && kind === 'buyer' && (
-        <div className="mb-5 rounded-2xl border-2 border-brand-200 bg-brand-50 px-5 py-3.5 flex items-start gap-3">
-          <Database className="w-5 h-5 text-brand-700 shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm font-black text-brand-900">
-              Base France chargée : {prospects.filter(p => p.catalog_only && p.phase === phase).length.toLocaleString('fr-FR')} acheteurs (sources publiques BANCO/OSM + SIRENE, nettoyée des hors-sujet), classés par ville
-            </p>
-            <p className="text-[11px] text-brand-800 mt-0.5">Les fiches sont visibles immédiatement depuis le catalogue embarqué. Appliquez la migration Supabase du dépôt pour activer la modification des statuts et le journal de contact sur ces fiches.</p>
+      {/* Sélecteur de vue : pipeline CRM actionnable vs vivier France en consultation */}
+      {kind === 'buyer' && catalogueCount > 0 && (
+        <div className="mb-5 flex flex-wrap items-center gap-3">
+          <div className="flex rounded-xl border-2 border-gray-200 overflow-hidden">
+            <button onClick={() => { setView('crm'); setFilterCountry('all'); setFilterRegion('all'); setFilterCity('all'); setFilterSegment('all'); }}
+              className={`px-4 py-2 text-xs font-black cursor-pointer ${view === 'crm' ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
+              🎯 Mon pipeline ({prospects.filter(p => p.kind === 'buyer' && !p.catalog_only).length})
+            </button>
+            <button onClick={() => { setView('catalogue'); setSelectedWave(null); setFilterCountry('all'); setFilterRegion('all'); setFilterCity('all'); setFilterSegment('all'); }}
+              className={`px-4 py-2 text-xs font-black cursor-pointer ${view === 'catalogue' ? 'bg-brand-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
+              <Database className="w-3 h-3 inline mr-1 -mt-0.5" />Vivier France ({catalogueCount.toLocaleString('fr-FR')})
+            </button>
           </div>
+          {view === 'catalogue' && (
+            <p className="text-[11px] text-gray-500 flex-1 min-w-60">
+              Vivier en consultation (BANCO/OSM + SIRENE, nettoyé) — repérez une cible, vérifiez ses coordonnées, puis ajoutez-la au pipeline pour la travailler.
+            </p>
+          )}
         </div>
       )}
 
-      {/* Funnel du pipeline */}
-      {kind !== 'products' && (
+      {/* Funnel du pipeline (CRM uniquement — masqué en vue vivier) */}
+      {kind !== 'products' && view === 'crm' && (
       <div className="mb-5 bg-white rounded-2xl border-2 border-gray-100 p-4">
         <div className="flex items-end gap-2">
           {FUNNEL_STEPS.map((s, i) => {
@@ -327,8 +369,8 @@ export default function AdminProspection() {
       </div>
       )}
 
-      {/* Bandeau actions du jour */}
-      {stats && stats.due_today > 0 && (
+      {/* Bandeau actions du jour (CRM uniquement) */}
+      {view === 'crm' && stats && stats.due_today > 0 && (
         <div className="mb-5 rounded-2xl border-2 border-amber-300 bg-amber-50 px-5 py-3.5 flex items-center gap-3">
           <CalendarClock className="w-5 h-5 text-amber-600 shrink-0" />
           <p className="text-sm font-bold text-amber-900">
@@ -497,7 +539,8 @@ export default function AdminProspection() {
         )}
       </div>
 
-      {/* Plan de tournée : les vagues de la phase, semaine par semaine */}
+      {/* Plan de tournée (CRM uniquement — le vivier se filtre par ville/segment) */}
+      {view === 'crm' && (
       <div className="mb-5">
         <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2 px-1">
           🗺️ Plan de tournée — {kind === 'buyer' ? 'où prospecter, dans quel ordre' : 'quelles filières, dans quel ordre'}
@@ -531,6 +574,7 @@ export default function AdminProspection() {
           </p>
         )}
       </div>
+      )}
 
       {/* Lecture opérationnelle de la base */}
       {kind === 'buyer' && phaseProspects.length > 0 && (
@@ -661,7 +705,15 @@ export default function AdminProspection() {
               {SEGMENT_LABELS[selected.segment] ?? selected.segment} · Phase {selected.phase} · {[selected.city, selected.country].filter(Boolean).join(', ')}
               {selected.source ? ` · source : ${selected.source}` : ''}
             </p>
-            {selected.catalog_only && <p className="mb-4 text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">Fiche du catalogue France embarqué — consultation disponible. Appliquez la migration Supabase pour rendre le suivi CRM modifiable et persistant.</p>}
+            {selected.catalog_only && (
+              <div className="mb-4 flex flex-wrap items-center gap-3 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                <p className="text-[11px] font-bold text-amber-800 flex-1 min-w-52">Fiche du vivier France (consultation). Vérifiez les coordonnées puis basculez-la dans votre pipeline pour la travailler.</p>
+                <button onClick={() => void promoteToPipeline(selected)} disabled={busy}
+                  className="inline-flex items-center gap-1.5 text-[11px] font-black px-3 py-1.5 rounded-lg bg-brand-600 text-white cursor-pointer disabled:opacity-40">
+                  <Plus className="w-3 h-3" /> Ajouter au pipeline
+                </button>
+              </div>
+            )}
 
             {/* Coordonnées */}
             <div className="flex flex-wrap gap-2 mb-4">
