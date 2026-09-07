@@ -4,6 +4,7 @@ import {
   Loader2, X, Target, Search, Plus, Phone, Mail, Globe as GlobeIcon,
   ChevronRight, BookOpen, ChevronDown, ChevronUp, CalendarClock,
   Package, Lightbulb, Compass, ArrowRight, MessageSquareText, Copy, Check, Send,
+  MapPin, Building2, Linkedin, ExternalLink, Database,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { AdminPageHeader } from '../../components/AdminLayout';
@@ -38,6 +39,20 @@ interface Prospect {
   notes: string | null;
   contacted_at: string | null;
   replied_at: string | null;
+  external_id: string | null;
+  legal_name: string | null;
+  siren: string | null;
+  siret: string | null;
+  region: string | null;
+  address: string | null;
+  contact_role: string | null;
+  linkedin_url: string | null;
+  likely_products: string[] | null;
+  legal_source_url: string | null;
+  contact_source_url: string | null;
+  verified_on: string | null;
+  legal_status: string | null;
+  data_origin: string | null;
 }
 
 interface Touch { id: string; channel: string; note: string; created_at: string }
@@ -57,7 +72,8 @@ const SEGMENT_LABELS: Record<string, string> = {
   epicerie_bio: 'Épicerie bio', torrefacteur: 'Torréfacteur', restaurant: 'Restaurant',
   epicerie_en_ligne: 'Épicerie en ligne', biocoop: 'Magasin Biocoop', grossiste: 'Grossiste',
   chocolatier: 'Chocolatier', cosmetique: 'Cosmétique', centrale: 'Centrale d\'achat',
-  food_service: 'Food-service', industriel: 'Industriel',
+  food_service: 'Food-service', industriel: 'Industriel', concept_store: 'Concept store responsable',
+  mode_responsable: 'Mode & accessoires responsables',
   transformateur: 'Transformateur', maison_the: 'Maison de thé', bar_cocktail: 'Bar & mixologie',
   cafe: 'Café', vanille: 'Vanille', argane: 'Argane', safran: 'Safran', cacao: 'Cacao',
   epices: 'Épices', miel: 'Miel', quinoa: 'Quinoa', karite: 'Karité',
@@ -100,8 +116,11 @@ export default function AdminProspection() {
   const [phase, setPhase] = useState<number>(1);
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterCity, setFilterCity] = useState('all');
+  const [filterRegion, setFilterRegion] = useState('all');
+  const [filterSegment, setFilterSegment] = useState('all');
   const [selectedWave, setSelectedWave] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
   const [playbookOpen, setPlaybookOpen] = useState(false);
   const [selected, setSelected] = useState<Prospect | null>(null);
   const [touches, setTouches] = useState<Touch[]>([]);
@@ -194,19 +213,27 @@ export default function AdminProspection() {
   const phaseProspects = prospects.filter(p => p.kind === kind && p.phase === phase);
   const wStats = kind !== 'products' ? waveStats(phaseProspects, waves) : [];
   const cities = kind !== 'products' ? distinctCities(phaseProspects) : [];
+  const regions = [...new Set(phaseProspects.map(p => p.region).filter((v): v is string => Boolean(v)))].sort((a, b) => a.localeCompare(b, 'fr'));
+  const segments = [...new Set(phaseProspects.map(p => p.segment))].sort((a, b) => (SEGMENT_LABELS[a] ?? a).localeCompare(SEGMENT_LABELS[b] ?? b, 'fr'));
   const activeWave: Wave | null = selectedWave ? waves.find(w => w.label === selectedWave) ?? null : null;
 
   const filtered = prospects.filter(p => {
     if (p.kind !== kind || p.phase !== phase) return false;
     if (filterStatus !== 'all' && p.status !== filterStatus) return false;
     if (filterCity !== 'all' && normalizeCity(p.city) !== filterCity) return false;
+    if (filterRegion !== 'all' && p.region !== filterRegion) return false;
+    if (filterSegment !== 'all' && p.segment !== filterSegment) return false;
     if (activeWave && waveOf(p, waves) !== activeWave) return false;
     if (search) {
-      const hay = `${p.name} ${p.city ?? ''} ${p.segment} ${p.contact_name ?? ''}`.toLowerCase();
+      const hay = `${p.name} ${p.legal_name ?? ''} ${p.siren ?? ''} ${p.siret ?? ''} ${p.city ?? ''} ${p.region ?? ''} ${p.segment} ${p.contact_name ?? ''} ${p.email ?? ''}`.toLowerCase();
       if (!hay.includes(search.toLowerCase())) return false;
     }
     return true;
   });
+  const PAGE_SIZE = 100;
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const visibleProspects = filtered.slice((Math.min(page, pageCount) - 1) * PAGE_SIZE, Math.min(page, pageCount) * PAGE_SIZE);
+  useEffect(() => { setPage(1); }, [kind, phase, filterStatus, filterCity, filterRegion, filterSegment, selectedWave, search]);
 
   const phaseCounts = (ph: number) => prospects.filter(p => p.kind === kind && p.phase === ph);
   const pb = PHASE_PLAYBOOK[phase];
@@ -465,6 +492,21 @@ export default function AdminProspection() {
         )}
       </div>
 
+      {/* Lecture opérationnelle de la base */}
+      {kind === 'buyer' && phaseProspects.length > 0 && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
+          {[
+            { label: 'Acheteurs dans la phase', value: phaseProspects.length, icon: Database, cls: 'text-brand-700 bg-brand-50' },
+            { label: 'Avec e-mail public', value: phaseProspects.filter(p => p.email).length, icon: Mail, cls: 'text-sky-700 bg-sky-50' },
+            { label: 'Avec téléphone', value: phaseProspects.filter(p => p.phone).length, icon: Phone, cls: 'text-emerald-700 bg-emerald-50' },
+            { label: 'Avec LinkedIn', value: phaseProspects.filter(p => p.linkedin_url).length, icon: Linkedin, cls: 'text-indigo-700 bg-indigo-50' },
+          ].map(k => <div key={k.label} className="rounded-xl border border-gray-100 bg-white p-3 flex items-center gap-3">
+            <span className={`w-9 h-9 rounded-lg flex items-center justify-center ${k.cls}`}><k.icon className="w-4 h-4" /></span>
+            <div><p className="text-lg font-black tabular-nums text-gray-900">{k.value.toLocaleString('fr-FR')}</p><p className="text-[9px] font-black uppercase tracking-wide text-gray-400">{k.label}</p></div>
+          </div>)}
+        </div>
+      )}
+
       {/* Filtres + ajout */}
       <div className="flex flex-wrap gap-3 mb-4">
         <div className="relative flex-1 min-w-48">
@@ -472,10 +514,20 @@ export default function AdminProspection() {
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Nom, ville, segment…"
             className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-500 bg-white" />
         </div>
+        <select value={filterSegment} onChange={e => setFilterSegment(e.target.value)}
+          className="px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white cursor-pointer max-w-52">
+          <option value="all">Tous segments</option>
+          {segments.map(s => <option key={s} value={s}>{SEGMENT_LABELS[s] ?? s}</option>)}
+        </select>
+        <select value={filterRegion} onChange={e => { setFilterRegion(e.target.value); setFilterCity('all'); }}
+          className="px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white cursor-pointer max-w-52">
+          <option value="all">Toutes régions</option>
+          {regions.map(r => <option key={r} value={r}>{r}</option>)}
+        </select>
         <select value={filterCity} onChange={e => setFilterCity(e.target.value)}
-          className="px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white cursor-pointer max-w-44">
+          className="px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white cursor-pointer max-w-44">
           <option value="all">Toutes villes</option>
-          {cities.map(c => <option key={c} value={c}>{c}</option>)}
+          {cities.filter(c => filterRegion === 'all' || phaseProspects.some(p => normalizeCity(p.city) === c && p.region === filterRegion)).map(c => <option key={c} value={c}>{c}</option>)}
         </select>
         <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
           className="px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white cursor-pointer">
@@ -497,7 +549,11 @@ export default function AdminProspection() {
         </div>
       ) : (
         <div className="space-y-2">
-          {filtered.map(p => {
+          <div className="flex items-center justify-between px-1 pb-1 text-[11px] text-gray-400">
+            <span><b className="text-gray-700">{filtered.length.toLocaleString('fr-FR')}</b> résultat(s) · affichage par {PAGE_SIZE}</span>
+            <span>Page {Math.min(page, pageCount)} / {pageCount}</span>
+          </div>
+          {visibleProspects.map(p => {
             const st = STATUS_META[p.status] ?? STATUS_META.a_contacter;
             const overdue = p.next_action_date && p.next_action_date <= today && !['refus', 'stop', 'actif'].includes(p.status);
             return (
@@ -507,7 +563,7 @@ export default function AdminProspection() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-black text-gray-900 text-sm truncate">{p.name}</span>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">{SEGMENT_LABELS[p.segment] ?? p.segment}</span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-100">📍 {normalizeCity(p.city)}</span>
+                    {p.region && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-100">📍 {p.region}</span>}
                     <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${st.cls}`}>{st.label}</span>
                   </div>
                   <p className="text-xs text-gray-400 mt-0.5 truncate">
@@ -515,10 +571,10 @@ export default function AdminProspection() {
                     {p.contact_name ? ` · ${p.contact_name}` : ''}
                     {p.next_action ? ` · → ${p.next_action}` : ''}
                   </p>
-                  {SEGMENT_PITCHES[p.segment] && (
+                  {((p.likely_products?.length ?? 0) > 0 || SEGMENT_PITCHES[p.segment]) && (
                     <div className="flex flex-wrap items-center gap-1 mt-1">
                       <Package className="w-3 h-3 text-brand-400" />
-                      {SEGMENT_PITCHES[p.segment].products.slice(0, 3).map(pr => (
+                      {(p.likely_products?.length ? p.likely_products : SEGMENT_PITCHES[p.segment]?.products ?? []).slice(0, 3).map(pr => (
                         <span key={pr} className="text-[9px] font-black px-1.5 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-100">{pr}</span>
                       ))}
                     </div>
@@ -534,6 +590,15 @@ export default function AdminProspection() {
               </button>
             );
           })}
+          {pageCount > 1 && (
+            <div className="flex items-center justify-center gap-2 pt-3">
+              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page <= 1}
+                className="px-3 py-2 rounded-lg border border-gray-200 bg-white text-xs font-black text-gray-600 disabled:opacity-30">← Précédent</button>
+              <span className="text-xs font-bold text-gray-500 tabular-nums">{Math.min(page, pageCount)} / {pageCount}</span>
+              <button onClick={() => setPage(p => Math.min(pageCount, p + 1))} disabled={page >= pageCount}
+                className="px-3 py-2 rounded-lg border border-gray-200 bg-white text-xs font-black text-gray-600 disabled:opacity-30">Suivant →</button>
+            </div>
+          )}
         </div>
       )}
       </>)}
@@ -559,14 +624,34 @@ export default function AdminProspection() {
               {!selected.email && !selected.phone && <span className="text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-lg font-bold">⚠️ Coordonnées à qualifier avant contact</span>}
             </div>
 
+            {/* Identité légale et traçabilité de la donnée */}
+            {(selected.legal_name || selected.siren || selected.region || selected.linkedin_url) && (
+              <div className="mb-4 rounded-xl border border-gray-200 bg-gray-50/70 p-3.5">
+                <p className="flex items-center gap-1.5 text-[11px] font-black text-gray-600 uppercase tracking-wide mb-2"><Building2 className="w-3.5 h-3.5" /> Identité & qualification</p>
+                <div className="grid sm:grid-cols-2 gap-x-5 gap-y-2 text-xs">
+                  {selected.legal_name && <div><span className="text-gray-400">Raison sociale</span><p className="font-bold text-gray-800">{selected.legal_name}</p></div>}
+                  {(selected.siren || selected.siret) && <div><span className="text-gray-400">SIREN / SIRET</span><p className="font-bold text-gray-800 tabular-nums">{selected.siren}{selected.siret ? ` / ${selected.siret}` : ''}</p></div>}
+                  {selected.region && <div><span className="text-gray-400">Territoire</span><p className="font-bold text-gray-800 flex items-center gap-1"><MapPin className="w-3 h-3" />{[selected.city, selected.region].filter(Boolean).join(' · ')}</p></div>}
+                  {selected.address && <div><span className="text-gray-400">Adresse professionnelle</span><p className="font-bold text-gray-800">{selected.address}</p></div>}
+                  {selected.contact_name && <div><span className="text-gray-400">Décideur public</span><p className="font-bold text-gray-800">{selected.contact_name}{selected.contact_role ? ` · ${selected.contact_role}` : ''}</p></div>}
+                  {selected.verified_on && <div><span className="text-gray-400">Vérification</span><p className="font-bold text-emerald-700">{selected.legal_status ?? 'Vérifié'} · {new Date(selected.verified_on).toLocaleDateString('fr-FR')}</p></div>}
+                </div>
+                <div className="flex flex-wrap gap-2 mt-3 pt-2 border-t border-gray-200">
+                  {selected.linkedin_url && <a href={selected.linkedin_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[10px] font-black text-indigo-700 hover:underline"><Linkedin className="w-3 h-3" /> LinkedIn <ExternalLink className="w-2.5 h-2.5" /></a>}
+                  {selected.legal_source_url && <a href={selected.legal_source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[10px] font-black text-gray-600 hover:underline">Source légale <ExternalLink className="w-2.5 h-2.5" /></a>}
+                  {selected.contact_source_url && <a href={selected.contact_source_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[10px] font-black text-gray-600 hover:underline">Source coordonnées <ExternalLink className="w-2.5 h-2.5" /></a>}
+                </div>
+              </div>
+            )}
+
             {/* Angle d'attaque produit (pont avec le plan stratégique) */}
-            {SEGMENT_PITCHES[selected.segment] && (
+            {(SEGMENT_PITCHES[selected.segment] || (selected.likely_products?.length ?? 0) > 0) && (
               <div className="mb-4 rounded-xl border-2 border-brand-100 bg-brand-50/40 p-3.5">
                 <p className="flex items-center gap-1.5 text-[11px] font-black text-brand-800 uppercase tracking-wide mb-2">
                   <Lightbulb className="w-3.5 h-3.5" /> Quoi vendre, avec quel angle
                 </p>
                 <div className="flex flex-wrap gap-1.5 mb-2">
-                  {SEGMENT_PITCHES[selected.segment].products.map(short => {
+                  {(selected.likely_products?.length ? selected.likely_products : SEGMENT_PITCHES[selected.segment]?.products ?? []).map(short => {
                     const prod = WAVE1_PRODUCTS.find(w => w.short === short);
                     return (
                       <span key={short} title={prod ? `${prod.name} — ${prod.price} · score ${prod.score}/100` : short}
@@ -576,8 +661,10 @@ export default function AdminProspection() {
                     );
                   })}
                 </div>
-                <p className="text-xs text-gray-700 leading-relaxed"><b>Angle :</b> {SEGMENT_PITCHES[selected.segment].angle}</p>
-                <p className="text-xs text-gray-600 leading-relaxed mt-1.5 italic">« {SEGMENT_PITCHES[selected.segment].hook} »</p>
+                {SEGMENT_PITCHES[selected.segment] ? <>
+                  <p className="text-xs text-gray-700 leading-relaxed"><b>Angle :</b> {SEGMENT_PITCHES[selected.segment].angle}</p>
+                  <p className="text-xs text-gray-600 leading-relaxed mt-1.5 italic">« {SEGMENT_PITCHES[selected.segment].hook} »</p>
+                </> : <p className="text-xs text-gray-600 leading-relaxed">Produits présélectionnés à partir de l’activité publique de l’acheteur. À valider pendant la qualification commerciale.</p>}
               </div>
             )}
 
