@@ -26,6 +26,16 @@ describe('normalizeCity', () => {
     expect(normalizeCity(null)).toBe('Non renseignée');
     expect(normalizeCity('  ')).toBe('Non renseignée');
   });
+
+  it('normalise les arrondissements parisiens/marseillais/lyonnais', () => {
+    expect(normalizeCity('Paris 19e (14 bis r. Lally Tollendal)')).toBe('Paris');
+    expect(normalizeCity('Marseille 13e (6 bd Alphonse Moutte)')).toBe('Marseille');
+    expect(normalizeCity('Lyon 8e (13 bd Edmond Michelet)')).toBe('Lyon');
+  });
+
+  it('rattache Epron à Caen', () => {
+    expect(normalizeCity('Epron (2 r. Hubertine Auclert)')).toBe('Caen');
+  });
 });
 
 describe('getWaves — structure', () => {
@@ -87,6 +97,18 @@ describe('affectation aux vagues', () => {
   it('phase 2 acheteurs : la Belgique matche par pays même sans ville connue', () => {
     const w2 = getWaves('buyer', 2);
     expect(waveOf(mk({ phase: 2, country: 'Belgique', city: null }), w2)?.label).toContain('Belgique');
+  });
+
+  it('phase 1 : Brest/Tours/Caen en semaines 5-6 (incl. Epron→Caen)', () => {
+    expect(waveOf(mk({ city: 'Brest (88 r. Jean Jaurès)' }), waves)?.label).toContain('Brest');
+    expect(waveOf(mk({ city: 'Epron (2 r. Hubertine Auclert)' }), waves)?.label).toContain('Caen');
+  });
+
+  it('phase 2 : Paris 19e tombe dans Bordeaux & Paris, Lyon 8e dans le Sud, Lille dans Nord & Est', () => {
+    const w2 = getWaves('buyer', 2);
+    expect(waveOf(mk({ phase: 2, city: 'Paris 19e (r. Lally Tollendal)' }), w2)?.label).toBe('Bordeaux & Paris');
+    expect(waveOf(mk({ phase: 2, city: 'Lyon 8e (13 bd Edmond Michelet)' }), w2)?.label).toContain('Lyon');
+    expect(waveOf(mk({ phase: 2, city: 'Lille (3-5 pl. Général de Gaulle)' }), w2)?.label).toContain('Nord & Est');
   });
 
   it('isInWave : le fourre-tout matche tout mais waveOf le met en dernier', () => {

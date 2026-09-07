@@ -31,8 +31,11 @@ export function normalizeCity(city: string | null): string {
   if (!city || !city.trim()) return 'Non renseignée';
   let c = city.split('(')[0].split('/')[0].split('+')[0].trim();
   if (!c) c = city.trim();
+  // arrondissements : « Paris 19e » → « Paris », « Marseille 13e » → « Marseille »
+  c = c.replace(/\s+\d{1,2}e(r)?$/i, '');
   const lower = c.toLowerCase();
   if (AGGLO_NANTES.some(a => lower.startsWith(a))) return 'Nantes & agglo';
+  if (lower.startsWith('epron')) return 'Caen';
   // capitale d'usage : première lettre en majuscule, reste préservé
   return c;
 }
@@ -59,13 +62,15 @@ export function getWaves(kind: 'buyer' | 'producer', phase: number): Wave[] {
       { week: 'Semaine 2', label: 'Rennes', cities: ['Rennes'], rationale: 'Scarabée Biocoop (coop multi-magasins) + brûleries : le 2e bassin le plus dense du Grand Ouest.' },
       { week: 'Semaine 3', label: 'Bretagne Sud', cities: ['Lorient', 'Vannes', 'Louargat'], rationale: 'Lorient + Vannes en une tournée (1h30 de route) ; Caffè Cataldi sur le trajet retour.' },
       { week: 'Semaine 4', label: 'Angers & Le Mans', cities: ['Angers', 'Le Mans'], rationale: 'L\u2019axe Loire : 2 villes, 1 journée de tournée en train.' },
+      { week: 'Semaines 5-6', label: 'Brest, Tours & Caen', cities: ['Brest', 'Tours', 'Caen'], rationale: 'Le grand Ouest élargi : brûleries historiques (Léon, El Cafecito, Le Torréfacteur) — e-mail d\u2019abord, tournée si réponse.' },
       { week: 'En continu', label: 'À distance (e-shops…)', rest: true, rationale: 'E-commerçants et cibles hors tournée : e-mail J0/J+4/J+10, pas de déplacement.' },
     ];
     if (phase === 2) return [
       { week: 'Semaine 1', label: 'Réseaux & fédérations', cities: ['France', 'Clichy'], rationale: 'Collectif Café + SCA France : la crédibilité filière ouvre toutes les portes suivantes.' },
       { week: 'Semaines 2-3', label: 'Belgique francophone', cities: ['Bruxelles', 'Sombreffe', 'Liège', 'Namur'], countries: ['Belgique'], rationale: 'Zéro douane, zéro barrière de langue : Interbio d\u2019abord (un référencement = tout le canal wallon).' },
-      { week: 'Semaines 4-5', label: 'Bordeaux & Paris', cities: ['Bordeaux', 'Paris', 'Versailles'], rationale: 'Torréfacteurs premium (Piha, L\u2019Alchimiste) puis Terres de Café avec le casebook régional.' },
-      { week: 'Semaine 6', label: 'Grossistes & Bretagne N.', cities: ['Carpentras', 'Île-de-France', 'Morlaix'], rationale: 'Relais Vert/Vitafrais en clients-grossistes + Grain de Sail (cacao à la voile).' },
+      { week: 'Semaines 4-5', label: 'Bordeaux & Paris', cities: ['Bordeaux', 'Paris', 'Versailles'], rationale: 'Torréfacteurs premium (Piha, L\u2019Alchimiste, Belleville, Lomi, Coutume), bean-to-bar (Plaq, Hasnaâ) puis Terres de Café avec le casebook régional.' },
+      { week: 'Semaines 6-7', label: 'Lyon, Toulouse & Sud', cities: ['Lyon', 'Toulouse', 'Marseille', 'Nice', 'Grenoble', 'Montpellier'], rationale: 'Mokxa, Bacquié, Criollo, Luciani, Brûlerie des Alpes : les scènes café/chocolat régionales — e-mail puis visio.' },
+      { week: 'Semaine 8', label: 'Nord & Est + grossistes', cities: ['Lille', 'Strasbourg', 'Carpentras', 'Île-de-France', 'Morlaix', 'Le Havre'], rationale: 'Méo et Reck (maisons historiques, approche dossier), Relais Vert/Vitafrais en clients-grossistes, Grain de Sail.' },
       { week: 'En continu', label: 'Autres cibles', rest: true, rationale: 'Cibles hors vagues : traiter au fil des réponses.' },
     ];
     if (phase === 3) return [
