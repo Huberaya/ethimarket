@@ -10,6 +10,7 @@ import { AdminPageHeader } from '../../components/AdminLayout';
 import { SEGMENT_PITCHES, WAVE1_PRODUCTS, productMatch } from '../../lib/strategyData';
 import { messagesFor, mailtoHref, type OutreachMessage } from '../../lib/outreachTemplates';
 import { productEmails } from '../../lib/productOutreach';
+import { getWaves, waveOf, waveStats, normalizeCity, distinctCities, type Wave } from '../../lib/prospectionWaves';
 
 /**
  * CRM de prospection (docs/STRATEGIE_GO_TO_MARKET.md).
@@ -97,6 +98,8 @@ export default function AdminProspection() {
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [phase, setPhase] = useState<number>(1);
   const [filterStatus, setFilterStatus] = useState('all');
+  const [filterCity, setFilterCity] = useState('all');
+  const [selectedWave, setSelectedWave] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [playbookOpen, setPlaybookOpen] = useState(false);
   const [selected, setSelected] = useState<Prospect | null>(null);
@@ -185,9 +188,18 @@ export default function AdminProspection() {
     setBusy(false); setShowAdd(false); setForm(EMPTY_FORM); load();
   };
 
+  // Vagues du plan de tournée (kind='products' n'a pas de vagues)
+  const waves = kind !== 'products' ? getWaves(kind, phase) : [];
+  const phaseProspects = prospects.filter(p => p.kind === kind && p.phase === phase);
+  const wStats = kind !== 'products' ? waveStats(phaseProspects, waves) : [];
+  const cities = kind !== 'products' ? distinctCities(phaseProspects) : [];
+  const activeWave: Wave | null = selectedWave ? waves.find(w => w.label === selectedWave) ?? null : null;
+
   const filtered = prospects.filter(p => {
     if (p.kind !== kind || p.phase !== phase) return false;
     if (filterStatus !== 'all' && p.status !== filterStatus) return false;
+    if (filterCity !== 'all' && normalizeCity(p.city) !== filterCity) return false;
+    if (activeWave && waveOf(p, waves) !== activeWave) return false;
     if (search) {
       const hay = `${p.name} ${p.city ?? ''} ${p.segment} ${p.contact_name ?? ''}`.toLowerCase();
       if (!hay.includes(search.toLowerCase())) return false;
@@ -262,7 +274,7 @@ export default function AdminProspection() {
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <div className="flex rounded-xl border-2 border-gray-200 overflow-hidden">
           {(['buyer', 'producer', 'products'] as const).map(k => (
-            <button key={k} onClick={() => setKind(k)}
+            <button key={k} onClick={() => { setKind(k); setSelectedWave(null); setFilterCity('all'); }}
               className={`px-5 py-2.5 text-sm font-black cursor-pointer ${kind === k ? 'bg-brand-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
               {k === 'buyer' ? '🛒 Acheteurs' : k === 'producer' ? '🌾 Producteurs' : '📦 Produits cibles'}
             </button>
@@ -274,7 +286,7 @@ export default function AdminProspection() {
             const list = phaseCounts(ph);
             const conv = list.filter(p => ['inscrit', 'actif'].includes(p.status)).length;
             return (
-              <button key={ph} onClick={() => setPhase(ph)}
+              <button key={ph} onClick={() => { setPhase(ph); setSelectedWave(null); setFilterCity('all'); }}
                 className={`px-4 py-2 rounded-xl border-2 text-xs font-black cursor-pointer ${phase === ph ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-gray-200 bg-white text-gray-600'}`}>
                 Phase {ph}
                 <span className="ml-1.5 font-bold text-gray-400">{conv}/{list.length}</span>
@@ -417,6 +429,41 @@ export default function AdminProspection() {
         )}
       </div>
 
+      {/* Plan de tournée : les vagues de la phase, semaine par semaine */}
+      <div className="mb-5">
+        <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2 px-1">
+          🗺️ Plan de tournée — {kind === 'buyer' ? 'où prospecter, dans quel ordre' : 'quelles filières, dans quel ordre'}
+        </p>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-2">
+          {wStats.map(ws => {
+            const active = selectedWave === ws.wave.label;
+            return (
+              <button key={ws.wave.label}
+                onClick={() => setSelectedWave(active ? null : ws.wave.label)}
+                title={ws.wave.rationale}
+                className={`text-left rounded-xl border-2 px-3 py-2.5 transition-colors cursor-pointer ${
+                  active ? 'border-brand-500 bg-brand-50' : ws.wave.rest ? 'border-gray-100 bg-gray-50/60 hover:border-gray-200' : 'border-gray-200 bg-white hover:border-brand-300'}`}>
+                <p className={`text-[9px] font-black uppercase tracking-wide ${active ? 'text-brand-700' : 'text-gray-400'}`}>{ws.wave.week}</p>
+                <p className="text-xs font-black text-gray-900 truncate mt-0.5">{ws.wave.label}</p>
+                <p className="text-[10px] text-gray-500 mt-1 tabular-nums">
+                  {ws.contacted}/{ws.total} contactées{ws.converted > 0 ? ` · ${ws.converted} ✓` : ''}
+                </p>
+                <div className="h-1 bg-gray-100 rounded-full overflow-hidden mt-1.5">
+                  <div className={`h-full rounded-full ${ws.converted > 0 ? 'bg-emerald-500' : 'bg-brand-400'}`}
+                    style={{ width: `${ws.total ? Math.round((ws.contacted / ws.total) * 100) : 0}%` }} />
+                </div>
+              </button>
+            );
+          })}
+        </div>
+        {activeWave && (
+          <p className="text-[11px] text-gray-500 mt-2 px-1">
+            <b className="text-brand-700">{activeWave.week} — {activeWave.label} :</b> {activeWave.rationale}
+            <button onClick={() => setSelectedWave(null)} className="ml-2 font-black text-gray-400 hover:text-gray-600 cursor-pointer">× retirer le filtre</button>
+          </p>
+        )}
+      </div>
+
       {/* Filtres + ajout */}
       <div className="flex flex-wrap gap-3 mb-4">
         <div className="relative flex-1 min-w-48">
@@ -424,6 +471,11 @@ export default function AdminProspection() {
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Nom, ville, segment…"
             className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-500 bg-white" />
         </div>
+        <select value={filterCity} onChange={e => setFilterCity(e.target.value)}
+          className="px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white cursor-pointer max-w-44">
+          <option value="all">Toutes villes</option>
+          {cities.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
         <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
           className="px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white cursor-pointer">
           <option value="all">Tous statuts</option>
@@ -454,6 +506,7 @@ export default function AdminProspection() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-black text-gray-900 text-sm truncate">{p.name}</span>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">{SEGMENT_LABELS[p.segment] ?? p.segment}</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-100">📍 {normalizeCity(p.city)}</span>
                     <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${st.cls}`}>{st.label}</span>
                   </div>
                   <p className="text-xs text-gray-400 mt-0.5 truncate">
