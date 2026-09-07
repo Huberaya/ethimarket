@@ -79,6 +79,15 @@ describe('getWaves — structure', () => {
     expect(waveOf(mk({ city: 'Saint-Cast-le-Guildo (5 r. de la Noé)' }), waves)?.label).toContain('Laval');
   });
 
+  it('vague 14 : agglo caennaise et arc rochelais en semaines 5-6', () => {
+    const waves = getWaves('buyer', 1);
+    expect(waveOf(mk({ city: 'Colombelles (8 r. du Four à Chaux)' }), waves)?.label).toContain('Caen');
+    expect(waveOf(mk({ city: 'Bretteville-sur-Odon (1 av. de la Voie au Coq)' }), waves)?.label).toContain('Caen');
+    expect(waveOf(mk({ city: 'Rochefort (19 av. Charles de Gaulle)' }), waves)?.label).toContain('Caen');
+    expect(waveOf(mk({ city: 'Saintes (9 r. du Champ de Tir)' }), waves)?.label).toContain('Caen');
+    expect(waveOf(mk({ city: "Dolus-d'Oléron (ZC La Bassée, RD 734)" }), waves)?.label).toContain('Caen');
+  });
+
   it('phase 1 producteurs : Éthiopie d\u2019abord (filière n°1)', () => {
     expect(getWaves('producer', 1)[0].label).toContain('Éthiopie');
   });
