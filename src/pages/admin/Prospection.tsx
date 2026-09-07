@@ -12,6 +12,7 @@ import { SEGMENT_PITCHES, WAVE1_PRODUCTS, productMatch } from '../../lib/strateg
 import { messagesFor, mailtoHref, type OutreachMessage } from '../../lib/outreachTemplates';
 import { productEmails } from '../../lib/productOutreach';
 import { getWaves, waveOf, waveStats, normalizeCity, distinctCities, type Wave } from '../../lib/prospectionWaves';
+import { crmKeySets, isInCrm } from '../../lib/prospectDedup';
 
 /**
  * CRM de prospection (docs/STRATEGIE_GO_TO_MARKET.md).
@@ -68,7 +69,7 @@ const CATALOGUE_URLS: Record<number, string> = {
   2: '/data/prospects-europe-phase2.json',
   3: '/data/prospects-north-america-phase3.json',
 };
-const CATALOGUE_TOTALS: Record<number, number> = { 1: 4898, 2: 12798, 3: 12533 };
+const CATALOGUE_TOTALS: Record<number, number> = { 1: 4889, 2: 12798, 3: 12533 };
 const CATALOGUE_LABELS: Record<number, string> = { 1: 'Vivier France', 2: 'Vivier Europe', 3: 'Vivier Monde' };
 /** Les e-mails des viviers 2-3 sont déduits des domaines : jamais « vérifiés ». */
 const CATALOGUE_EMAILS_DERIVED: Record<number, boolean> = { 1: false, 2: true, 3: true };
@@ -84,7 +85,7 @@ const CATALOGUE_EMAILS_DERIVED: Record<number, boolean> = { 1: false, 2: true, 3
 const PRODUCER_CATALOGUE_URL = '/data/prospects-producteurs.json';
 /** Cache des viviers déjà téléchargés (clé = URL du fichier). */
 const catalogueCache = new Map<string, Promise<Prospect[]>>();
-const PRODUCER_CATALOGUE_TOTALS: Record<number, number> = { 1: 201, 2: 21, 3: 3309 };
+const PRODUCER_CATALOGUE_TOTALS: Record<number, number> = { 1: 197, 2: 21, 3: 3306 };
 const PRODUCER_CATALOGUE_LABELS: Record<number, string> = {
   1: 'Vivier Producteurs — France & filières d\'ancrage',
   2: 'Vivier Producteurs — Europe & Amérique du Nord',
@@ -220,14 +221,12 @@ export default function AdminProspection() {
     const databaseKeys = new Set(databaseProspects.flatMap(p => [p.external_id, p.siren ? `siren:${p.siren}` : null].filter(Boolean)));
     // Dédoublonnage aussi par SIREN promu (noté dans source) et par nom+ville,
     // car les colonnes external_id/siren n'existent pas encore en base.
-    const promotedSirens = new Set(databaseProspects.map(p => (p.source?.match(/siren:(\d{9})/) ?? [])[1]).filter(Boolean));
-    const promotedExtIds = new Set(databaseProspects.map(p => (p.source?.match(/ext:([\w-]+)/) ?? [])[1]).filter(Boolean));
-    const dbNameCity = new Set(databaseProspects.map(p => `${p.name}|${p.city ?? ''}`.toLowerCase()));
+    // Dédoublonnage normalisé (accents, parenthèses d'adresse, SIREN/ext promus) :
+    // une cible du pipeline CRM ne doit JAMAIS réapparaître dans un vivier.
+    const crmSets = crmKeySets(databaseProspects);
     const missingFromDatabase = catalogue.filter(p =>
       !databaseKeys.has(p.external_id) && !databaseKeys.has(p.siren ? `siren:${p.siren}` : null)
-      && !(p.siren && promotedSirens.has(p.siren))
-      && !(p.external_id && promotedExtIds.has(p.external_id))
-      && !dbNameCity.has(`${p.name}|${p.city ?? ''}`.toLowerCase()));
+      && !isInCrm(p, crmSets));
     const merged = [...databaseProspects, ...missingFromDatabase].sort((a, b) =>
       a.country.localeCompare(b.country, 'fr', { sensitivity: 'base' }) ||
       (a.city ?? 'ZZZZ').localeCompare(b.city ?? 'ZZZZ', 'fr', { sensitivity: 'base' }) || a.name.localeCompare(b.name, 'fr')
