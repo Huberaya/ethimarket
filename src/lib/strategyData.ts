@@ -127,6 +127,7 @@ export interface SegmentPitch {
 export const BUYER_SEGMENTS = [
   'torrefacteur', 'epicerie_bio', 'biocoop', 'restaurant', 'epicerie_en_ligne',
   'chocolatier', 'cosmetique', 'grossiste', 'centrale', 'food_service', 'industriel',
+  'transformateur', 'maison_the', 'bar_cocktail',
 ] as const;
 export const PRODUCER_SEGMENTS = [
   'cafe', 'vanille', 'argane', 'cacao', 'safran', 'epices', 'miel', 'quinoa', 'karite',
@@ -208,6 +209,21 @@ export const SEGMENT_PITCHES: Record<string, SegmentPitch> = {
     products: ['Cacao Ghana', 'Sidama'],
     angle: 'Phase 3 : volumes contractuels, conformité EUDR/bio industrialisée.',
     hook: '(Phase 3) Approvisionnement contractuel avec conformité EUDR native.',
+  },
+  transformateur: {
+    products: ['Vanille Bourbon', 'Miel de thym', 'Cacao Ghana', 'Safran Taliouine'],
+    angle: 'Biscuiteries, glaciers, confiseurs : des ingrédients signature documentés lot par lot, en volumes réguliers.',
+    hook: 'Votre étiquette « vanille naturelle de Madagascar » mérite un lot prouvé — certificat d\u2019analyse et traçabilité publique inclus.',
+  },
+  maison_the: {
+    products: ['Sencha Japon', 'Vanille Bourbon', 'Miel de thym'],
+    angle: 'Maisons de thé et salons : un sencha JAS vérifié et des accords (vanille, miel) tracés.',
+    hook: 'Un sencha dont la certification JAS est vérifiée au registre — et l\u2019histoire de la préfecture à raconter en boutique.',
+  },
+  bar_cocktail: {
+    products: ['Safran Taliouine', 'Vanille Bourbon', 'Miel de thym'],
+    angle: 'Bars à cocktails et mixologie : des ingrédients rares authentifiés (safran ISO 3632, vanille Grade A) pour des signatures maison.',
+    hook: 'Un cocktail signature au safran authentifié ISO 3632 : l\u2019ingrédient rare qui justifie son prix, preuve à l\u2019appui.',
   },
   // segments producteurs → la filière du plan à laquelle ils contribuent
   cafe: { products: ['Yirgacheffe', 'Sidama', 'Micro-lots café'], angle: 'Filière d\u2019ancrage n°1 — unions FLO-ID vérifiables, FOB 8-11 $/kg documenté.', hook: 'Accès direct aux torréfacteurs français, vérification aux registres offerte.' },

@@ -40,6 +40,9 @@ const SEGMENT_METIER: Record<string, string> = {
   centrale: 'centrale d\u2019achat',
   food_service: 'acteur du food-service',
   industriel: 'industriel',
+  transformateur: 'artisan transformateur',
+  maison_the: 'maison de thé',
+  bar_cocktail: 'bar',
 };
 
 function greeting(p: ProspectLike): string {

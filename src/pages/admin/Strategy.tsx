@@ -4,7 +4,7 @@ import {
   Compass, Rocket, PhoneCall, Truck, Boxes, ShieldCheck,
   ClipboardCheck, Wrench, CreditCard, FileText, Scale, BookOpen,
   ListTree, X, LayoutDashboard, TrendingUp, Package, Map as MapIcon,
-  Wallet, Megaphone, Ban, ArrowRight, type LucideIcon,
+  Wallet, Megaphone, Ban, ArrowRight, Target, type LucideIcon,
 } from 'lucide-react';
 import { AdminPageHeader } from '../../components/AdminLayout';
 import { renderMarkdown, extractHeadings } from '../../lib/markdown';
@@ -20,6 +20,7 @@ import planConquete from '../../../docs/PLAN_CONQUETE_FRANCE_EUROPE_MONDE.md?raw
 import unitEconomics from '../../../docs/UNIT_ECONOMICS.md?raw';
 import onePagerInvest from '../../../docs/ONE_PAGER_INVESTISSEURS.md?raw';
 import onePagerOng from '../../../docs/ONE_PAGER_ONG_PARTENAIRES.md?raw';
+import panelAcheteurs from '../../../docs/PANEL_ACHETEURS_PRODUCTEURS.md?raw';
 import goToMarket from '../../../docs/STRATEGIE_GO_TO_MARKET.md?raw';
 import kitProspection from '../../../docs/KIT_PROSPECTION.md?raw';
 import strategieLogistique from '../../../docs/STRATEGIE_LOGISTIQUE.md?raw';
@@ -87,6 +88,13 @@ const GROUPS: DocGroup[] = [
         description: 'Pour les réseaux de producteurs (CLAC, Fairtrade Africa…) et agences (CBI, Enabel) : ce que la plateforme fait pour une coopérative.',
         icon: FileText,
         content: onePagerOng,
+      },
+      {
+        slug: 'panel-acheteurs',
+        title: 'Panel acheteurs & producteurs par produit',
+        description: 'La matrice des 12 produits : qui achète (par type et géographie), qui produit (par pays), et la logique pour étendre le panel à l\u2019infini.',
+        icon: Target,
+        content: panelAcheteurs,
       },
       {
         slug: 'go-to-market',
@@ -315,7 +323,7 @@ export default function AdminStrategy() {
     <div>
       <AdminPageHeader
         title="Stratégie"
-        subtitle="Les décisions du plan fondateur, en visuel — et les 18 documents de référence"
+        subtitle="Les décisions du plan fondateur, en visuel — et les 19 documents de référence"
         badgeText={view === 'synthese' ? 'Synthèse' : `${ALL_DOCS.length} documents`}
       />
 

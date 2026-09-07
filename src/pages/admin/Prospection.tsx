@@ -58,6 +58,7 @@ const SEGMENT_LABELS: Record<string, string> = {
   epicerie_en_ligne: 'Épicerie en ligne', biocoop: 'Magasin Biocoop', grossiste: 'Grossiste',
   chocolatier: 'Chocolatier', cosmetique: 'Cosmétique', centrale: 'Centrale d\'achat',
   food_service: 'Food-service', industriel: 'Industriel',
+  transformateur: 'Transformateur', maison_the: 'Maison de thé', bar_cocktail: 'Bar & mixologie',
   cafe: 'Café', vanille: 'Vanille', argane: 'Argane', safran: 'Safran', cacao: 'Cacao',
   epices: 'Épices', miel: 'Miel', quinoa: 'Quinoa', karite: 'Karité',
 };
