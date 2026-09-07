@@ -82,6 +82,8 @@ const CATALOGUE_EMAILS_DERIVED: Record<number, boolean> = { 1: false, 2: true, 3
 // Phase 1 = France + filières d'ancrage (Maroc/argane, Madagascar/vanille,
 // Éthiopie/café) ; phase 2 = Europe & Amérique du Nord ; phase 3 = reste du monde.
 const PRODUCER_CATALOGUE_URL = '/data/prospects-producteurs.json';
+/** Cache des viviers déjà téléchargés (clé = URL du fichier). */
+const catalogueCache = new Map<string, Promise<Prospect[]>>();
 const PRODUCER_CATALOGUE_TOTALS: Record<number, number> = { 1: 201, 2: 21, 3: 3309 };
 const PRODUCER_CATALOGUE_LABELS: Record<number, string> = {
   1: 'Vivier Producteurs — France & filières d\'ancrage',
@@ -191,9 +193,18 @@ export default function AdminProspection() {
 
   const load = useCallback(async () => {
     // Un seul fichier par pipeline : les fiches portent leur propre phase, le
-    // filtrage se fait en mémoire (évite de retélécharger 14 Mo à chaque phase).
-    const fetchCatalogue = async (url: string | undefined): Promise<Prospect[]> =>
-      url ? fetch(url).then(r => (r.ok ? (r.json() as Promise<Prospect[]>) : [])).catch(() => [] as Prospect[]) : [];
+    // filtrage se fait en mémoire. Les fichiers (5 à 14 Mo) sont mis en cache
+    // pour ne pas être retéléchargés à chaque changement de phase ou d'onglet.
+    const fetchCatalogue = (url: string | undefined): Promise<Prospect[]> => {
+      if (!url) return Promise.resolve([]);
+      const cached = catalogueCache.get(url);
+      if (cached) return cached;
+      const promise = fetch(url)
+        .then(r => (r.ok ? (r.json() as Promise<Prospect[]>) : []))
+        .catch(() => [] as Prospect[]);
+      catalogueCache.set(url, promise);
+      return promise;
+    };
     const [{ data }, { data: st }, buyerCatalogue, producerCatalogue] = await Promise.all([
       supabase.from('prospects').select('*').order('next_action_date', { ascending: true, nullsFirst: false }).order('name'),
       supabase.rpc('get_prospection_stats'),
