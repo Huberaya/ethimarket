@@ -394,7 +394,7 @@ export default function AdminProspection() {
           {[1, 2, 3].map(ph => {
             const list = phaseCounts(ph);
             const conv = list.filter(p => ['inscrit', 'actif'].includes(p.status)).length;
-            const total = kind === 'buyer' ? Math.max(list.length, CATALOGUE_TOTALS[ph] ?? 0) : list.length;
+            const total = view === 'catalogue' && kind === 'buyer' ? Math.max(list.length, CATALOGUE_TOTALS[ph] ?? 0) : list.length;
             return (
               <button key={ph} onClick={() => { setPhase(ph); setSelectedWave(null); setFilterCountry('all'); setFilterRegion('all'); setFilterCity('all'); }}
                 className={`px-4 py-2 rounded-xl border-2 text-xs font-black cursor-pointer ${phase === ph ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-gray-200 bg-white text-gray-600'}`}>
