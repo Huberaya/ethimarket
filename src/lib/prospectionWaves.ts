@@ -59,10 +59,10 @@ export function getWaves(kind: 'buyer' | 'producer', phase: number): Wave[] {
   if (kind === 'buyer') {
     if (phase === 1) return [
       { week: 'Semaine 1', label: 'Nantes & agglo', cities: ['Nantes & agglo'], rationale: 'La preuve locale d\u2019abord : densité maximale, visites physiques possibles le jour même.' },
-      { week: 'Semaine 2', label: 'Rennes', cities: ['Rennes'], rationale: 'Scarabée Biocoop (coop multi-magasins) + brûleries : le 2e bassin le plus dense du Grand Ouest.' },
+      { week: 'Semaine 2', label: 'Rennes & couronne', cities: ['Rennes', 'Pacé', 'Vern-sur-Seiche', 'Melesse', 'Mordelles', 'Domloup', 'La Bouëxière', 'Vitré', 'Bain-de-Bretagne'], rationale: 'Scarabée Biocoop + brûleries + LOBODIS (pionnier du café équitable FR, à Bain-de-Bretagne) et Les Cafés Félix (négoce café-cacao à Pacé) : le bassin rennais élargi.' },
       { week: 'Semaine 3', label: 'Bretagne Sud', cities: ['Lorient', 'Vannes', 'Louargat'], rationale: 'Lorient + Vannes en une tournée (1h30 de route) ; Caffè Cataldi sur le trajet retour.' },
-      { week: 'Semaine 4', label: 'Angers & Le Mans', cities: ['Angers', 'Le Mans'], rationale: 'L\u2019axe Loire : 2 villes, 1 journée de tournée en train.' },
-      { week: 'Semaines 5-6', label: 'Brest, Tours & Caen', cities: ['Brest', 'Tours', 'Caen', 'Quimper', 'La Rochelle'], rationale: 'Le grand Ouest élargi : brûleries historiques (Léon, Coïc, El Cafecito), Kafeta (7 torréfactions d\u2019un coup), La Rochelle — e-mail d\u2019abord, tournée si réponse.' },
+      { week: 'Semaine 4', label: 'Angers, Le Mans & Vendée', cities: ['Angers', 'Le Mans', 'La Roche-sur-Yon', 'Olonne-sur-Mer', 'Pornic', 'Le Landreau', 'La Baule'], rationale: 'L\u2019axe Loire + la côte vendéenne : Angers/Le Mans en train, Pornic/La Roche/Les Sables en voiture (1 journée).' },
+      { week: 'Semaines 5-6', label: 'Brest, Tours & Caen', cities: ['Brest', 'Tours', 'Caen', 'Quimper', 'La Rochelle', 'Dinard', 'Dol-de-Bretagne', 'Avranches'], rationale: 'Le grand Ouest élargi : brûleries historiques (Léon, Coïc, El Cafecito), Kafeta (7 torréfactions d\u2019un coup), côte d\u2019émeraude et La Rochelle — e-mail d\u2019abord, tournée si réponse.' },
       { week: 'En continu', label: 'À distance (e-shops…)', rest: true, rationale: 'E-commerçants et cibles hors tournée : e-mail J0/J+4/J+10, pas de déplacement.' },
     ];
     if (phase === 2) return [

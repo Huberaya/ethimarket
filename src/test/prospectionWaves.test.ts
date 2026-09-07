@@ -53,11 +53,20 @@ describe('getWaves — structure', () => {
     }
   });
 
-  it('phase 1 acheteurs : Nantes en semaine 1, Rennes en semaine 2', () => {
+  it('phase 1 acheteurs : Nantes en semaine 1, Rennes & couronne en semaine 2', () => {
     const waves = getWaves('buyer', 1);
     expect(waves[0].label).toBe('Nantes & agglo');
     expect(waves[0].week).toBe('Semaine 1');
-    expect(waves[1].label).toBe('Rennes');
+    expect(waves[1].label).toBe('Rennes & couronne');
+  });
+
+  it('la couronne rennaise et la Vendée sont affectées aux bonnes vagues', () => {
+    const waves = getWaves('buyer', 1);
+    expect(waveOf(mk({ city: 'Bain-de-Bretagne (r. Sabin)' }), waves)?.label).toBe('Rennes & couronne');
+    expect(waveOf(mk({ city: 'Pacé (Village des Artisans, bd Odet)' }), waves)?.label).toBe('Rennes & couronne');
+    expect(waveOf(mk({ city: 'La Roche-sur-Yon (39 imp. Paul Renaud)' }), waves)?.label).toContain('Vendée');
+    expect(waveOf(mk({ city: 'Pornic (3 r. Général Buat)' }), waves)?.label).toContain('Vendée');
+    expect(waveOf(mk({ city: 'Dinard (48 r. Levavasseur)' }), waves)?.label).toContain('Brest');
   });
 
   it('phase 1 producteurs : Éthiopie d\u2019abord (filière n°1)', () => {
@@ -137,7 +146,7 @@ describe('waveStats & distinctCities', () => {
     expect(nantes.total).toBe(3);
     expect(nantes.contacted).toBe(2);
     expect(nantes.converted).toBe(1);
-    expect(stats.find(s => s.wave.label === 'Rennes')!.total).toBe(1);
+    expect(stats.find(s => s.wave.label === 'Rennes & couronne')!.total).toBe(1);
   });
 
   it('distinctCities normalise et trie', () => {
