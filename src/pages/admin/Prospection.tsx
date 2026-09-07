@@ -59,6 +59,13 @@ interface Prospect {
 
 interface Touch { id: string; channel: string; note: string; created_at: string }
 
+const CATALOGUE_URLS: Record<number, string> = {
+  1: '/data/prospects-france-5000.json',
+  2: '/data/prospects-europe-phase2.json',
+  3: '/data/prospects-north-america-phase3.json',
+};
+const CATALOGUE_TOTALS: Record<number, number> = { 1: 5000, 2: 13000, 3: 13000 };
+
 const STATUS_META: Record<string, { label: string; cls: string }> = {
   a_contacter: { label: 'À contacter', cls: 'bg-gray-100 text-gray-700 border-gray-200' },
   contacte: { label: 'Contacté', cls: 'bg-blue-50 text-blue-700 border-blue-200' },
@@ -97,7 +104,7 @@ const PHASE_PLAYBOOK: Record<number, { title: string; buyers: string; producers:
   },
   3: {
     title: 'Phase 3 — Échelle : la référence (M10+)',
-    buyers: 'Centrales spécialisées (dossier référencement avec nos données de taux de service), Allemagne (1er marché bio UE, via hub Benelux), food-service, industriels bean-to-bar. Ouverture B2C réelle via le hub 3PL. Levier : casebook clients + presse (le QR de traçabilité est un sujet).',
+    buyers: 'Conquête Amérique du Nord : États-Unis et Canada. Priorité aux magasins bio, épiceries spécialisées, concept stores responsables, horeca, distributeurs/importateurs et entreprises ESG des grands bassins urbains. Avant activation : vérifier l’entité légale, le statut et la conformité CAN-SPAM/CASL.',
     producers: 'Corridors de groupage actifs = recrutement massif (50+ producteurs). Extension Amérique latine (cacao fin, café Colombie) et Asie du Sud-Est. Programme ambassadeurs : les producteurs phase 1 parrainent.',
     exit: 'Ce n\'est plus une phase, c\'est le régime de croisière : on pilote au KPI (/admin/croissance).',
   },
@@ -139,9 +146,7 @@ export default function AdminProspection() {
     const [{ data }, { data: st }, catalogue] = await Promise.all([
       supabase.from('prospects').select('*').order('next_action_date', { ascending: true, nullsFirst: false }).order('name'),
       supabase.rpc('get_prospection_stats'),
-      Promise.all(['/data/prospects-france-5000.json', '/data/prospects-europe-phase2.json'].map(url =>
-        fetch(url).then(r => r.ok ? r.json() as Promise<Prospect[]> : []).catch(() => [] as Prospect[])
-      )).then(groups => groups.flat()),
+      fetch(CATALOGUE_URLS[phase]).then(r => r.ok ? r.json() as Promise<Prospect[]> : []).catch(() => [] as Prospect[]),
     ]);
     const databaseProspects = (data as Prospect[]) ?? [];
     const databaseKeys = new Set(databaseProspects.flatMap(p => [p.external_id, p.siren ? `siren:${p.siren}` : null].filter(Boolean)));
@@ -153,9 +158,9 @@ export default function AdminProspection() {
     setProspects(merged);
     if (st) setStats(st as { due_today: number; reply_rate_pct: number });
     setLoading(false);
-  }, []);
+  }, [phase]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { setLoading(true); void load(); }, [load]);
 
   const openProspect = async (p: Prospect) => {
     setSelected(p);
@@ -287,7 +292,7 @@ export default function AdminProspection() {
           <Database className="w-5 h-5 text-brand-700 shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-black text-brand-900">
-              {phase === 1 ? 'Base France' : phase === 2 ? 'Base Europe' : `Base phase ${phase}`} chargée : {prospects.filter(p => p.catalog_only && p.phase === phase).length.toLocaleString('fr-FR')} acheteurs, classés par pays puis par ville
+              {phase === 1 ? 'Base France' : phase === 2 ? 'Base Europe' : phase === 3 ? 'Base Amérique du Nord' : `Base phase ${phase}`} chargée : {prospects.filter(p => p.catalog_only && p.phase === phase).length.toLocaleString('fr-FR')} acheteurs, classés par pays puis par ville
             </p>
             <p className="text-[11px] text-brand-800 mt-0.5">Les fiches sont visibles immédiatement depuis le catalogue embarqué. Appliquez la migration Supabase du dépôt pour activer la modification des statuts et le journal de contact sur ces fiches.</p>
           </div>
@@ -343,11 +348,12 @@ export default function AdminProspection() {
           {[1, 2, 3].map(ph => {
             const list = phaseCounts(ph);
             const conv = list.filter(p => ['inscrit', 'actif'].includes(p.status)).length;
+            const total = kind === 'buyer' ? Math.max(list.length, CATALOGUE_TOTALS[ph] ?? 0) : list.length;
             return (
               <button key={ph} onClick={() => { setPhase(ph); setSelectedWave(null); setFilterCountry('all'); setFilterRegion('all'); setFilterCity('all'); }}
                 className={`px-4 py-2 rounded-xl border-2 text-xs font-black cursor-pointer ${phase === ph ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-gray-200 bg-white text-gray-600'}`}>
                 Phase {ph}
-                <span className="ml-1.5 font-bold text-gray-400">{conv}/{list.length}</span>
+                <span className="ml-1.5 font-bold text-gray-400">{conv}/{total}</span>
               </button>
             );
           })}
