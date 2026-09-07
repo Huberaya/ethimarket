@@ -53,6 +53,7 @@ interface Prospect {
   verified_on: string | null;
   legal_status: string | null;
   data_origin: string | null;
+  catalog_only?: boolean;
 }
 
 interface Touch { id: string; channel: string; note: string; created_at: string }
@@ -133,11 +134,18 @@ export default function AdminProspection() {
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
-    const [{ data }, { data: st }] = await Promise.all([
+    const [{ data }, { data: st }, catalogue] = await Promise.all([
       supabase.from('prospects').select('*').order('next_action_date', { ascending: true, nullsFirst: false }).order('name'),
       supabase.rpc('get_prospection_stats'),
+      fetch('/data/prospects-france-5000.json').then(r => r.ok ? r.json() as Promise<Prospect[]> : []).catch(() => [] as Prospect[]),
     ]);
-    setProspects((data as Prospect[]) ?? []);
+    const databaseProspects = (data as Prospect[]) ?? [];
+    const databaseKeys = new Set(databaseProspects.flatMap(p => [p.external_id, p.siren ? `siren:${p.siren}` : null].filter(Boolean)));
+    const missingFromDatabase = catalogue.filter(p => !databaseKeys.has(p.external_id) && !databaseKeys.has(p.siren ? `siren:${p.siren}` : null));
+    const merged = [...databaseProspects, ...missingFromDatabase].sort((a, b) =>
+      (a.city ?? 'ZZZZ').localeCompare(b.city ?? 'ZZZZ', 'fr', { sensitivity: 'base' }) || a.name.localeCompare(b.name, 'fr')
+    );
+    setProspects(merged);
     if (st) setStats(st as { due_today: number; reply_rate_pct: number });
     setLoading(false);
   }, []);
@@ -146,11 +154,13 @@ export default function AdminProspection() {
 
   const openProspect = async (p: Prospect) => {
     setSelected(p);
+    if (p.catalog_only) { setTouches([]); return; }
     const { data } = await supabase.from('prospect_touches').select('*').eq('prospect_id', p.id).order('created_at', { ascending: false });
     setTouches((data as Touch[]) ?? []);
   };
 
   const setStatus = async (p: Prospect, status: string) => {
+    if (p.catalog_only) return;
     setBusy(true);
     await supabase.from('prospects').update({ status }).eq('id', p.id);
     setBusy(false);
@@ -159,12 +169,13 @@ export default function AdminProspection() {
   };
 
   const saveNextAction = async (p: Prospect, action: string, date: string) => {
+    if (p.catalog_only) return;
     await supabase.from('prospects').update({ next_action: action || null, next_action_date: date || null }).eq('id', p.id);
     load();
   };
 
   const addTouch = async () => {
-    if (!selected || touchNote.trim().length < 3) return;
+    if (!selected || selected.catalog_only || touchNote.trim().length < 3) return;
     setBusy(true);
     const { data: u } = await supabase.auth.getUser();
     await supabase.from('prospect_touches').insert({
@@ -184,7 +195,7 @@ export default function AdminProspection() {
 
   /** Journalise l'envoi dans le journal des contacts (immuable). */
   const logSend = async (m: OutreachMessage) => {
-    if (!selected) return;
+    if (!selected || selected.catalog_only) return;
     const { data: u } = await supabase.auth.getUser();
     await supabase.from('prospect_touches').insert({
       prospect_id: selected.id, channel: 'email',
@@ -263,6 +274,16 @@ export default function AdminProspection() {
           </Link>
         }
       />
+
+      {prospects.some(p => p.catalog_only) && kind === 'buyer' && (
+        <div className="mb-5 rounded-2xl border-2 border-brand-200 bg-brand-50 px-5 py-3.5 flex items-start gap-3">
+          <Database className="w-5 h-5 text-brand-700 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-black text-brand-900">Base France chargée : {prospects.filter(p => p.catalog_only).length.toLocaleString('fr-FR')} acheteurs, classés par ville</p>
+            <p className="text-[11px] text-brand-800 mt-0.5">Les fiches sont visibles immédiatement depuis le catalogue embarqué. Appliquez la migration Supabase du dépôt pour activer la modification des statuts et le journal de contact sur ces fiches.</p>
+          </div>
+        </div>
+      )}
 
       {/* Funnel du pipeline */}
       {kind !== 'products' && (
@@ -615,6 +636,7 @@ export default function AdminProspection() {
               {SEGMENT_LABELS[selected.segment] ?? selected.segment} · Phase {selected.phase} · {[selected.city, selected.country].filter(Boolean).join(', ')}
               {selected.source ? ` · source : ${selected.source}` : ''}
             </p>
+            {selected.catalog_only && <p className="mb-4 text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">Fiche du catalogue France embarqué — consultation disponible. Appliquez la migration Supabase pour rendre le suivi CRM modifiable et persistant.</p>}
 
             {/* Coordonnées */}
             <div className="flex flex-wrap gap-2 mb-4">
@@ -711,7 +733,7 @@ export default function AdminProspection() {
             <p className="text-[11px] font-black text-gray-500 uppercase tracking-wide mb-1.5">Statut</p>
             <div className="flex flex-wrap gap-1.5 mb-4">
               {Object.entries(STATUS_META).map(([k, v]) => (
-                <button key={k} onClick={() => void setStatus(selected, k)} disabled={busy}
+                <button key={k} onClick={() => void setStatus(selected, k)} disabled={busy || selected.catalog_only}
                   className={`text-[11px] font-black px-2.5 py-1 rounded-full border cursor-pointer ${selected.status === k ? v.cls + ' ring-2 ring-offset-1 ring-brand-300' : 'bg-white text-gray-400 border-gray-200 hover:border-gray-300'}`}>
                   {v.label}
                 </button>
@@ -729,7 +751,7 @@ export default function AdminProspection() {
                 const t = (document.getElementById('na-text') as HTMLInputElement).value;
                 const d = (document.getElementById('na-date') as HTMLInputElement).value;
                 void saveNextAction(selected, t, d);
-              }} className="px-3 py-2 text-[11px] font-black rounded-lg bg-gray-900 text-white cursor-pointer">OK</button>
+              }} disabled={selected.catalog_only} className="px-3 py-2 text-[11px] font-black rounded-lg bg-gray-900 text-white cursor-pointer disabled:opacity-30">OK</button>
             </div>
 
             {selected.notes && (
@@ -748,7 +770,7 @@ export default function AdminProspection() {
               </select>
               <input value={touchNote} onChange={e => setTouchNote(e.target.value)} placeholder="Ex : e-mail J0 envoyé (objet certificats)"
                 className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-brand-400" />
-              <button onClick={() => void addTouch()} disabled={busy || touchNote.trim().length < 3}
+              <button onClick={() => void addTouch()} disabled={busy || selected.catalog_only || touchNote.trim().length < 3}
                 className="px-3 py-2 text-[11px] font-black rounded-lg bg-brand-600 text-white disabled:opacity-40 cursor-pointer">+</button>
             </div>
             <div className="space-y-1.5 max-h-40 overflow-y-auto">
