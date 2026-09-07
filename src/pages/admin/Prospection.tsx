@@ -73,6 +73,39 @@ const CATALOGUE_LABELS: Record<number, string> = { 1: 'Vivier France', 2: 'Vivie
 /** Les e-mails des viviers 2-3 sont déduits des domaines : jamais « vérifiés ». */
 const CATALOGUE_EMAILS_DERIVED: Record<number, boolean> = { 1: false, 2: true, 3: true };
 
+// Vivier PRODUCTEURS : base consolidée de producteurs réels (coopératives,
+// organisations de petits producteurs, exploitations, fabricants) issue
+// d'annuaires publics — Fairtrade/FLOCERT, WFTO, PromPerú, NSTIAM & Spices Board
+// (Inde), TNAU, Conseil Café-Cacao (Côte d'Ivoire), Conseil oléicole
+// international, IFOAM, sites officiels de coopératives. Généré par
+// scripts/generate_producer_catalogue.py — ne pas éditer à la main.
+// Phase 1 = France + filières d'ancrage (Maroc/argane, Madagascar/vanille,
+// Éthiopie/café) ; phase 2 = Europe & Amérique du Nord ; phase 3 = reste du monde.
+const PRODUCER_CATALOGUE_URL = '/data/prospects-producteurs.json';
+const PRODUCER_CATALOGUE_TOTALS: Record<number, number> = { 1: 201, 2: 21, 3: 3309 };
+const PRODUCER_CATALOGUE_LABELS: Record<number, string> = {
+  1: 'Vivier Producteurs — France & filières d\'ancrage',
+  2: 'Vivier Producteurs — Europe & Amérique du Nord',
+  3: 'Vivier Producteurs — Monde',
+};
+
+/** Libellé du vivier affiché selon le pipeline et la phase. */
+function catalogueLabel(kind: string, phase: number): string {
+  return kind === 'producer'
+    ? (PRODUCER_CATALOGUE_LABELS[phase] ?? 'Vivier producteurs')
+    : (CATALOGUE_LABELS[phase] ?? 'Vivier');
+}
+
+/**
+ * Les e-mails des viviers acheteurs 2-3 sont DÉDUITS des domaines de sites
+ * (Overture Maps). Ceux du vivier producteurs sont PUBLIÉS par l'annuaire
+ * source : pas de déduction — mais une donnée d'annuaire peut dater.
+ */
+function isDerivedEmail(row: Prospect | null, kind: string): boolean {
+  if (!row) return false;
+  return kind === 'buyer' && Boolean(CATALOGUE_EMAILS_DERIVED[row.phase]);
+}
+
 const STATUS_META: Record<string, { label: string; cls: string }> = {
   a_contacter: { label: 'À contacter', cls: 'bg-gray-100 text-gray-700 border-gray-200' },
   contacte: { label: 'Contacté', cls: 'bg-blue-50 text-blue-700 border-blue-200' },
@@ -93,6 +126,12 @@ const SEGMENT_LABELS: Record<string, string> = {
   transformateur: 'Transformateur', maison_the: 'Maison de thé', bar_cocktail: 'Bar & mixologie',
   cafe: 'Café', vanille: 'Vanille', argane: 'Argane', safran: 'Safran', cacao: 'Cacao',
   epices: 'Épices', miel: 'Miel', quinoa: 'Quinoa', karite: 'Karité',
+  // Segments du vivier producteurs (base consolidée)
+  the: 'Thé', huiles: 'Huiles (olive, argan)', plantes: 'Plantes & huiles essentielles',
+  oleagineux: 'Fruits à coque & oléagineux', fruits: 'Fruits', legumes: 'Légumes & maraîchage',
+  cereales: 'Céréales & graines', vin: 'Vin', elevage: 'Élevage & produits animaliers',
+  transformes: 'Produits transformés', sucre: 'Sucre / panela', artisanat: 'Artisanat & décoration',
+  autres_produits: 'Autres produits agricoles',
 };
 
 /** Playbook condensé par phase (miroir de la stratégie). */
@@ -151,13 +190,21 @@ export default function AdminProspection() {
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
-    const [{ data }, { data: st }, catalogue] = await Promise.all([
+    // Un seul fichier par pipeline : les fiches portent leur propre phase, le
+    // filtrage se fait en mémoire (évite de retélécharger 14 Mo à chaque phase).
+    const fetchCatalogue = async (url: string | undefined): Promise<Prospect[]> =>
+      url ? fetch(url).then(r => (r.ok ? (r.json() as Promise<Prospect[]>) : [])).catch(() => [] as Prospect[]) : [];
+    const [{ data }, { data: st }, buyerCatalogue, producerCatalogue] = await Promise.all([
       supabase.from('prospects').select('*').order('next_action_date', { ascending: true, nullsFirst: false }).order('name'),
       supabase.rpc('get_prospection_stats'),
-      CATALOGUE_URLS[phase]
-        ? fetch(CATALOGUE_URLS[phase]).then(r => r.ok ? r.json() as Promise<Prospect[]> : []).catch(() => [] as Prospect[])
-        : Promise.resolve([] as Prospect[]),
+      fetchCatalogue(CATALOGUE_URLS[phase]),
+      fetchCatalogue(PRODUCER_CATALOGUE_URL),
     ]);
+    const wantedKinds = kind === 'products' ? ['buyer', 'producer'] : [kind];
+    const catalogue = [
+      ...buyerCatalogue.filter(p => p.kind === 'buyer' && p.phase === phase && wantedKinds.includes('buyer')),
+      ...producerCatalogue.filter(p => p.kind === 'producer' && p.phase === phase && wantedKinds.includes('producer')),
+    ];
     const databaseProspects = (data as Prospect[]) ?? [];
     const databaseKeys = new Set(databaseProspects.flatMap(p => [p.external_id, p.siren ? `siren:${p.siren}` : null].filter(Boolean)));
     // Dédoublonnage aussi par SIREN promu (noté dans source) et par nom+ville,
@@ -177,7 +224,7 @@ export default function AdminProspection() {
     setProspects(merged);
     if (st) setStats(st as { due_today: number; reply_rate_pct: number });
     setLoading(false);
-  }, [phase]);
+  }, [phase, kind]);
 
   useEffect(() => { setLoading(true); void load(); }, [load]);
 
@@ -242,7 +289,8 @@ export default function AdminProspection() {
       city: p.city, country: p.country, contact_name: p.contact_name,
       email: p.email, phone: p.phone, website: p.website,
       source: `${p.source ?? 'catalogue'} | promu:vivier${p.siren ? ` | siren:${p.siren}` : ''}${p.external_id ? ` | ext:${p.external_id}` : ''}`,
-      notes: [CATALOGUE_EMAILS_DERIVED[p.phase] && p.email ? '⚠️ E-MAIL DÉDUIT du domaine du site (vivier Overture) — À VÉRIFIER avant tout envoi.' : null,
+      notes: [isDerivedEmail(p, p.kind) && p.email ? '⚠️ E-MAIL DÉDUIT du domaine du site (vivier Overture) — À VÉRIFIER avant tout envoi.' : null,
+        p.kind === 'producer' && p.email ? 'E-mail publié par l\'annuaire source (non déduit) — les données d\'annuaire peuvent dater : à confirmer avant envoi.' : null,
         p.legal_name ? `Raison sociale : ${p.legal_name}.` : null,
         p.siret ? `SIRET ${p.siret}.` : null,
         p.address ? `Adresse : ${p.address}.` : null,
@@ -317,7 +365,7 @@ export default function AdminProspection() {
   // Le funnel ne compte QUE le pipeline CRM (jamais le catalogue en consultation)
   const kindProspects = prospects.filter(p => p.kind === kind && !p.catalog_only);
   const funnelMax = Math.max(1, ...FUNNEL_STEPS.map(s => kindProspects.filter(p => s.key.includes(p.status)).length));
-  const catalogueCount = prospects.filter(p => p.catalog_only).length;
+  const catalogueCount = prospects.filter(p => p.catalog_only && p.kind === kind).length;
 
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 text-brand-500 animate-spin" /></div>;
 
@@ -334,21 +382,23 @@ export default function AdminProspection() {
       />
 
       {/* Sélecteur de vue : pipeline CRM actionnable vs vivier de la phase en consultation */}
-      {kind === 'buyer' && catalogueCount > 0 && (
+      {(kind === 'buyer' || kind === 'producer') && catalogueCount > 0 && (
         <div className="mb-5 flex flex-wrap items-center gap-3">
           <div className="flex rounded-xl border-2 border-gray-200 overflow-hidden">
             <button onClick={() => { setView('crm'); setFilterCountry('all'); setFilterRegion('all'); setFilterCity('all'); setFilterSegment('all'); }}
               className={`px-4 py-2 text-xs font-black cursor-pointer ${view === 'crm' ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
-              🎯 Mon pipeline ({prospects.filter(p => p.kind === 'buyer' && !p.catalog_only).length})
+              🎯 Mon pipeline ({prospects.filter(p => p.kind === kind && !p.catalog_only).length})
             </button>
             <button onClick={() => { setView('catalogue'); setSelectedWave(null); setFilterCountry('all'); setFilterRegion('all'); setFilterCity('all'); setFilterSegment('all'); }}
               className={`px-4 py-2 text-xs font-black cursor-pointer ${view === 'catalogue' ? 'bg-brand-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
-              <Database className="w-3 h-3 inline mr-1 -mt-0.5" />{CATALOGUE_LABELS[phase] ?? 'Vivier'} ({catalogueCount.toLocaleString('fr-FR')})
+              <Database className="w-3 h-3 inline mr-1 -mt-0.5" />{catalogueLabel(kind, phase)} ({catalogueCount.toLocaleString('fr-FR')})
             </button>
           </div>
           {view === 'catalogue' && (
             <p className="text-[11px] text-gray-500 flex-1 min-w-60">
-              {CATALOGUE_EMAILS_DERIVED[phase]
+              {kind === 'producer'
+                ? <>Vivier producteurs en consultation : {(PRODUCER_CATALOGUE_TOTALS[phase] ?? catalogueCount).toLocaleString('fr-FR')} producteurs réels (coopératives, organisations de petits producteurs, exploitations, fabricants) issus d'annuaires publics — Fairtrade/FLOCERT, WFTO, PromPerú, NSTIAM &amp; Spices Board, Conseil Café-Cacao, Conseil oléicole international, IFOAM, sites officiels. <b className="text-gray-700">Coordonnées publiées par la source, aucune donnée inventée</b> : un champ absent vaut « Non trouvé », un label non confirmé vaut « À vérifier ». Repérez une cible puis promouvez-la dans le pipeline.</>
+                : CATALOGUE_EMAILS_DERIVED[phase]
                 ? <>Vivier en consultation (Overture Maps, nettoyé). <b className="text-amber-700">⚠️ E-mails déduits des domaines des sites — à vérifier avant tout envoi.</b> Repérez une cible, vérifiez ses coordonnées, puis ajoutez-la au pipeline.</>
                 : <>Vivier en consultation (BANCO/OSM + SIRENE, nettoyé) — repérez une cible, vérifiez ses coordonnées, puis ajoutez-la au pipeline pour la travailler.</>}
             </p>
@@ -394,7 +444,7 @@ export default function AdminProspection() {
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <div className="flex rounded-xl border-2 border-gray-200 overflow-hidden">
           {(['buyer', 'producer', 'products'] as const).map(k => (
-            <button key={k} onClick={() => { setKind(k); setSelectedWave(null); setFilterCountry('all'); setFilterRegion('all'); setFilterCity('all'); }}
+            <button key={k} onClick={() => { setKind(k); setView('crm'); setSelectedWave(null); setFilterCountry('all'); setFilterRegion('all'); setFilterCity('all'); setFilterSegment('all'); }}
               className={`px-5 py-2.5 text-sm font-black cursor-pointer ${kind === k ? 'bg-brand-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
               {k === 'buyer' ? '🛒 Acheteurs' : k === 'producer' ? '🌾 Producteurs' : '📦 Produits cibles'}
             </button>
@@ -405,7 +455,8 @@ export default function AdminProspection() {
           {[1, 2, 3].map(ph => {
             const list = phaseCounts(ph);
             const conv = list.filter(p => ['inscrit', 'actif'].includes(p.status)).length;
-            const total = view === 'catalogue' && kind === 'buyer' ? Math.max(list.length, CATALOGUE_TOTALS[ph] ?? 0) : list.length;
+            const catalogueTotal = kind === 'producer' ? (PRODUCER_CATALOGUE_TOTALS[ph] ?? 0) : (CATALOGUE_TOTALS[ph] ?? 0);
+            const total = view === 'catalogue' ? Math.max(list.length, catalogueTotal) : list.length;
             return (
               <button key={ph} onClick={() => { setPhase(ph); setSelectedWave(null); setFilterCountry('all'); setFilterRegion('all'); setFilterCity('all'); }}
                 className={`px-4 py-2 rounded-xl border-2 text-xs font-black cursor-pointer ${phase === ph ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-gray-200 bg-white text-gray-600'}`}>
@@ -427,8 +478,10 @@ export default function AdminProspection() {
           </div>
           {WAVE1_PRODUCTS.map(w => {
             const { buyerSegments, producerSegments } = productMatch(w.short);
-            const supply = prospects.filter(p => p.kind === 'producer' && producerSegments.includes(p.segment));
-            const demand = prospects.filter(p => p.kind === 'buyer' && buyerSegments.includes(p.segment));
+            // Matching sur le pipeline CRM uniquement : le vivier en consultation
+            // n'est pas une offre disponible tant qu'il n'a pas été promu.
+            const supply = prospects.filter(p => p.kind === 'producer' && !p.catalog_only && producerSegments.includes(p.segment));
+            const demand = prospects.filter(p => p.kind === 'buyer' && !p.catalog_only && buyerSegments.includes(p.segment));
             const supplyOn = supply.filter(p => ['inscrit', 'actif'].includes(p.status));
             const demandOn = demand.filter(p => ['inscrit', 'actif'].includes(p.status));
             const open = selectedProduct === w.short;
@@ -719,8 +772,8 @@ export default function AdminProspection() {
             {selected.catalog_only && (
               <div className="mb-4 flex flex-wrap items-center gap-3 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
                 <p className="text-[11px] font-bold text-amber-800 flex-1 min-w-52">
-                  Fiche du {CATALOGUE_LABELS[selected.phase] ?? 'vivier'} (consultation).
-                  {CATALOGUE_EMAILS_DERIVED[selected.phase] ? ' ⚠️ E-mail déduit du domaine du site — à vérifier avant envoi.' : ''}
+                  Fiche du {catalogueLabel(selected.kind, selected.phase)} (consultation).
+                  {isDerivedEmail(selected, selected.kind) ? ' ⚠️ E-mail déduit du domaine du site — à vérifier avant envoi.' : ''}
                   {' '}Vérifiez les coordonnées puis basculez-la dans votre pipeline pour la travailler.
                 </p>
                 <button onClick={() => void promoteToPipeline(selected)} disabled={busy}
