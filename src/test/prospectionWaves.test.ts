@@ -88,6 +88,16 @@ describe('getWaves — structure', () => {
     expect(waveOf(mk({ city: "Dolus-d'Oléron (ZC La Bassée, RD 734)" }), waves)?.label).toContain('Caen');
   });
 
+  it('vague 18 : la Normandie est a sa propre semaine 7', () => {
+    const waves = getWaves('buyer', 1);
+    expect(waveOf(mk({ city: 'Rouen (130 r. Eau de Robec)' }), waves)?.week).toBe('Semaine 7');
+    expect(waveOf(mk({ city: 'Le Havre (62 r. Mont Joly)' }), waves)?.week).toBe('Semaine 7');
+    expect(waveOf(mk({ city: 'Dieppe (18 pl. Nationale)' }), waves)?.week).toBe('Semaine 7');
+    expect(waveOf(mk({ city: 'Évreux (9 r. des Lombards)' }), waves)?.week).toBe('Semaine 7');
+    // Epron reste normalisé vers Caen (vague semaines 5-6), pas happé par la semaine 7
+    expect(waveOf(mk({ city: 'Epron (2 r. Hubertine Auclert)' }), waves)?.label).toContain('Caen');
+  });
+
   it('vague 16 : la Cornouaille rejoint la vague Brest', () => {
     const waves = getWaves('buyer', 1);
     expect(waveOf(mk({ city: 'Concarneau (6 r. des Écoles)' }), waves)?.label).toContain('Brest');
