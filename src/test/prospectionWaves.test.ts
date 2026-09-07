@@ -104,6 +104,11 @@ describe('affectation aux vagues', () => {
     expect(waveOf(mk({ city: 'Epron (2 r. Hubertine Auclert)' }), waves)?.label).toContain('Caen');
   });
 
+  it('phase 1 : Quimper et La Rochelle rejoignent la vague S5-6', () => {
+    expect(waveOf(mk({ city: 'Quimper/Plomelin (63 Hent Penhoat Braz)' }), waves)?.label).toContain('Brest');
+    expect(waveOf(mk({ city: 'La Rochelle (18 r. St-Nicolas)' }), waves)?.label).toContain('Brest');
+  });
+
   it('phase 2 : Paris 19e tombe dans Bordeaux & Paris, Lyon 8e dans le Sud, Lille dans Nord & Est', () => {
     const w2 = getWaves('buyer', 2);
     expect(waveOf(mk({ phase: 2, city: 'Paris 19e (r. Lally Tollendal)' }), w2)?.label).toBe('Bordeaux & Paris');

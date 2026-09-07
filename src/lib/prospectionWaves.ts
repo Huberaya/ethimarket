@@ -62,7 +62,7 @@ export function getWaves(kind: 'buyer' | 'producer', phase: number): Wave[] {
       { week: 'Semaine 2', label: 'Rennes', cities: ['Rennes'], rationale: 'Scarabée Biocoop (coop multi-magasins) + brûleries : le 2e bassin le plus dense du Grand Ouest.' },
       { week: 'Semaine 3', label: 'Bretagne Sud', cities: ['Lorient', 'Vannes', 'Louargat'], rationale: 'Lorient + Vannes en une tournée (1h30 de route) ; Caffè Cataldi sur le trajet retour.' },
       { week: 'Semaine 4', label: 'Angers & Le Mans', cities: ['Angers', 'Le Mans'], rationale: 'L\u2019axe Loire : 2 villes, 1 journée de tournée en train.' },
-      { week: 'Semaines 5-6', label: 'Brest, Tours & Caen', cities: ['Brest', 'Tours', 'Caen'], rationale: 'Le grand Ouest élargi : brûleries historiques (Léon, El Cafecito, Le Torréfacteur) — e-mail d\u2019abord, tournée si réponse.' },
+      { week: 'Semaines 5-6', label: 'Brest, Tours & Caen', cities: ['Brest', 'Tours', 'Caen', 'Quimper', 'La Rochelle'], rationale: 'Le grand Ouest élargi : brûleries historiques (Léon, Coïc, El Cafecito), Kafeta (7 torréfactions d\u2019un coup), La Rochelle — e-mail d\u2019abord, tournée si réponse.' },
       { week: 'En continu', label: 'À distance (e-shops…)', rest: true, rationale: 'E-commerçants et cibles hors tournée : e-mail J0/J+4/J+10, pas de déplacement.' },
     ];
     if (phase === 2) return [
