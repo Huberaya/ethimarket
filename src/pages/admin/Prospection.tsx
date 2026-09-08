@@ -78,14 +78,19 @@ const CATALOGUE_EMAILS_DERIVED: Record<number, boolean> = { 1: false, 2: true, 3
 // organisations de petits producteurs, exploitations, fabricants) issue
 // d'annuaires publics — Fairtrade/FLOCERT, WFTO, PromPerú, NSTIAM & Spices Board
 // (Inde), TNAU, Conseil Café-Cacao (Côte d'Ivoire), Conseil oléicole
-// international, IFOAM, sites officiels de coopératives. Généré par
+// international, IFOAM, CARTV (registre biologique du Québec), Organic Council
+// of Ontario, sites officiels de coopératives. Généré par
 // scripts/generate_producer_catalogue.py — ne pas éditer à la main.
 // Phase 1 = France + filières d'ancrage (Maroc/argane, Madagascar/vanille,
 // Éthiopie/café) ; phase 2 = Europe & Amérique du Nord ; phase 3 = reste du monde.
-const PRODUCER_CATALOGUE_URL = '/data/prospects-producteurs.json';
+const PRODUCER_CATALOGUE_URLS: Record<number, string> = {
+  1: '/data/prospects-producteurs-phase1.json',
+  2: '/data/prospects-producteurs-phase2.json',
+  3: '/data/prospects-producteurs-phase3.json',
+};
 /** Cache des viviers déjà téléchargés (clé = URL du fichier). */
 const catalogueCache = new Map<string, Promise<Prospect[]>>();
-const PRODUCER_CATALOGUE_TOTALS: Record<number, number> = { 1: 197, 2: 21, 3: 3306 };
+const PRODUCER_CATALOGUE_TOTALS: Record<number, number> = { 1: 197, 2: 3773, 3: 3306 };
 const PRODUCER_CATALOGUE_LABELS: Record<number, string> = {
   1: 'Vivier Producteurs — France & filières d\'ancrage',
   2: 'Vivier Producteurs — Europe & Amérique du Nord',
@@ -133,7 +138,8 @@ const SEGMENT_LABELS: Record<string, string> = {
   the: 'Thé', huiles: 'Huiles (olive, argan)', plantes: 'Plantes & huiles essentielles',
   oleagineux: 'Fruits à coque & oléagineux', fruits: 'Fruits', legumes: 'Légumes & maraîchage',
   cereales: 'Céréales & graines', vin: 'Vin', elevage: 'Élevage & produits animaliers',
-  transformes: 'Produits transformés', sucre: 'Sucre / panela', artisanat: 'Artisanat & décoration',
+  transformes: 'Produits transformés', sucre: 'Sucre, panela & sirop d’érable',
+  artisanat: 'Artisanat & décoration',
   autres_produits: 'Autres produits agricoles',
 };
 
@@ -193,9 +199,11 @@ export default function AdminProspection() {
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
-    // Un seul fichier par pipeline : les fiches portent leur propre phase, le
-    // filtrage se fait en mémoire. Les fichiers (5 à 14 Mo) sont mis en cache
-    // pour ne pas être retéléchargés à chaque changement de phase ou d'onglet.
+    // Un fichier par pipeline ET par phase : les fiches portent leur propre
+    // phase, le filtrage se fait en mémoire. Le vivier producteurs pèse 11,9 Mo
+    // au total (7 276 fiches) : on ne télécharge que la phase affichée.
+    // Les fichiers (5 à 14 Mo) sont mis en cache pour ne pas être
+    // retéléchargés à chaque changement de phase ou d'onglet.
     const fetchCatalogue = (url: string | undefined): Promise<Prospect[]> => {
       if (!url) return Promise.resolve([]);
       const cached = catalogueCache.get(url);
@@ -210,7 +218,7 @@ export default function AdminProspection() {
       supabase.from('prospects').select('*').order('next_action_date', { ascending: true, nullsFirst: false }).order('name'),
       supabase.rpc('get_prospection_stats'),
       fetchCatalogue(CATALOGUE_URLS[phase]),
-      fetchCatalogue(PRODUCER_CATALOGUE_URL),
+      fetchCatalogue(PRODUCER_CATALOGUE_URLS[phase]),
     ]);
     const wantedKinds = kind === 'products' ? ['buyer', 'producer'] : [kind];
     const catalogue = [
@@ -407,7 +415,7 @@ export default function AdminProspection() {
           {view === 'catalogue' && (
             <p className="text-[11px] text-gray-500 flex-1 min-w-60">
               {kind === 'producer'
-                ? <>Vivier producteurs en consultation : {(PRODUCER_CATALOGUE_TOTALS[phase] ?? catalogueCount).toLocaleString('fr-FR')} producteurs réels (coopératives, organisations de petits producteurs, exploitations, fabricants) issus d'annuaires publics — Fairtrade/FLOCERT, WFTO, PromPerú, NSTIAM &amp; Spices Board, Conseil Café-Cacao, Conseil oléicole international, IFOAM, sites officiels. <b className="text-gray-700">Coordonnées publiées par la source, aucune donnée inventée</b> : un champ absent vaut « Non trouvé », un label non confirmé vaut « À vérifier ». Repérez une cible puis promouvez-la dans le pipeline.</>
+                ? <>Vivier producteurs en consultation : {(PRODUCER_CATALOGUE_TOTALS[phase] ?? catalogueCount).toLocaleString('fr-FR')} producteurs réels (coopératives, organisations de petits producteurs, exploitations, fabricants) issus d'annuaires publics — Fairtrade/FLOCERT, WFTO, PromPerú, NSTIAM &amp; Spices Board, Conseil Café-Cacao, Conseil oléicole international, IFOAM, CARTV (registre biologique du Québec), Organic Council of Ontario, sites officiels. <b className="text-gray-700">Coordonnées publiées par la source, aucune donnée inventée</b> : un champ absent vaut « Non trouvé », un label non confirmé vaut « À vérifier ». Repérez une cible puis promouvez-la dans le pipeline.</>
                 : CATALOGUE_EMAILS_DERIVED[phase]
                 ? <>Vivier en consultation (Overture Maps, nettoyé). <b className="text-amber-700">⚠️ E-mails déduits des domaines des sites — à vérifier avant tout envoi.</b> Repérez une cible, vérifiez ses coordonnées, puis ajoutez-la au pipeline.</>
                 : <>Vivier en consultation (BANCO/OSM + SIRENE, nettoyé) — repérez une cible, vérifiez ses coordonnées, puis ajoutez-la au pipeline pour la travailler.</>}

@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Génère public/data/prospects-producteurs.json : le vivier PRODUCTEURS de l'onglet
+Génère public/data/prospects-producteurs-phase{1,2,3}.json : le vivier PRODUCTEURS de l'onglet
 Prospection (pipeline « 🌾 Producteurs », vue Vivier), au format exact de
 l'interface Prospect de src/pages/admin/Prospection.tsx.
 
-Source : data/base_producteurs_ethimarket.csv (3 500+ producteurs réels issus
+Source : data/base_producteurs_ethimarket.csv (7 200+ producteurs réels issus
 d'annuaires publics : Fairtrade/FLOCERT, WFTO, PromPerú, NSTIAM, Spices Board
-India, TNAU, Conseil Café-Cacao, Conseil oléicole international, IFOAM, sites
-officiels de coopératives).
+India, TNAU, Conseil Café-Cacao, Conseil oléicole international, IFOAM,
+CARTV / registre des produits biologiques du Québec (SIPAB), Organic Council of
+Ontario, sites officiels de coopératives).
 
 Usage :
     python3 scripts/generate_producer_catalogue.py [chemin/du/csv]
@@ -27,12 +28,38 @@ from datetime import date
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-OUT = os.path.join(ROOT, "public", "data", "prospects-producteurs.json")
+# Fichiers par phase (le vivier producteurs dépasse 10 Mo au total : l'onglet
+# Prospection ne télécharge que la phase affichée).
+OUT_PHASE = {ph: os.path.join(ROOT, "public", "data", f"prospects-producteurs-phase{ph}.json")
+             for ph in (1, 2, 3)}
 
 DEFAULT_CSV = os.path.join(ROOT, "data", "base_producteurs_ethimarket.csv")
 ALT_CSV = os.path.expanduser("~/ethimarket/base_producteurs_ethimarket.csv")
 
 VIDE = {"", "non trouvé", "non précisé", "non trouve", "n/a", "na", "-"}
+
+# Fiches déjà présentes dans le pipeline CRM : retirées du catalogue publié
+# (commit ea0c809 — « pipeline targets no longer reappear in viviers »).
+# Le dédoublonnage réel reste fait au chargement par src/lib/prospectDedup.ts ;
+# cette liste évite seulement de les republier dans les fichiers de vivier.
+DEJA_DANS_LE_PIPELINE = {
+    "cooperative marjana",
+    "oromia coffee farmers cooperative union",
+    "sidama coffee farmers cooperative union",
+    "yirgacheffe coffee farmers cooperative union",
+    "anapqui",
+    "cenfrocafe",
+    "cooperativa agraria cafetalera cenfrocafe peru",
+}
+
+
+def clef_dedup(nom: str) -> str:
+    """Même normalisation que normName() de src/lib/prospectDedup.ts."""
+    import unicodedata
+    n = unicodedata.normalize("NFD", (nom or "")).lower()
+    n = "".join(c for c in n if not unicodedata.combining(c))
+    n = re.sub(r"\([^)]*\)", " ", n)
+    return re.sub(r"[^a-z0-9]+", " ", n).strip()
 
 # --- Filtrage géographique par phase (miroir du playbook de prospection) ------
 PHASE1 = {"France"}
@@ -61,6 +88,7 @@ SEGMENTS = {
     "Textile, artisanat & décoration": "artisanat",
     "Cosmétiques naturels": "cosmetique",
     "Sucre / panela": "sucre",
+    "Sirop d’érable & produits de l’érable": "sucre",
     "Fleurs & plantes": "plantes",
     "Vin": "vin",
     "Céréales & graines": "cereales",
@@ -120,6 +148,8 @@ def cat_of(products: str) -> str:
         return "Textile, artisanat & décoration"
     if has("cosmétique", "beauty", "bien-être", "savon", "soap", "baume", "crème"):
         return "Cosmétiques naturels"
+    if has("érable", "erable", "maple", "acéricole", "acericole"):
+        return "Sirop d’érable & produits de l’érable"
     if has("sucre", "sugar", "panela", "sirop"):
         return "Sucre / panela"
     if has("fleur", "flower", "rose", "plante ornementale"):
@@ -162,7 +192,11 @@ def main() -> int:
 
     today = date.today().isoformat()
     out = []
+    exclus = 0
     for i, r in enumerate(rows, 1):
+        if clef_dedup(r.get("Nom du producteur") or "") in DEJA_DANS_LE_PIPELINE:
+            exclus += 1
+            continue
         country = nettoie(r.get("Pays")) or "Non précisé"
         products = nettoie(r.get("Produits principaux"))
         category = cat_of(products or "")
@@ -230,15 +264,19 @@ def main() -> int:
 
     out.sort(key=lambda x: (x["phase"], x["country"], x["segment"], x["name"]))
 
-    os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    with open(OUT, "w", encoding="utf-8") as fh:
-        json.dump(out, fh, ensure_ascii=False, separators=(",", ":"))
+    os.makedirs(os.path.dirname(OUT_PHASE[1]), exist_ok=True)
+    for ph, path in OUT_PHASE.items():
+        part = [x for x in out if x["phase"] == ph]
+        with open(path, "w", encoding="utf-8") as fh:
+            json.dump(part, fh, ensure_ascii=False, separators=(",", ":"))
+        print(f"OK  {path}  ({len(part)} producteurs, {os.path.getsize(path) / 1024:.0f} Ko)")
 
     stats = {}
     for rec in out:
         stats.setdefault(rec["phase"], []).append(rec)
-    print(f"OK  {OUT}")
-    print(f"    {len(out)} producteurs | {os.path.getsize(OUT) / 1024:.0f} Ko")
+    total_ko = sum(os.path.getsize(x) for x in OUT_PHASE.values()) / 1024
+    print(f"OK  {len(out)} producteurs | {total_ko:.0f} Ko (3 fichiers par phase)"
+          f" | {exclus} fiches déjà dans le pipeline CRM, non republiées")
     for ph in sorted(stats):
         lst = stats[ph]
         print(f"    phase {ph}: {len(lst):5d} | emails {sum(1 for x in lst if x['email']):5d} "
