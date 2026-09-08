@@ -4,7 +4,7 @@ import {
   Loader2, X, Target, Search, Plus, Phone, Mail, Globe as GlobeIcon,
   ChevronRight, BookOpen, ChevronDown, ChevronUp, CalendarClock,
   Package, Lightbulb, Compass, ArrowRight, MessageSquareText, Copy, Check, Send,
-  MapPin, Building2, Linkedin, ExternalLink, Database,
+  MapPin, Building2, Linkedin, ExternalLink, Database, Download,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { AdminPageHeader } from '../../components/AdminLayout';
@@ -184,6 +184,8 @@ export default function AdminProspection() {
   const [filterCountry, setFilterCountry] = useState('all');
   const [filterRegion, setFilterRegion] = useState('all');
   const [filterSegment, setFilterSegment] = useState('all');
+  /** Filtre sur les coordonnées publiées : indispensable pour les relances. */
+  const [filterContact, setFilterContact] = useState('all');
   const [selectedWave, setSelectedWave] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -356,6 +358,11 @@ export default function AdminProspection() {
     if (filterCity !== 'all' && normalizeCity(p.city) !== filterCity) return false;
     if (filterRegion !== 'all' && p.region !== filterRegion) return false;
     if (filterSegment !== 'all' && p.segment !== filterSegment) return false;
+    if (filterContact === 'email' && !p.email) return false;
+    if (filterContact === 'phone' && !p.phone) return false;
+    if (filterContact === 'both' && !(p.email && p.phone)) return false;
+    if (filterContact === 'contact' && !p.contact_name) return false;
+    if (filterContact === 'none' && (p.email || p.phone)) return false;
     if (activeWave && waveOf(p, waves) !== activeWave) return false;
     if (search) {
       const hay = `${p.name} ${p.legal_name ?? ''} ${p.siren ?? ''} ${p.siret ?? ''} ${p.city ?? ''} ${p.region ?? ''} ${p.segment} ${p.contact_name ?? ''} ${p.email ?? ''}`.toLowerCase();
@@ -366,7 +373,36 @@ export default function AdminProspection() {
   const PAGE_SIZE = 100;
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const visibleProspects = filtered.slice((Math.min(page, pageCount) - 1) * PAGE_SIZE, Math.min(page, pageCount) * PAGE_SIZE);
-  useEffect(() => { setPage(1); }, [kind, phase, filterStatus, filterCountry, filterCity, filterRegion, filterSegment, selectedWave, search]);
+  useEffect(() => { setPage(1); }, [kind, phase, filterStatus, filterCountry, filterCity, filterRegion, filterSegment, filterContact, selectedWave, search]);
+
+  /**
+   * Export CSV des coordonnées de la vue courante (filtres inclus).
+   * Séparateur « ; » + BOM UTF-8 : ouverture directe dans Excel FR.
+   */
+  const exportCsv = useCallback(() => {
+    const entetes = ['Nom', 'Pays', 'Région / Ville', 'Segment', 'Statut', 'Contact / Responsable',
+      'E-mail', 'Téléphone', 'Site internet', 'LinkedIn', 'Produits probables', 'Adresse',
+      'Source', 'Notes'];
+    const esc = (v: unknown) => {
+      const txt = v == null ? '' : Array.isArray(v) ? v.join(', ') : String(v);
+      return /[";\n\r]/.test(txt) ? `"${txt.replace(/"/g, '""')}"` : txt;
+    };
+    const lignes = filtered.map(p => [
+      p.name, p.country, [p.city, p.region].filter(Boolean).join(', '),
+      SEGMENT_LABELS[p.segment] ?? p.segment, (STATUS_META[p.status] ?? STATUS_META.a_contacter).label,
+      p.contact_name, p.email, p.phone, p.website, p.linkedin_url, p.likely_products,
+      p.address, p.source, p.notes,
+    ].map(esc).join(';'));
+    const csv = '\uFEFF' + [entetes.join(';'), ...lignes].join('\r\n');
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `contacts-${kind}-phase${phase}-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [filtered, kind, phase]);
 
   const phaseCounts = (ph: number) => prospects.filter(p => p.kind === kind && p.phase === ph && inView(p));
   const pb = PHASE_PLAYBOOK[phase];
@@ -659,14 +695,19 @@ export default function AdminProspection() {
       )}
 
       {/* Lecture opérationnelle de la base */}
-      {kind === 'buyer' && phaseProspects.length > 0 && (
+      {phaseProspects.length > 0 && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-4">
-          {[
+          {(kind === 'buyer' ? [
             { label: 'Acheteurs dans la phase', value: phaseProspects.length, icon: Database, cls: 'text-brand-700 bg-brand-50' },
             { label: 'Avec e-mail public', value: phaseProspects.filter(p => p.email).length, icon: Mail, cls: 'text-sky-700 bg-sky-50' },
             { label: 'Avec téléphone', value: phaseProspects.filter(p => p.phone).length, icon: Phone, cls: 'text-emerald-700 bg-emerald-50' },
             { label: 'Avec LinkedIn', value: phaseProspects.filter(p => p.linkedin_url).length, icon: Linkedin, cls: 'text-indigo-700 bg-indigo-50' },
-          ].map(k => <div key={k.label} className="rounded-xl border border-gray-100 bg-white p-3 flex items-center gap-3">
+          ] : [
+            { label: 'Producteurs dans la phase', value: phaseProspects.length, icon: Database, cls: 'text-brand-700 bg-brand-50' },
+            { label: 'Avec e-mail publié', value: phaseProspects.filter(p => p.email).length, icon: Mail, cls: 'text-sky-700 bg-sky-50' },
+            { label: 'Avec téléphone', value: phaseProspects.filter(p => p.phone).length, icon: Phone, cls: 'text-emerald-700 bg-emerald-50' },
+            { label: 'Avec contact nommé', value: phaseProspects.filter(p => p.contact_name).length, icon: Building2, cls: 'text-indigo-700 bg-indigo-50' },
+          ]).map(k => <div key={k.label} className="rounded-xl border border-gray-100 bg-white p-3 flex items-center gap-3">
             <span className={`w-9 h-9 rounded-lg flex items-center justify-center ${k.cls}`}><k.icon className="w-4 h-4" /></span>
             <div><p className="text-lg font-black tabular-nums text-gray-900">{k.value.toLocaleString('fr-FR')}</p><p className="text-[9px] font-black uppercase tracking-wide text-gray-400">{k.label}</p></div>
           </div>)}
@@ -705,6 +746,19 @@ export default function AdminProspection() {
           <option value="all">Tous statuts</option>
           {Object.entries(STATUS_META).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
         </select>
+        <select value={filterContact} onChange={e => setFilterContact(e.target.value)}
+          className="px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white cursor-pointer">
+          <option value="all">Toutes fiches</option>
+          <option value="email">Avec e-mail</option>
+          <option value="phone">Avec téléphone</option>
+          <option value="both">E-mail + téléphone</option>
+          <option value="contact">Avec contact nommé</option>
+          <option value="none">Sans coordonnée</option>
+        </select>
+        <button onClick={exportCsv} title="Télécharger les coordonnées des résultats filtrés au format CSV (Excel)"
+          className="px-4 py-2.5 text-xs font-black rounded-xl border-2 border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 inline-flex items-center gap-1.5 cursor-pointer">
+          <Download className="w-4 h-4" /> Exporter les contacts ({filtered.length.toLocaleString('fr-FR')})
+        </button>
         <button onClick={() => { setForm({ ...EMPTY_FORM, kind, phase: phase as 1 | 2 | 3 }); setShowAdd(true); }}
           className="px-4 py-2.5 text-xs font-black rounded-xl bg-brand-600 text-white hover:bg-brand-700 inline-flex items-center gap-1.5 cursor-pointer">
           <Plus className="w-4 h-4" /> Ajouter une cible
@@ -728,7 +782,8 @@ export default function AdminProspection() {
             const st = STATUS_META[p.status] ?? STATUS_META.a_contacter;
             const overdue = p.next_action_date && p.next_action_date <= today && !['refus', 'stop', 'actif'].includes(p.status);
             return (
-              <button key={p.id} onClick={() => void openProspect(p)}
+              <div key={p.id} role="button" tabIndex={0} onClick={() => void openProspect(p)}
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); void openProspect(p); } }}
                 className="w-full text-left bg-white rounded-2xl border border-gray-100 px-4 py-3 flex items-center gap-3 hover:border-brand-200 hover:shadow-sm cursor-pointer">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -751,15 +806,33 @@ export default function AdminProspection() {
                       ))}
                     </div>
                   )}
-                </div>
-                <div className="shrink-0 hidden md:flex items-center gap-1.5 text-gray-300">
-                  {p.phone && <Phone className="w-3.5 h-3.5 text-emerald-500" aria-label="téléphone connu" />}
-                  {p.email && <Mail className="w-3.5 h-3.5 text-emerald-500" aria-label="e-mail connu" />}
-                  {p.website && <GlobeIcon className="w-3.5 h-3.5 text-emerald-500" aria-label="site connu" />}
+                  {(p.email || p.phone || p.website) && (
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-[11px]">
+                      {p.email && (
+                        <a href={`mailto:${p.email}`} onClick={e => e.stopPropagation()}
+                          className="inline-flex items-center gap-1 font-bold text-sky-700 hover:underline">
+                          <Mail className="w-3 h-3 shrink-0" /><span className="truncate max-w-64">{p.email}</span>
+                        </a>
+                      )}
+                      {p.phone && (
+                        <a href={`tel:${p.phone.replace(/[^\d+]/g, '')}`} onClick={e => e.stopPropagation()}
+                          className="inline-flex items-center gap-1 font-bold text-emerald-700 hover:underline">
+                          <Phone className="w-3 h-3 shrink-0" />{p.phone}
+                        </a>
+                      )}
+                      {p.website && (
+                        <a href={p.website} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
+                          className="inline-flex items-center gap-1 font-bold text-gray-500 hover:underline">
+                          <GlobeIcon className="w-3 h-3 shrink-0" />
+                          <span className="truncate max-w-48">{p.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
                 {overdue && <span className="shrink-0 text-[10px] font-black text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">⏰ {p.next_action_date}</span>}
                 <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
-              </button>
+              </div>
             );
           })}
           {pageCount > 1 && (
